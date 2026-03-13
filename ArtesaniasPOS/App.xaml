@@ -1,9 +1,12 @@
-﻿<Application x:Class="ArtesaniasPOS.App"
+﻿<Application x:Class="ArtesaniasPOS.UI.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:ArtesaniasPOS"
+             xmlns:converters="clr-namespace:ArtesaniasPOS.Core.Converters;assembly=ArtesaniasPOS.Core"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <converters:StringToVisibilityConverter x:Key="StringToVisibilityConverter"/>
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <converters:BoolToVisibilityInvertedConverter x:Key="BoolToVisibilityInvertedConverter"/>
+        <converters:StringToVisibilityInvertedConverter x:Key="StringToVisibilityInvertedConverter"/>
     </Application.Resources>
 </Application>

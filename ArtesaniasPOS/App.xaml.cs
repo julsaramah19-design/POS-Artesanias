@@ -1,13 +1,16 @@
-﻿using System.Configuration;
-using System.Data;
+﻿using ArtesaniasPOS.Data.Database;
 using System.Windows;
 
-namespace ArtesaniasPOS.UI;
+namespace ArtesaniasPOS
+{
+    public partial class App : Application
+    {
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
 
-/// <summary>
-/// Interaction logic for App.xaml
-/// </summary>
-public partial class App : Application
-{   
-    
+            var initializer = new DatabaseInitializer(DatabaseConfig.ConnectionString);
+            initializer.Initialize();
+        }
+    }
 }
