@@ -1,0 +1,13 @@
+<!-- IMPORTANTE: Agrega esto dentro del tag <Application.Resources> de tu App.xaml existente.
+     No reemplaces todo tu App.xaml — solo agrega estas líneas dentro de Resources. -->
+
+<!-- Agrega este namespace en el tag <Application>: -->
+<!-- xmlns:converters="clr-namespace:ArtesaniasPOS.Core.Converters;assembly=ArtesaniasPOS.Core" -->
+
+<!-- Y dentro de <Application.Resources>, agrega: -->
+<!--
+<Application.Resources>
+    <converters:StringToVisibilityConverter x:Key="StringToVisibilityConverter"/>
+    <converters:BoolToVisibilityInvertedConverter x:Key="BoolToVisibilityInvertedConverter"/>
+</Application.Resources>
+-->

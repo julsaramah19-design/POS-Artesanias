@@ -1,0 +1,159 @@
+<UserControl x:Class="ArtesaniasPOS.Views.Wizard.WizardContainerView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:wizardVm="clr-namespace:ArtesaniasPOS.Core.ViewModels.Wizard;assembly=ArtesaniasPOS.Core"
+             xmlns:wizardViews="clr-namespace:ArtesaniasPOS.Views.Wizard"
+             mc:Ignorable="d"
+             d:DesignHeight="600" d:DesignWidth="800">
+
+    <!--
+    DataTemplates: el corazón de la navegación MVVM.
+    
+    Cuando PasoActualViewModel cambia, WPF busca un DataTemplate
+    que coincida con el tipo del ViewModel. Si es WelcomeStepViewModel,
+    muestra WelcomeStepView. Si es BusinessInfoStepViewModel, muestra
+    BusinessInfoStepView. Y así sucesivamente.
+    
+    Esto es "convención sobre configuración" — no necesitas un switch
+    ni un if en la vista. WPF lo resuelve automáticamente.
+    -->
+    <UserControl.Resources>
+        <DataTemplate DataType="{x:Type wizardVm:WelcomeStepViewModel}">
+            <wizardViews:WelcomeStepView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type wizardVm:BusinessInfoStepViewModel}">
+            <wizardViews:BusinessInfoStepView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type wizardVm:CurrencyColorStepViewModel}">
+            <wizardViews:CurrencyColorStepView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type wizardVm:AdminUserStepViewModel}">
+            <wizardViews:AdminUserStepView/>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <Grid Background="White">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!--
+        ContentControl: muestra el paso actual.
+        Content está bindeado a PasoActualViewModel.
+        WPF usa los DataTemplates de arriba para saber qué vista mostrar.
+        El DataContext del UserControl hijo se hereda automáticamente
+        del Content (el ViewModel del paso).
+        -->
+        <ContentControl Grid.Row="0"
+                         Content="{Binding PasoActualViewModel}"
+                         Margin="0"/>
+
+        <!-- Barra inferior con botones de navegación -->
+        <Border Grid.Row="1"
+                Background="#F9FAFB"
+                BorderBrush="#E5E7EB"
+                BorderThickness="0,1,0,0"
+                Padding="30,15">
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Mensaje de error -->
+                <TextBlock Grid.Column="1"
+                           Text="{Binding MensajeError}"
+                           Foreground="#DC2626"
+                           FontSize="13"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Center"
+                           TextWrapping="Wrap"/>
+
+                <!-- Botón Anterior -->
+                <Button Grid.Column="0"
+                        Content="← Anterior"
+                        Command="{Binding AnteriorCommand}"
+                        Padding="20,10"
+                        FontSize="14"
+                        Cursor="Hand"
+                        Visibility="{Binding EsPrimerPaso, 
+                            Converter={StaticResource BoolToVisibilityInvertedConverter}}">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Background" Value="White"/>
+                            <Setter Property="Foreground" Value="#374151"/>
+                            <Setter Property="BorderBrush" Value="#D1D5DB"/>
+                            <Setter Property="BorderThickness" Value="1.5"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}"
+                                                BorderBrush="{TemplateBinding BorderBrush}"
+                                                BorderThickness="{TemplateBinding BorderThickness}"
+                                                CornerRadius="8"
+                                                Padding="{TemplateBinding Padding}">
+                                            <ContentPresenter HorizontalAlignment="Center"
+                                                              VerticalAlignment="Center"/>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="#F3F4F6"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Button.Style>
+                </Button>
+
+                <!-- Botón Siguiente/Finalizar -->
+                <Button Grid.Column="2"
+                        Content="{Binding TextoBotonSiguiente}"
+                        Command="{Binding SiguienteCommand}"
+                        Padding="20,10"
+                        FontSize="14"
+                        FontWeight="SemiBold"
+                        Cursor="Hand">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Foreground" Value="White"/>
+                            <Setter Property="BorderThickness" Value="0"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border x:Name="ButtonBorder"
+                                                CornerRadius="8"
+                                                Padding="{TemplateBinding Padding}">
+                                            <Border.Background>
+                                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                    <GradientStop Color="#3B82F6" Offset="0"/>
+                                                    <GradientStop Color="#8B5CF6" Offset="1"/>
+                                                </LinearGradientBrush>
+                                            </Border.Background>
+                                            <ContentPresenter HorizontalAlignment="Center"
+                                                              VerticalAlignment="Center"/>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="ButtonBorder" Property="Opacity" Value="0.9"/>
+                                            </Trigger>
+                                            <Trigger Property="IsEnabled" Value="False">
+                                                <Setter TargetName="ButtonBorder" Property="Opacity" Value="0.5"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Button.Style>
+                </Button>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

@@ -1,0 +1,503 @@
+<UserControl x:Class="ArtesaniasPOS.UI.Views.Reportes.ReportesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             d:DesignHeight="650" d:DesignWidth="950"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d">
+    <Grid Margin="25,20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- HEADER + FILTROS -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,18">
+            <TextBlock Text="📊 Reportes" FontSize="24" FontWeight="Bold"
+                       Foreground="#1F2937" Margin="0,0,0,12"/>
+            <StackPanel Orientation="Horizontal">
+                <Button Command="{Binding HoyCommand}" Cursor="Hand" Margin="0,0,6,0">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border x:Name="Bd" Background="#EFF6FF" CornerRadius="6" Padding="14,7" BorderBrush="#BFDBFE" BorderThickness="1">
+                                            <TextBlock Text="Hoy" FontSize="12" FontWeight="SemiBold" Foreground="#2563EB"/>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="Bd" Property="Background" Value="#DBEAFE"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Button.Style>
+                </Button>
+                <Button Command="{Binding SemanaCommand}" Cursor="Hand" Margin="0,0,6,0">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border x:Name="Bd" Background="#F0FDF4" CornerRadius="6" Padding="14,7" BorderBrush="#BBF7D0" BorderThickness="1">
+                                            <TextBlock Text="7 días" FontSize="12" FontWeight="SemiBold" Foreground="#059669"/>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="Bd" Property="Background" Value="#DCFCE7"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Button.Style>
+                </Button>
+                <Button Command="{Binding MesCommand}" Cursor="Hand" Margin="0,0,20,0">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border x:Name="Bd" Background="#FFF7ED" CornerRadius="6" Padding="14,7" BorderBrush="#FED7AA" BorderThickness="1">
+                                            <TextBlock Text="30 días" FontSize="12" FontWeight="SemiBold" Foreground="#EA580C"/>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="Bd" Property="Background" Value="#FFEDD5"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Button.Style>
+                </Button>
+                <TextBlock Text="Desde:" FontSize="12" Foreground="#6B7280" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                <DatePicker SelectedDate="{Binding FechaDesde}" FontSize="12" Margin="0,0,12,0"/>
+                <TextBlock Text="Hasta:" FontSize="12" Foreground="#6B7280" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                <DatePicker SelectedDate="{Binding FechaHasta}" FontSize="12" Margin="0,0,12,0"/>
+                <Button Command="{Binding FiltrarCommand}" Cursor="Hand">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border x:Name="Bd" CornerRadius="6" Padding="14,7">
+                                            <Border.Background>
+                                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                    <GradientStop Color="#3B82F6" Offset="0"/>
+                                                    <GradientStop Color="#8B5CF6" Offset="1"/>
+                                                </LinearGradientBrush>
+                                            </Border.Background>
+                                            <TextBlock Text="Filtrar" FontSize="12" FontWeight="SemiBold" Foreground="White"/>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="Bd" Property="Opacity" Value="0.9"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Button.Style>
+                </Button>
+            </StackPanel>
+        </StackPanel>
+
+        <!-- TARJETAS KPI -->
+        <Grid Grid.Row="1" Margin="0,0,0,18">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="12"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="12"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="12"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Border Grid.Column="0" Background="White" CornerRadius="10" Padding="18,15" BorderBrush="#E5E7EB" BorderThickness="1">
+                <StackPanel>
+                    <TextBlock Text="🧾 Ventas" FontSize="12" Foreground="#6B7280" FontWeight="SemiBold"/>
+                    <TextBlock Text="{Binding TotalVentas}" FontSize="32" FontWeight="Bold" Foreground="#1F2937" Margin="0,6,0,0"/>
+                    <TextBlock Text="transacciones" FontSize="11" Foreground="#9CA3AF"/>
+                </StackPanel>
+            </Border>
+            <Border Grid.Column="2" Background="White" CornerRadius="10" Padding="18,15" BorderBrush="#E5E7EB" BorderThickness="1">
+                <StackPanel>
+                    <TextBlock Text="💰 Ingresos" FontSize="12" Foreground="#6B7280" FontWeight="SemiBold"/>
+                    <TextBlock Text="{Binding IngresoTotal, StringFormat='${0:N0}'}" FontSize="32" FontWeight="Bold" Foreground="#059669" Margin="0,6,0,0"/>
+                    <TextBlock Text="total vendido" FontSize="11" Foreground="#9CA3AF"/>
+                </StackPanel>
+            </Border>
+            <Border Grid.Column="4" Background="White" CornerRadius="10" Padding="18,15" BorderBrush="#E5E7EB" BorderThickness="1">
+                <StackPanel>
+                    <TextBlock Text="📦 Productos" FontSize="12" Foreground="#6B7280" FontWeight="SemiBold"/>
+                    <TextBlock Text="{Binding ProductosVendidos}" FontSize="32" FontWeight="Bold" Foreground="#2563EB" Margin="0,6,0,0"/>
+                    <TextBlock Text="unidades vendidas" FontSize="11" Foreground="#9CA3AF"/>
+                </StackPanel>
+            </Border>
+            <Border Grid.Column="6" Background="White" CornerRadius="10" Padding="18,15" BorderBrush="#E5E7EB" BorderThickness="1">
+                <StackPanel>
+                    <TextBlock Text="🎯 Promedio" FontSize="12" Foreground="#6B7280" FontWeight="SemiBold"/>
+                    <TextBlock Text="{Binding TicketPromedio, StringFormat='${0:N0}'}" FontSize="32" FontWeight="Bold" Foreground="#9333EA" Margin="0,6,0,0"/>
+                    <TextBlock Text="por venta" FontSize="11" Foreground="#9CA3AF"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <!-- TABS + TABLAS -->
+        <Border Grid.Row="2" Background="White" CornerRadius="10" BorderBrush="#E5E7EB" BorderThickness="1">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="15,12,15,0">
+                    <Button Content="📋 Historial" Cursor="Hand" Margin="0,0,4,0" Click="OnTabHistorial">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border x:Name="Bd" CornerRadius="6" Padding="12,7" Background="#EFF6FF" BorderBrush="#BFDBFE" BorderThickness="1">
+                                                <ContentPresenter HorizontalAlignment="Center"/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="Bd" Property="Background" Value="#DBEAFE"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <Button Content="⭐ Productos top" Cursor="Hand" Margin="0,0,4,0" Click="OnTabProductosTop">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border x:Name="Bd" CornerRadius="6" Padding="12,7" Background="#F0FDF4" BorderBrush="#BBF7D0" BorderThickness="1">
+                                                <ContentPresenter HorizontalAlignment="Center"/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="Bd" Property="Background" Value="#DCFCE7"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <Button Content="👤 Por vendedor" Cursor="Hand" Click="OnTabVendedor">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border x:Name="Bd" CornerRadius="6" Padding="12,7" Background="#FFF7ED" BorderBrush="#FED7AA" BorderThickness="1">
+                                                <ContentPresenter HorizontalAlignment="Center"/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="Bd" Property="Background" Value="#FFEDD5"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </StackPanel>
+
+                <!-- Historial -->
+                <DataGrid x:Name="GridHistorial" Grid.Row="1"
+                          ItemsSource="{Binding Historial}"
+                          SelectedItem="{Binding VentaSeleccionada}"
+                          AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False"
+                          HeadersVisibility="Column" GridLinesVisibility="Horizontal"
+                          HorizontalGridLinesBrush="#F3F4F6" BorderThickness="0" Background="Transparent"
+                          RowBackground="White" AlternatingRowBackground="#FAFBFC" FontSize="12"
+                          SelectionMode="Single" Margin="0,8,0,0">
+                    <DataGrid.ColumnHeaderStyle>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="Background" Value="#F9FAFB"/>
+                            <Setter Property="Foreground" Value="#6B7280"/>
+                            <Setter Property="FontWeight" Value="SemiBold"/>
+                            <Setter Property="FontSize" Value="11"/>
+                            <Setter Property="Padding" Value="12,8"/>
+                            <Setter Property="BorderBrush" Value="#E5E7EB"/>
+                            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                        </Style>
+                    </DataGrid.ColumnHeaderStyle>
+                    <DataGrid.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Setter Property="Padding" Value="12,6"/>
+                            <Setter Property="BorderThickness" Value="0"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="DataGridCell">
+                                        <Border Padding="{TemplateBinding Padding}" Background="{TemplateBinding Background}">
+                                            <ContentPresenter VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </DataGrid.CellStyle>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="#" Binding="{Binding VentaId}" Width="50"/>
+                        <DataGridTextColumn Header="Fecha" Binding="{Binding Fecha}" Width="145"/>
+                        <DataGridTextColumn Header="Vendedor" Binding="{Binding Vendedor}" Width="120"/>
+                        <DataGridTextColumn Header="Medio pago" Binding="{Binding MedioPago}" Width="100"/>
+                        <DataGridTextColumn Header="Items" Binding="{Binding CantidadItems}" Width="55"/>
+                        <DataGridTextColumn Header="Total" Binding="{Binding Total, StringFormat='${0:N0}'}" Width="90"/>
+                        <!-- Botón ver detalle -->
+                        <DataGridTemplateColumn Header="" Width="80">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Command="{Binding DataContext.VerDetalleCommand,
+                                                RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                            Cursor="Hand">
+                                        <Button.Style>
+                                            <Style TargetType="Button">
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="Button">
+                                                            <Border x:Name="Bd" Background="#EFF6FF" CornerRadius="6" Padding="8,4">
+                                                                <TextBlock Text="👁 Ver" FontSize="11" Foreground="#2563EB"/>
+                                                            </Border>
+                                                            <ControlTemplate.Triggers>
+                                                                <Trigger Property="IsMouseOver" Value="True">
+                                                                    <Setter TargetName="Bd" Property="Background" Value="#DBEAFE"/>
+                                                                </Trigger>
+                                                            </ControlTemplate.Triggers>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Style>
+                                        </Button.Style>
+                                    </Button>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+
+                <!-- Productos top -->
+                <DataGrid x:Name="GridProductosTop" Grid.Row="1" ItemsSource="{Binding ProductosTop}"
+                          AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False"
+                          HeadersVisibility="Column" GridLinesVisibility="Horizontal"
+                          HorizontalGridLinesBrush="#F3F4F6" BorderThickness="0" Background="Transparent"
+                          RowBackground="White" AlternatingRowBackground="#FAFBFC" FontSize="12"
+                          Margin="0,8,0,0" Visibility="Collapsed">
+                    <DataGrid.ColumnHeaderStyle>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="Background" Value="#F9FAFB"/>
+                            <Setter Property="Foreground" Value="#6B7280"/>
+                            <Setter Property="FontWeight" Value="SemiBold"/>
+                            <Setter Property="FontSize" Value="11"/>
+                            <Setter Property="Padding" Value="12,8"/>
+                            <Setter Property="BorderBrush" Value="#E5E7EB"/>
+                            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                        </Style>
+                    </DataGrid.ColumnHeaderStyle>
+                    <DataGrid.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Setter Property="Padding" Value="12,6"/>
+                            <Setter Property="BorderThickness" Value="0"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="DataGridCell">
+                                        <Border Padding="{TemplateBinding Padding}" Background="{TemplateBinding Background}">
+                                            <ContentPresenter VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </DataGrid.CellStyle>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Producto" Binding="{Binding Nombre}" Width="*"/>
+                        <DataGridTextColumn Header="Cantidad vendida" Binding="{Binding CantidadVendida}" Width="150"/>
+                        <DataGridTextColumn Header="Total generado" Binding="{Binding TotalGenerado, StringFormat='${0:N0}'}" Width="150"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+
+                <!-- Por vendedor -->
+                <DataGrid x:Name="GridVendedores" Grid.Row="1" ItemsSource="{Binding VentasPorVendedor}"
+                          AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False"
+                          HeadersVisibility="Column" GridLinesVisibility="Horizontal"
+                          HorizontalGridLinesBrush="#F3F4F6" BorderThickness="0" Background="Transparent"
+                          RowBackground="White" AlternatingRowBackground="#FAFBFC" FontSize="12"
+                          Margin="0,8,0,0" Visibility="Collapsed">
+                    <DataGrid.ColumnHeaderStyle>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="Background" Value="#F9FAFB"/>
+                            <Setter Property="Foreground" Value="#6B7280"/>
+                            <Setter Property="FontWeight" Value="SemiBold"/>
+                            <Setter Property="FontSize" Value="11"/>
+                            <Setter Property="Padding" Value="12,8"/>
+                            <Setter Property="BorderBrush" Value="#E5E7EB"/>
+                            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                        </Style>
+                    </DataGrid.ColumnHeaderStyle>
+                    <DataGrid.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Setter Property="Padding" Value="12,6"/>
+                            <Setter Property="BorderThickness" Value="0"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="DataGridCell">
+                                        <Border Padding="{TemplateBinding Padding}" Background="{TemplateBinding Background}">
+                                            <ContentPresenter VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </DataGrid.CellStyle>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Vendedor" Binding="{Binding Vendedor}" Width="*"/>
+                        <DataGridTextColumn Header="Cantidad ventas" Binding="{Binding CantidadVentas}" Width="150"/>
+                        <DataGridTextColumn Header="Total vendido" Binding="{Binding TotalVendido, StringFormat='${0:N0}'}" Width="150"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </Border>
+
+        <!-- PANEL DE DETALLE DE VENTA (overlay) -->
+        <Border Grid.Row="2"
+                Background="White"
+                CornerRadius="10"
+                BorderBrush="#3B82F6"
+                BorderThickness="2"
+                Padding="20"
+                Panel.ZIndex="10"
+                Visibility="{Binding DetalleVisible,
+                    Converter={StaticResource BoolToVisibilityConverter}}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Header -->
+                <Grid Grid.Row="0" Margin="0,0,0,12">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="📋 Detalle de venta #"
+                                   FontSize="16" FontWeight="Bold" Foreground="#1F2937"/>
+                        <TextBlock Text="{Binding VentaSeleccionada.VentaId}"
+                                   FontSize="16" FontWeight="Bold" Foreground="#3B82F6"/>
+                    </StackPanel>
+                    <Button HorizontalAlignment="Right"
+                            Command="{Binding CerrarDetalleCommand}" Cursor="Hand">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border x:Name="Bd" Background="#F3F4F6" CornerRadius="6" Padding="10,5">
+                                                <TextBlock Text="✕ Cerrar" FontSize="12" Foreground="#6B7280"/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="Bd" Property="Background" Value="#E5E7EB"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </Grid>
+
+                <!-- Info resumida -->
+                <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,12">
+                    <Border Background="#F9FAFB" CornerRadius="6" Padding="10,6" Margin="0,0,10,0">
+                        <TextBlock FontSize="12" Foreground="#6B7280">
+                            <Run Text="📅"/><Run Text="{Binding VentaSeleccionada.Fecha, Mode=OneWay}"/>
+                        </TextBlock>
+                    </Border>
+                    <Border Background="#F9FAFB" CornerRadius="6" Padding="10,6" Margin="0,0,10,0">
+                        <TextBlock FontSize="12" Foreground="#6B7280">
+                            <Run Text="👤"/><Run Text="{Binding VentaSeleccionada.Vendedor, Mode=OneWay}"/>
+                        </TextBlock>
+                    </Border>
+                    <Border Background="#F9FAFB" CornerRadius="6" Padding="10,6">
+                        <TextBlock FontSize="12" Foreground="#6B7280">
+                            <Run Text="💳"/><Run Text="{Binding VentaSeleccionada.MedioPago, Mode=OneWay}"/>
+                        </TextBlock>
+                    </Border>
+                </StackPanel>
+
+                <!-- Tabla de productos -->
+                <DataGrid Grid.Row="2"
+                          ItemsSource="{Binding DetalleVenta}"
+                          AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False"
+                          HeadersVisibility="Column" GridLinesVisibility="Horizontal"
+                          HorizontalGridLinesBrush="#F3F4F6" BorderThickness="1" BorderBrush="#E5E7EB"
+                          Background="White" RowBackground="White" AlternatingRowBackground="#FAFBFC"
+                          FontSize="12">
+                    <DataGrid.ColumnHeaderStyle>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="Background" Value="#F9FAFB"/>
+                            <Setter Property="Foreground" Value="#6B7280"/>
+                            <Setter Property="FontWeight" Value="SemiBold"/>
+                            <Setter Property="FontSize" Value="11"/>
+                            <Setter Property="Padding" Value="12,8"/>
+                            <Setter Property="BorderBrush" Value="#E5E7EB"/>
+                            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                        </Style>
+                    </DataGrid.ColumnHeaderStyle>
+                    <DataGrid.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Setter Property="Padding" Value="12,6"/>
+                            <Setter Property="BorderThickness" Value="0"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="DataGridCell">
+                                        <Border Padding="{TemplateBinding Padding}" Background="{TemplateBinding Background}">
+                                            <ContentPresenter VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </DataGrid.CellStyle>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Código" Binding="{Binding CodigoBarras}" Width="120"/>
+                        <DataGridTextColumn Header="Producto" Binding="{Binding Producto}" Width="*"/>
+                        <DataGridTextColumn Header="Cantidad" Binding="{Binding Cantidad}" Width="80"/>
+                        <DataGridTextColumn Header="Precio unit." Binding="{Binding PrecioUnitario, StringFormat='${0:N0}'}" Width="100"/>
+                        <DataGridTextColumn Header="Subtotal" Binding="{Binding Subtotal, StringFormat='${0:N0}'}" Width="100"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+
+                <!-- Total -->
+                <Border Grid.Row="3" Background="#F0FDF4" CornerRadius="8" Padding="15,10" Margin="0,10,0,0">
+                    <Grid>
+                        <TextBlock Text="Total de la venta:" FontSize="14" FontWeight="SemiBold" Foreground="#059669"/>
+                        <TextBlock Text="{Binding VentaSeleccionada.Total, StringFormat='${0:N0}', Mode=OneWay}"
+                                   FontSize="18" FontWeight="Bold" Foreground="#059669" HorizontalAlignment="Right"/>
+                    </Grid>
+                </Border>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>
