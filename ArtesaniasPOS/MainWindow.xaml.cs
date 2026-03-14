@@ -15,6 +15,7 @@ namespace ArtesaniasPOS.UI
         private readonly IProductoService _productoService;
         private readonly IVentaService _ventaService;
         private readonly IReporteService _reporteService;
+        private readonly IConfiguracionAdminService _configuracionAdminService;
 
         public MainWindow()
         {
@@ -22,7 +23,6 @@ namespace ArtesaniasPOS.UI
 
             var connectionString = $"Data Source={ObtenerRutaBD()}";
 
-            // Crear servicios
             _configuracionService = new ConfiguracionService(connectionString);
             _monedaService = new MonedaService(connectionString);
             _usuarioService = new UsuarioService(connectionString);
@@ -30,8 +30,8 @@ namespace ArtesaniasPOS.UI
             _productoService = new ProductoService(connectionString);
             _ventaService = new VentaService(connectionString);
             _reporteService = new ReporteService(connectionString);
+            _configuracionAdminService = new ConfiguracionAdminService(connectionString);
 
-            // Inicializar BD
             var dbInit = new ArtesaniasPOS.Data.Database.DatabaseInitializer(connectionString);
             dbInit.Initialize();
 
@@ -98,7 +98,7 @@ namespace ArtesaniasPOS.UI
 
         private async Task MostrarShellAsync(SesionUsuario sesion)
         {
-            var shellVm = new ShellViewModel(sesion, _configuracionService, _productoService, _ventaService, _monedaService, _reporteService);
+            var shellVm = new ShellViewModel(sesion, _configuracionService, _productoService, _ventaService, _monedaService, _reporteService, _configuracionAdminService);
 
 
             shellVm.SesionCerrada += (s, e) => MostrarLogin();

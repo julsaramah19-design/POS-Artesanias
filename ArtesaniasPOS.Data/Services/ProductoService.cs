@@ -4,9 +4,6 @@ using ArtesaniasPOS.Core.Interfaces;
 
 namespace ArtesaniasPOS.Data.Services
 {
-    /// <summary>
-    /// Implementación de IProductoService con Dapper + SQLite.
-    /// </summary>
     public class ProductoService : IProductoService
     {
         private readonly string _connectionString;
@@ -15,15 +12,6 @@ namespace ArtesaniasPOS.Data.Services
         {
             _connectionString = connectionString;
         }
-
-        /// <summary>
-        /// Obtiene productos con filtro opcional de búsqueda y categoría.
-        /// 
-        /// El query usa LIKE para buscar por nombre o código de barras.
-        /// Solo trae productos activos por defecto.
-        /// JOIN con Categoría para mostrar el nombre en el DataGrid.
-        /// ORDER BY Nombre para que el listado sea predecible.
-        /// </summary>
         public async Task<IEnumerable<ProductoListaDto>> ObtenerTodosAsync(
             string? busqueda = null, int? categoriaId = null)
         {
@@ -57,9 +45,6 @@ namespace ArtesaniasPOS.Data.Services
             return await connection.QueryAsync<ProductoListaDto>(sql, parametros);
         }
 
-        /// <summary>
-        /// Obtiene un producto por Id para el formulario de edición.
-        /// </summary>
         public async Task<ProductoDetalleDto?> ObtenerPorIdAsync(int id)
         {
             using var connection = new SqliteConnection(_connectionString);
@@ -69,12 +54,6 @@ namespace ArtesaniasPOS.Data.Services
                   FROM Producto WHERE Id = @Id", new { Id = id });
         }
 
-        /// <summary>
-        /// Crea un producto nuevo. Retorna el Id generado.
-        /// 
-        /// last_insert_rowid() es el equivalente SQLite de SCOPE_IDENTITY() 
-        /// en SQL Server. Retorna el Id del último INSERT.
-        /// </summary>
         public async Task<int> CrearAsync(ProductoGuardarDto producto)
         {
             using var connection = new SqliteConnection(_connectionString);
@@ -105,10 +84,6 @@ namespace ArtesaniasPOS.Data.Services
             return id;
         }
 
-        /// <summary>
-        /// Actualiza un producto existente.
-        /// No toca FechaCreacion — solo FechaActualizacion.
-        /// </summary>
         public async Task ActualizarAsync(ProductoGuardarDto producto)
         {
             using var connection = new SqliteConnection(_connectionString);
@@ -139,14 +114,6 @@ namespace ArtesaniasPOS.Data.Services
                 });
         }
 
-        /// <summary>
-        /// Soft delete: marca el producto como inactivo.
-        /// 
-        /// ¿Por qué no DELETE físico?
-        /// Porque el producto puede estar referenciado en ventas pasadas.
-        /// Si lo borras, pierdes la integridad de los reportes.
-        /// El soft delete preserva el historial.
-        /// </summary>
         public async Task DesactivarAsync(int id)
         {
             using var connection = new SqliteConnection(_connectionString);
@@ -154,10 +121,6 @@ namespace ArtesaniasPOS.Data.Services
                 "UPDATE Producto SET Activo = 0 WHERE Id = @Id",
                 new { Id = id });
         }
-
-        /// <summary>
-        /// Obtiene categorías activas para el combo del formulario.
-        /// </summary>
         public async Task<IEnumerable<CategoriaDto>> ObtenerCategoriasAsync()
         {
             using var connection = new SqliteConnection(_connectionString);
@@ -165,11 +128,6 @@ namespace ArtesaniasPOS.Data.Services
                 "SELECT Id, Nombre FROM Categoria WHERE Activo = 1 ORDER BY Nombre");
         }
 
-        /// <summary>
-        /// Genera un código de barras único automáticamente.
-        /// Formato: ART-XXXXXXXX (8 dígitos aleatorios).
-        /// Verifica que no exista antes de retornarlo.
-        /// </summary>
         public async Task<string> GenerarCodigoBarrasAsync()
         {
             using var connection = new SqliteConnection(_connectionString);

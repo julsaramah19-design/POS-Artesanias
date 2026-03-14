@@ -259,7 +259,7 @@
                     </DataGrid.CellStyle>
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="#" Binding="{Binding VentaId}" Width="50"/>
-                        <DataGridTextColumn Header="Fecha" Binding="{Binding Fecha}" Width="145"/>
+                        <DataGridTextColumn Header="Fecha" Binding="{Binding FechaVenta}" Width="145"/>
                         <DataGridTextColumn Header="Vendedor" Binding="{Binding Vendedor}" Width="120"/>
                         <DataGridTextColumn Header="Medio pago" Binding="{Binding MedioPago}" Width="100"/>
                         <DataGridTextColumn Header="Items" Binding="{Binding CantidadItems}" Width="55"/>
@@ -296,7 +296,6 @@
                     </DataGrid.Columns>
                 </DataGrid>
 
-                <!-- Productos top -->
                 <DataGrid x:Name="GridProductosTop" Grid.Row="1" ItemsSource="{Binding ProductosTop}"
                           AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False"
                           HeadersVisibility="Column" GridLinesVisibility="Horizontal"
@@ -336,7 +335,6 @@
                     </DataGrid.Columns>
                 </DataGrid>
 
-                <!-- Por vendedor -->
                 <DataGrid x:Name="GridVendedores" Grid.Row="1" ItemsSource="{Binding VentasPorVendedor}"
                           AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False"
                           HeadersVisibility="Column" GridLinesVisibility="Horizontal"
@@ -378,7 +376,6 @@
             </Grid>
         </Border>
 
-        <!-- PANEL DE DETALLE DE VENTA (overlay) -->
         <Border Grid.Row="2"
                 Background="White"
                 CornerRadius="10"
@@ -396,7 +393,6 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <!-- Header -->
                 <Grid Grid.Row="0" Margin="0,0,0,12">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="📋 Detalle de venta #"
@@ -427,7 +423,6 @@
                     </Button>
                 </Grid>
 
-                <!-- Info resumida -->
                 <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,12">
                     <Border Background="#F9FAFB" CornerRadius="6" Padding="10,6" Margin="0,0,10,0">
                         <TextBlock FontSize="12" Foreground="#6B7280">
@@ -446,7 +441,6 @@
                     </Border>
                 </StackPanel>
 
-                <!-- Tabla de productos -->
                 <DataGrid Grid.Row="2"
                           ItemsSource="{Binding DetalleVenta}"
                           AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False"
@@ -489,7 +483,6 @@
                     </DataGrid.Columns>
                 </DataGrid>
 
-                <!-- Total -->
                 <Border Grid.Row="3" Background="#F0FDF4" CornerRadius="8" Padding="15,10" Margin="0,10,0,0">
                     <Grid>
                         <TextBlock Text="Total de la venta:" FontSize="14" FontWeight="SemiBold" Foreground="#059669"/>

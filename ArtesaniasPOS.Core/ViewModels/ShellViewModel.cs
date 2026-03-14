@@ -19,8 +19,9 @@ namespace ArtesaniasPOS.Core.ViewModels
         private readonly IVentaService _ventaService;
         private readonly IMonedaService _monedaService;
         private readonly IReporteService _reporteService;
+        private readonly IConfiguracionAdminService _configuracionAdminService;
 
-        public ShellViewModel(SesionUsuario sesion,IConfiguracionService configuracionService,IProductoService productoService,IVentaService ventaService, IMonedaService monedaService, IReporteService reporteService)      
+        public ShellViewModel(SesionUsuario sesion,IConfiguracionService configuracionService,IProductoService productoService,IVentaService ventaService, IMonedaService monedaService, IReporteService reporteService, IConfiguracionAdminService configuracionAdminService)      
         {
             _sesion = sesion;
             _configuracionService = configuracionService;
@@ -28,6 +29,7 @@ namespace ArtesaniasPOS.Core.ViewModels
             _ventaService = ventaService;       
             _monedaService = monedaService;
             _reporteService = reporteService;
+            _configuracionAdminService = configuracionAdminService;
 
 
             CerrarSesionCommand = new RelayCommand(_ => CerrarSesion());
@@ -60,9 +62,6 @@ namespace ArtesaniasPOS.Core.ViewModels
             set => SetProperty(ref _colorSecundario, value);
         }
 
-        /// <summary>
-        /// Items del menú lateral, filtrados por el perfil del usuario.
-        /// </summary>
         public ObservableCollection<MenuItemModel> MenuItems { get; } = new();
 
         public MenuItemModel? MenuSeleccionado
@@ -75,10 +74,6 @@ namespace ArtesaniasPOS.Core.ViewModels
             }
         }
 
-        /// <summary>
-        /// El ViewModel del módulo que se muestra en el área central.
-        /// ContentControl en la vista se bindea a esto.
-        /// </summary>
         public ViewModelBase? ContenidoActual
         {
             get => _contenidoActual;
@@ -179,6 +174,13 @@ namespace ArtesaniasPOS.Core.ViewModels
                     await reportesVm.InicializarAsync();
                     break;
 
+                case "Configuracion":
+                    var configVm = new ViewModels.Configuracion.ConfiguracionContainerViewModel(
+                        _configuracionAdminService);
+                    ContenidoActual = configVm;
+                    await configVm.InicializarAsync();
+                    break;
+
                 default:
                     ContenidoActual = new PlaceholderViewModel(menuItem.Titulo, menuItem.Icono);
                     break;
@@ -191,10 +193,6 @@ namespace ArtesaniasPOS.Core.ViewModels
         }
     }
 
-    /// <summary>
-    /// ViewModel temporal para módulos que aún no están implementados.
-    /// Muestra el nombre del módulo como placeholder.
-    /// </summary>
     public class PlaceholderViewModel : ViewModelBase
     {
         public string Titulo { get; }

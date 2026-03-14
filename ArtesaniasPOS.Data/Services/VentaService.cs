@@ -43,17 +43,6 @@ namespace ArtesaniasPOS.Data.Services
                 "SELECT Id, Nombre FROM MedioPago WHERE Activo = 1 ORDER BY Nombre");
         }
 
-        /// <summary>
-        /// Registra la venta completa en una transacción atómica.
-        /// 
-        /// Pasos:
-        /// 1. INSERT Venta → obtener ventaId
-        /// 2. INSERT DetalleVenta por cada item
-        /// 3. UPDATE Producto.StockActual (descontar)
-        /// 4. INSERT MovimientoInventario (trazabilidad)
-        /// 
-        /// Si cualquier paso falla → ROLLBACK de todo.
-        /// </summary>
         public async Task<int> RegistrarVentaAsync(VentaRegistroDto venta)
         {
             using var connection = new SqliteConnection(_connectionString);

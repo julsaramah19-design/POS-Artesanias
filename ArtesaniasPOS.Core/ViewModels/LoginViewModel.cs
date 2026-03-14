@@ -3,13 +3,6 @@ using ArtesaniasPOS.Core.Interfaces;
 
 namespace ArtesaniasPOS.Core.ViewModels
 {
-    /// <summary>
-    /// ViewModel para la pantalla de Login.
-    /// 
-    /// Maneja la validación de credenciales y notifica al MainWindow
-    /// cuando el login es exitoso, pasando la SesionUsuario para
-    /// que el menú se filtre por perfil.
-    /// </summary>
     public class LoginViewModel : ViewModelBase
     {
         private readonly IAuthService _authService;
@@ -27,8 +20,7 @@ namespace ArtesaniasPOS.Core.ViewModels
             LoginCommand = new AsyncRelayCommand(
                 execute: async _ => await LoginAsync(),
                 canExecute: _ => !IsLoading);
-
-            // Cargar nombre del negocio para mostrarlo en el login
+            
             _ = CargarNombreNegocioAsync(configuracionService);
         }
 
@@ -76,10 +68,6 @@ namespace ArtesaniasPOS.Core.ViewModels
 
         public ICommand LoginCommand { get; }
 
-        /// <summary>
-        /// Evento que MainWindow escucha para saber que el login fue exitoso.
-        /// Pasa la SesionUsuario con los datos del usuario logueado.
-        /// </summary>
         public event EventHandler<SesionUsuario>? LoginExitoso;
 
         private async Task CargarNombreNegocioAsync(IConfiguracionService configuracionService)

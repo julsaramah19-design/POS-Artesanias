@@ -1,0 +1,67 @@
+<UserControl x:Class="ArtesaniasPOS.UI.Views.Configuracion.ConfiguracionContainerView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:configVm="clr-namespace:ArtesaniasPOS.Core.ViewModels.Configuracion;assembly=ArtesaniasPOS.Core"
+             xmlns:configViews="clr-namespace:ArtesaniasPOS.UI.Views.Configuracion"
+             mc:Ignorable="d" d:DesignHeight="600" d:DesignWidth="900">
+    <UserControl.Resources>
+        <DataTemplate DataType="{x:Type configVm:UsuariosViewModel}">
+            <configViews:UsuariosView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type configVm:CategoriasViewModel}">
+            <configViews:CategoriasView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type configVm:MediosPagoViewModel}">
+            <configViews:MediosPagoView/>
+        </DataTemplate>
+    </UserControl.Resources>
+    <Grid Margin="25,20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" Margin="0,0,0,18">
+            <TextBlock Text="⚙️ Configuración" FontSize="24" FontWeight="Bold" Foreground="#1F2937"/>
+            <TextBlock Text="Administra usuarios, categorías y medios de pago" FontSize="13" Foreground="#6B7280" Margin="0,3,0,0"/>
+        </StackPanel>
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,15">
+            <Button Command="{Binding NavUsuariosCommand}" Cursor="Hand" Margin="0,0,6,0">
+                <Button.Style><Style TargetType="Button"><Setter Property="Template"><Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd" CornerRadius="8" Padding="16,10" Background="{TemplateBinding Background}" BorderBrush="#D1D5DB" BorderThickness="1.5">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="👥" FontSize="15" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="Usuarios" FontSize="13" FontWeight="SemiBold" Foreground="#374151" VerticalAlignment="Center"/>
+                            </StackPanel></Border>
+                        <ControlTemplate.Triggers><Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="#EFF6FF"/></Trigger></ControlTemplate.Triggers>
+                    </ControlTemplate></Setter.Value></Setter><Setter Property="Background" Value="White"/></Style></Button.Style></Button>
+            <Button Command="{Binding NavCategoriasCommand}" Cursor="Hand" Margin="0,0,6,0">
+                <Button.Style><Style TargetType="Button"><Setter Property="Template"><Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd" CornerRadius="8" Padding="16,10" Background="{TemplateBinding Background}" BorderBrush="#D1D5DB" BorderThickness="1.5">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="🏷️" FontSize="15" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="Categorías" FontSize="13" FontWeight="SemiBold" Foreground="#374151" VerticalAlignment="Center"/>
+                            </StackPanel></Border>
+                        <ControlTemplate.Triggers><Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="#F0FDF4"/></Trigger></ControlTemplate.Triggers>
+                    </ControlTemplate></Setter.Value></Setter><Setter Property="Background" Value="White"/></Style></Button.Style></Button>
+            <Button Command="{Binding NavMediosPagoCommand}" Cursor="Hand">
+                <Button.Style><Style TargetType="Button"><Setter Property="Template"><Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd" CornerRadius="8" Padding="16,10" Background="{TemplateBinding Background}" BorderBrush="#D1D5DB" BorderThickness="1.5">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="💳" FontSize="15" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="Medios de pago" FontSize="13" FontWeight="SemiBold" Foreground="#374151" VerticalAlignment="Center"/>
+                            </StackPanel></Border>
+                        <ControlTemplate.Triggers><Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="#FEF3C7"/></Trigger></ControlTemplate.Triggers>
+                    </ControlTemplate></Setter.Value></Setter><Setter Property="Background" Value="White"/></Style></Button.Style></Button>
+        </StackPanel>
+        <ContentControl Grid.Row="2" Content="{Binding SeccionActual}"/>
+    </Grid>
+</UserControl>
