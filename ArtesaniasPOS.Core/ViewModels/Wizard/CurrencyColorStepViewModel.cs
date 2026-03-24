@@ -3,10 +3,6 @@ using ArtesaniasPOS.Core.Interfaces;
 
 namespace ArtesaniasPOS.Core.ViewModels.Wizard
 {
-    /// <summary>
-    /// ViewModel para el paso "Moneda y Colores".
-    /// Depende de interfaces, no de implementaciones concretas.
-    /// </summary>
     public class CurrencyColorStepViewModel : ViewModelBase
     {
         private readonly IMonedaService _monedaService;

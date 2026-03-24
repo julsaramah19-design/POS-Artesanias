@@ -17,8 +17,8 @@ namespace ArtesaniasPOS.Core.Interfaces
         public int Cantidad { get; set; }
         public double PrecioUnitario { get; set; }
         public double Subtotal { get; set; }
+        public double Descuento { get; set; }
     }
-
 
     public class ReporteResumenDto
     {

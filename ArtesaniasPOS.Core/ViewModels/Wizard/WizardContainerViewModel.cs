@@ -94,10 +94,6 @@ namespace ArtesaniasPOS.Core.ViewModels.Wizard
 
         #endregion
 
-        /// <summary>
-        /// Evento que MainWindow escucha para ocultar el Wizard
-        /// y mostrar el contenido principal.
-        /// </summary>
         public event EventHandler? WizardFinalizado;
 
         public async Task InicializarAsync()

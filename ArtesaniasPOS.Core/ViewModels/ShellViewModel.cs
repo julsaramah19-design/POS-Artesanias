@@ -163,7 +163,7 @@ namespace ArtesaniasPOS.Core.ViewModels
 
                 case "Ventas":
                     var ventasVm = new ViewModels.Ventas.VentasViewModel(
-                        _ventaService, _monedaService, _sesion.UsuarioId);
+                        _ventaService, _monedaService, _configuracionService, _sesion.UsuarioId, _sesion.Nombre);
                     ContenidoActual = ventasVm;
                     await ventasVm.InicializarAsync();
                     break;

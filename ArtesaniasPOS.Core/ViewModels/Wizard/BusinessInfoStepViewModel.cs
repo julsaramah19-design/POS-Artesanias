@@ -3,10 +3,6 @@ using ArtesaniasPOS.Core.Interfaces;
 
 namespace ArtesaniasPOS.Core.ViewModels.Wizard
 {
-    /// <summary>
-    /// ViewModel para el paso "Datos del Negocio".
-    /// Recibe IConfiguracionService (interfaz), no la clase concreta.
-    /// </summary>
     public class BusinessInfoStepViewModel : ViewModelBase
     {
         private readonly IConfiguracionService _configuracionService;
@@ -112,7 +108,7 @@ namespace ArtesaniasPOS.Core.ViewModels.Wizard
 
         private void SeleccionarLogo()
         {
-            // La vista intercepta este comando y abre el OpenFileDialog.
+            
         }
     }
 }

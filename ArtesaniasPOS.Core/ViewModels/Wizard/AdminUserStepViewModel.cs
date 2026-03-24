@@ -2,10 +2,6 @@ using ArtesaniasPOS.Core.Interfaces;
 
 namespace ArtesaniasPOS.Core.ViewModels.Wizard
 {
-    /// <summary>
-    /// ViewModel para el paso "Usuario Administrador".
-    /// El cliente cambia las credenciales por defecto del admin.
-    /// </summary>
     public class AdminUserStepViewModel : ViewModelBase
     {
         private readonly IUsuarioService _usuarioService;

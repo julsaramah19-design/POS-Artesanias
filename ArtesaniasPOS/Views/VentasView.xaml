@@ -65,7 +65,9 @@
                                             <TextBlock Text="Buscar" FontSize="14" FontWeight="SemiBold" Foreground="White"/>
                                         </Border>
                                         <ControlTemplate.Triggers>
-                                            <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="SB" Property="Opacity" Value="0.9"/></Trigger>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="SB" Property="Opacity" Value="0.9"/>
+                                            </Trigger>
                                         </ControlTemplate.Triggers>
                                     </ControlTemplate>
                                 </Setter.Value>
@@ -102,8 +104,12 @@
                                                 <ContentPresenter/>
                                             </Border>
                                             <ControlTemplate.Triggers>
-                                                <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="IB" Property="Background" Value="#F0F9FF"/></Trigger>
-                                                <Trigger Property="IsSelected" Value="True"><Setter TargetName="IB" Property="Background" Value="#EFF6FF"/></Trigger>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="IB" Property="Background" Value="#F0F9FF"/>
+                                                </Trigger>
+                                                <Trigger Property="IsSelected" Value="True">
+                                                    <Setter TargetName="IB" Property="Background" Value="#EFF6FF"/>
+                                                </Trigger>
                                             </ControlTemplate.Triggers>
                                         </ControlTemplate>
                                     </Setter.Value>
@@ -144,8 +150,12 @@
                                         <TextBlock Text="&#x2192;" FontSize="16" Foreground="White" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                     </Border>
                                     <ControlTemplate.Triggers>
-                                        <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="AB" Property="Opacity" Value="0.85"/></Trigger>
-                                        <Trigger Property="IsEnabled" Value="False"><Setter TargetName="AB" Property="Opacity" Value="0.3"/></Trigger>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="AB" Property="Opacity" Value="0.85"/>
+                                        </Trigger>
+                                        <Trigger Property="IsEnabled" Value="False">
+                                            <Setter TargetName="AB" Property="Opacity" Value="0.3"/>
+                                        </Trigger>
                                     </ControlTemplate.Triggers>
                                 </ControlTemplate>
                             </Setter.Value>
@@ -162,6 +172,8 @@
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
+
+                    <!-- Encabezado carrito -->
                     <Grid Grid.Row="0" Margin="15,12,15,8">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="&#x1F6D2; Carrito" FontSize="14" FontWeight="Bold" Foreground="#1F2937"/>
@@ -177,7 +189,9 @@
                                             <ControlTemplate TargetType="Button">
                                                 <TextBlock x:Name="CT" Text="Limpiar" FontSize="12" Foreground="#9CA3AF"/>
                                                 <ControlTemplate.Triggers>
-                                                    <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="CT" Property="Foreground" Value="#EF4444"/></Trigger>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter TargetName="CT" Property="Foreground" Value="#EF4444"/>
+                                                    </Trigger>
                                                 </ControlTemplate.Triggers>
                                             </ControlTemplate>
                                         </Setter.Value>
@@ -186,10 +200,14 @@
                             </Button.Style>
                         </Button>
                     </Grid>
+
+                    <!-- Items del carrito -->
                     <ItemsControl Grid.Row="1" ItemsSource="{Binding Carrito}">
                         <ItemsControl.Template>
                             <ControlTemplate TargetType="ItemsControl">
-                                <ScrollViewer VerticalScrollBarVisibility="Auto"><ItemsPresenter/></ScrollViewer>
+                                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                    <ItemsPresenter/>
+                                </ScrollViewer>
                             </ControlTemplate>
                         </ItemsControl.Template>
                         <ItemsControl.ItemTemplate>
@@ -201,12 +219,20 @@
                                             <ColumnDefinition Width="Auto"/>
                                             <ColumnDefinition Width="Auto"/>
                                             <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
-                                        <StackPanel VerticalAlignment="Center">
+
+                                        <!-- Nombre y precio unitario -->
+                                        <StackPanel Grid.Column="0" VerticalAlignment="Center">
                                             <TextBlock Text="{Binding Nombre}" FontSize="13" FontWeight="SemiBold" Foreground="#1F2937" TextTrimming="CharacterEllipsis"/>
                                             <TextBlock Text="{Binding PrecioUnitario, StringFormat='${0:N0} c/u'}" FontSize="11" Foreground="#9CA3AF"/>
                                         </StackPanel>
-                                        <TextBox Grid.Column="1" Text="{Binding Cantidad, UpdateSourceTrigger=PropertyChanged}" Width="45" Padding="4" FontSize="13" TextAlignment="Center" FontWeight="SemiBold" Margin="10,0">
+
+                                        <!-- Cantidad -->
+                                        <TextBox Grid.Column="1"
+                                                 Text="{Binding Cantidad, UpdateSourceTrigger=PropertyChanged}"
+                                                 Width="45" Padding="4" FontSize="13"
+                                                 TextAlignment="Center" FontWeight="SemiBold" Margin="10,0">
                                             <TextBox.Style>
                                                 <Style TargetType="TextBox">
                                                     <Setter Property="Background" Value="#F9FAFB"/>
@@ -215,7 +241,10 @@
                                                     <Setter Property="Template">
                                                         <Setter.Value>
                                                             <ControlTemplate TargetType="TextBox">
-                                                                <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="6">
+                                                                <Border Background="{TemplateBinding Background}"
+                                                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                                                        BorderThickness="{TemplateBinding BorderThickness}"
+                                                                        CornerRadius="6">
                                                                     <ScrollViewer x:Name="PART_ContentHost" Margin="{TemplateBinding Padding}"/>
                                                                 </Border>
                                                             </ControlTemplate>
@@ -224,8 +253,88 @@
                                                 </Style>
                                             </TextBox.Style>
                                         </TextBox>
-                                        <TextBlock Grid.Column="2" Text="{Binding Subtotal, StringFormat='${0:N0}'}" FontSize="13" FontWeight="Bold" Foreground="#1F2937" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                                        <Button Grid.Column="3" Command="{Binding DataContext.QuitarDelCarritoCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Cursor="Hand" VerticalAlignment="Center">
+
+                                        <!-- Descuento por ítem -->
+                                        <StackPanel Grid.Column="2" VerticalAlignment="Center" Margin="0,0,10,0" Width="85">
+                                            <TextBlock FontSize="9" HorizontalAlignment="Center" Margin="0,0,0,2">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Text" Value="Descuento"/>
+                                                        <Setter Property="Foreground" Value="#6B7280"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding PermiteDescuento}" Value="False">
+                                                                <Setter Property="Text" Value="Sin descuento"/>
+                                                                <Setter Property="Foreground" Value="#D1D5DB"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                            <TextBox Text="{Binding DescuentoItem, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource DoubleToMoneyConverter}}"
+                                                     IsEnabled="{Binding PermiteDescuento}"
+                                                     Width="85" Padding="4" FontSize="12"
+                                                     TextAlignment="Center">
+                                                <TextBox.ToolTip>
+                                                    <ToolTip>
+                                                        <TextBlock>
+                                                            <TextBlock.Style>
+                                                                <Style TargetType="TextBlock">
+                                                                    <Setter Property="Text" Value="Ingresa el descuento en pesos"/>
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding PermiteDescuento}" Value="False">
+                                                                            <Setter Property="Text" Value="Productos menores a $60.000 no aplican descuento"/>
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </TextBlock.Style>
+                                                        </TextBlock>
+                                                    </ToolTip>
+                                                </TextBox.ToolTip>
+                                                <TextBox.Style>
+                                                    <Style TargetType="TextBox">
+                                                        <Setter Property="BorderThickness" Value="1"/>
+                                                        <Setter Property="Template">
+                                                            <Setter.Value>
+                                                                <ControlTemplate TargetType="TextBox">
+                                                                    <Border Background="{TemplateBinding Background}"
+                                                                            BorderBrush="{TemplateBinding BorderBrush}"
+                                                                            BorderThickness="{TemplateBinding BorderThickness}"
+                                                                            CornerRadius="6">
+                                                                        <ScrollViewer x:Name="PART_ContentHost" Margin="{TemplateBinding Padding}"/>
+                                                                    </Border>
+                                                                </ControlTemplate>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                        <!-- Habilitado: fondo naranja suave -->
+                                                        <Style.Triggers>
+                                                            <Trigger Property="IsEnabled" Value="True">
+                                                                <Setter Property="Background" Value="#FFF7ED"/>
+                                                                <Setter Property="BorderBrush" Value="#FDBA74"/>
+                                                                <Setter Property="Foreground" Value="#92400E"/>
+                                                            </Trigger>
+                                                            <!-- Deshabilitado: gris bloqueado -->
+                                                            <Trigger Property="IsEnabled" Value="False">
+                                                                <Setter Property="Background" Value="#F3F4F6"/>
+                                                                <Setter Property="BorderBrush" Value="#E5E7EB"/>
+                                                                <Setter Property="Foreground" Value="#D1D5DB"/>
+                                                            </Trigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBox.Style>
+                                            </TextBox>
+                                        </StackPanel>
+
+                                        <!-- Subtotal -->
+                                        <TextBlock Grid.Column="3"
+                                                   Text="{Binding Subtotal, StringFormat='${0:N0}'}"
+                                                   FontSize="13" FontWeight="Bold" Foreground="#1F2937"
+                                                   VerticalAlignment="Center" Margin="0,0,8,0"/>
+
+                                        <!-- Botón quitar -->
+                                        <Button Grid.Column="4"
+                                                Command="{Binding DataContext.QuitarDelCarritoCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                CommandParameter="{Binding}"
+                                                Cursor="Hand" VerticalAlignment="Center">
                                             <Button.Style>
                                                 <Style TargetType="Button">
                                                     <Setter Property="Template">
@@ -235,7 +344,9 @@
                                                                     <TextBlock Text="&#x2715;" FontSize="10" Foreground="#EF4444" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                                                 </Border>
                                                                 <ControlTemplate.Triggers>
-                                                                    <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="RB" Property="Background" Value="#FEE2E2"/></Trigger>
+                                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                                        <Setter TargetName="RB" Property="Background" Value="#FEE2E2"/>
+                                                                    </Trigger>
                                                                 </ControlTemplate.Triggers>
                                                             </ControlTemplate>
                                                         </Setter.Value>
@@ -243,17 +354,21 @@
                                                 </Style>
                                             </Button.Style>
                                         </Button>
+
                                     </Grid>
                                 </Border>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
+
+                    <!-- Subtotal footer -->
                     <Border Grid.Row="2" Background="#F9FAFB" Padding="15,10" CornerRadius="0,0,10,10" BorderBrush="#E5E7EB" BorderThickness="0,1,0,0">
                         <Grid>
                             <TextBlock Text="Subtotal" FontSize="14" Foreground="#6B7280"/>
                             <TextBlock Text="{Binding SubtotalCarrito, StringFormat='${0:N0}'}" FontSize="16" FontWeight="Bold" Foreground="#1F2937" HorizontalAlignment="Right"/>
                         </Grid>
                     </Border>
+
                 </Grid>
             </Border>
         </Grid>
@@ -276,28 +391,49 @@
                         <StackPanel>
                             <TextBlock Text="Moneda" FontSize="11" Foreground="#6B7280" FontWeight="SemiBold" Margin="0,0,0,4"/>
                             <ComboBox ItemsSource="{Binding Monedas}" SelectedItem="{Binding MonedaSeleccionada}" DisplayMemberPath="DisplayText" Padding="8,7" FontSize="12">
-                                <ComboBox.Style><Style TargetType="ComboBox"><Setter Property="Background" Value="#F9FAFB"/><Setter Property="BorderBrush" Value="#D1D5DB"/><Setter Property="BorderThickness" Value="1"/></Style></ComboBox.Style>
+                                <ComboBox.Style>
+                                    <Style TargetType="ComboBox">
+                                        <Setter Property="Background" Value="#F9FAFB"/>
+                                        <Setter Property="BorderBrush" Value="#D1D5DB"/>
+                                        <Setter Property="BorderThickness" Value="1"/>
+                                    </Style>
+                                </ComboBox.Style>
                             </ComboBox>
                         </StackPanel>
                         <StackPanel Grid.Column="2">
                             <TextBlock Text="Medio de pago" FontSize="11" Foreground="#6B7280" FontWeight="SemiBold" Margin="0,0,0,4"/>
                             <ComboBox ItemsSource="{Binding MediosPago}" SelectedItem="{Binding MedioPagoSeleccionado}" DisplayMemberPath="Nombre" Padding="8,7" FontSize="12">
-                                <ComboBox.Style><Style TargetType="ComboBox"><Setter Property="Background" Value="#F9FAFB"/><Setter Property="BorderBrush" Value="#D1D5DB"/><Setter Property="BorderThickness" Value="1"/></Style></ComboBox.Style>
+                                <ComboBox.Style>
+                                    <Style TargetType="ComboBox">
+                                        <Setter Property="Background" Value="#F9FAFB"/>
+                                        <Setter Property="BorderBrush" Value="#D1D5DB"/>
+                                        <Setter Property="BorderThickness" Value="1"/>
+                                    </Style>
+                                </ComboBox.Style>
                             </ComboBox>
                         </StackPanel>
                     </Grid>
-                    <StackPanel>
-                        <TextBlock Text="Descuento" FontSize="11" Foreground="#6B7280" FontWeight="SemiBold" Margin="0,0,0,4"/>
-                        <TextBox Text="{Binding Descuento, UpdateSourceTrigger=PropertyChanged}" Padding="8,7" FontSize="12">
-                            <TextBox.Style><Style TargetType="TextBox"><Setter Property="Background" Value="#F9FAFB"/><Setter Property="BorderBrush" Value="#D1D5DB"/><Setter Property="BorderThickness" Value="1"/><Setter Property="Template"><Setter.Value><ControlTemplate TargetType="TextBox"><Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="6"><ScrollViewer x:Name="PART_ContentHost" Margin="{TemplateBinding Padding}"/></Border></ControlTemplate></Setter.Value></Setter></Style></TextBox.Style>
-                        </TextBox>
-                    </StackPanel>
                 </StackPanel>
                 <StackPanel Grid.Column="1" Margin="0,0,20,0">
                     <StackPanel Margin="0,0,0,10">
                         <TextBlock Text="Monto pagado" FontSize="11" Foreground="#6B7280" FontWeight="SemiBold" Margin="0,0,0,4"/>
                         <TextBox Text="{Binding MontoPagado, UpdateSourceTrigger=PropertyChanged}" Padding="10,9" FontSize="15" FontWeight="SemiBold">
-                            <TextBox.Style><Style TargetType="TextBox"><Setter Property="Background" Value="#F0FDF4"/><Setter Property="BorderBrush" Value="#86EFAC"/><Setter Property="BorderThickness" Value="2"/><Setter Property="Template"><Setter.Value><ControlTemplate TargetType="TextBox"><Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="8"><ScrollViewer x:Name="PART_ContentHost" Margin="{TemplateBinding Padding}"/></Border></ControlTemplate></Setter.Value></Setter></Style></TextBox.Style>
+                            <TextBox.Style>
+                                <Style TargetType="TextBox">
+                                    <Setter Property="Background" Value="#F0FDF4"/>
+                                    <Setter Property="BorderBrush" Value="#86EFAC"/>
+                                    <Setter Property="BorderThickness" Value="2"/>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="TextBox">
+                                                <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="8">
+                                                    <ScrollViewer x:Name="PART_ContentHost" Margin="{TemplateBinding Padding}"/>
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </TextBox.Style>
                         </TextBox>
                     </StackPanel>
                     <Border Background="#FEF3C7" CornerRadius="8" Padding="12,8">
@@ -333,12 +469,21 @@
                                     <Setter.Value>
                                         <ControlTemplate TargetType="Button">
                                             <Border x:Name="CB" CornerRadius="10" Padding="20,12">
-                                                <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#10B981" Offset="0"/><GradientStop Color="#059669" Offset="1"/></LinearGradientBrush></Border.Background>
+                                                <Border.Background>
+                                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                        <GradientStop Color="#10B981" Offset="0"/>
+                                                        <GradientStop Color="#059669" Offset="1"/>
+                                                    </LinearGradientBrush>
+                                                </Border.Background>
                                                 <TextBlock Text="&#x2705; Confirmar venta" FontSize="15" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
                                             </Border>
                                             <ControlTemplate.Triggers>
-                                                <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="CB" Property="Opacity" Value="0.9"/></Trigger>
-                                                <Trigger Property="IsEnabled" Value="False"><Setter TargetName="CB" Property="Opacity" Value="0.4"/></Trigger>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="CB" Property="Opacity" Value="0.9"/>
+                                                </Trigger>
+                                                <Trigger Property="IsEnabled" Value="False">
+                                                    <Setter TargetName="CB" Property="Opacity" Value="0.4"/>
+                                                </Trigger>
                                             </ControlTemplate.Triggers>
                                         </ControlTemplate>
                                     </Setter.Value>

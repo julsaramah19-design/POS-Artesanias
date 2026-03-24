@@ -54,7 +54,8 @@ namespace ArtesaniasPOS.Data.Services
                 p.CodigoBarras,
                 dv.Cantidad,
                 dv.PrecioUnitario,
-                dv.Subtotal
+                dv.Subtotal,
+                ABS((dv.PrecioUnitario * dv.Cantidad) - dv.Subtotal) AS Descuento
             FROM DetalleVenta dv
             INNER JOIN Producto p ON p.Id = dv.ProductoId
             WHERE dv.VentaId = @VentaId

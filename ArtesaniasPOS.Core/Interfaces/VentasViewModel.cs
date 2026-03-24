@@ -6,26 +6,15 @@ using ArtesaniasPOS.Core.Interfaces;
 
 namespace ArtesaniasPOS.Core.ViewModels.Ventas
 {
-    /// <summary>
-    /// ViewModel del punto de venta (POS).
-    /// 
-    /// Layout: Búsqueda arriba + Carrito derecha + Resumen abajo.
-    /// 
-    /// Flujo de una venta:
-    /// 1. Buscar producto por código o nombre
-    /// 2. Seleccionar producto → se agrega al carrito
-    /// 3. Ajustar cantidades en el carrito
-    /// 4. Opcionalmente aplicar descuento
-    /// 5. Seleccionar moneda y medio de pago
-    /// 6. Ingresar monto pagado → se calcula cambio
-    /// 7. Confirmar venta → se registra y descuenta stock
-    /// 8. Carrito se limpia para la siguiente venta
-    /// </summary>
     public class VentasViewModel : ViewModelBase
     {
         private readonly IVentaService _ventaService;
         private readonly IMonedaService _monedaService;
         private readonly int _usuarioId;
+        private readonly IConfiguracionService _configuracionService;
+        private readonly string _nombreVendedor;
+        private string _nombreNegocio = string.Empty;
+        private double _montoMinimoDescuento = 60_000;
 
         private string _textoBusqueda = string.Empty;
         private ProductoBusquedaDto? _productoSeleccionado;
@@ -37,16 +26,14 @@ namespace ArtesaniasPOS.Core.ViewModels.Ventas
         private string _mensajeExito = string.Empty;
         private bool _isLoading;
 
-        public VentasViewModel(
-            IVentaService ventaService,
-            IMonedaService monedaService,
-            int usuarioId)
+        public VentasViewModel(IVentaService ventaService, IMonedaService monedaService, IConfiguracionService configuracionService, int usuarioId, string nombreVendedor)
         {
             _ventaService = ventaService;
             _monedaService = monedaService;
+            _configuracionService = configuracionService;
             _usuarioId = usuarioId;
+            _nombreVendedor = nombreVendedor;
 
-            // Escuchar cambios en el carrito para recalcular totales
             Carrito.CollectionChanged += OnCarritoChanged;
 
             BuscarCommand = new AsyncRelayCommand(async _ => await BuscarAsync());
@@ -101,6 +88,8 @@ namespace ArtesaniasPOS.Core.ViewModels.Ventas
             }
         }
 
+        public bool PuedeAplicarDescuentoGlobal => Carrito.Any(i => i.PrecioUnitario >= MontoMinimoDescuento);
+
         public MedioPagoDto? MedioPagoSeleccionado
         {
             get => _medioPagoSeleccionado;
@@ -112,7 +101,9 @@ namespace ArtesaniasPOS.Core.ViewModels.Ventas
             get => _descuento;
             set
             {
-                // No permitir descuento mayor al subtotal ni negativo
+                if (!PuedeAplicarDescuentoGlobal)
+                    value = 0;
+
                 var nuevo = Math.Max(0, Math.Min(value, SubtotalCarrito));
                 if (SetProperty(ref _descuento, nuevo))
                 {
@@ -133,25 +124,20 @@ namespace ArtesaniasPOS.Core.ViewModels.Ventas
             }
         }
 
+        public double MontoMinimoDescuento
+        {
+            get => _montoMinimoDescuento;
+            set => SetProperty(ref _montoMinimoDescuento, value);
+        }
+
         #endregion
 
         #region Propiedades calculadas
 
-        /// <summary>
-        /// Suma de todos los subtotales del carrito (en moneda base).
-        /// </summary>
         public double SubtotalCarrito => Carrito.Sum(i => i.Subtotal);
 
-        /// <summary>
-        /// Total después de descuento (en moneda base).
-        /// </summary>
         public double TotalVenta => SubtotalCarrito - Descuento;
 
-        /// <summary>
-        /// Total convertido a la moneda seleccionada.
-        /// Si la moneda es la base (tasa=1), queda igual.
-        /// Si es USD con tasa 4100, divide: 50000 COP / 4100 = 12.19 USD
-        /// </summary>
         public double TotalEnMoneda
         {
             get
@@ -166,9 +152,6 @@ namespace ArtesaniasPOS.Core.ViewModels.Ventas
             }
         }
 
-        /// <summary>
-        /// Cambio a devolver al cliente en la moneda seleccionada.
-        /// </summary>
         public double Cambio
         {
             get
@@ -216,9 +199,6 @@ namespace ArtesaniasPOS.Core.ViewModels.Ventas
 
         #endregion
 
-        /// <summary>
-        /// Carga inicial: monedas y medios de pago.
-        /// </summary>
         public async Task InicializarAsync()
         {
             IsLoading = true;
@@ -230,6 +210,13 @@ namespace ArtesaniasPOS.Core.ViewModels.Ventas
                     Monedas.Add(m);
                 MonedaSeleccionada = Monedas.FirstOrDefault(m => m.EsMonedaBase)
                                      ?? Monedas.FirstOrDefault();
+
+                var minDescuentoStr = await _configuracionService.ObtenerValorAsync("MontoMinimoDescuento");
+                if (double.TryParse(minDescuentoStr, out var minDescuento) && minDescuento > 0)
+                    MontoMinimoDescuento = minDescuento;
+
+
+                _nombreNegocio = await _configuracionService.ObtenerValorAsync("NombreNegocio");
 
                 var medios = await _ventaService.ObtenerMediosPagoAsync();
                 MediosPago.Clear();
@@ -247,9 +234,6 @@ namespace ArtesaniasPOS.Core.ViewModels.Ventas
             }
         }
 
-        /// <summary>
-        /// Busca productos por código o nombre.
-        /// </summary>
         private async Task BuscarAsync()
         {
             if (string.IsNullOrWhiteSpace(TextoBusqueda)) return;
@@ -262,7 +246,7 @@ namespace ArtesaniasPOS.Core.ViewModels.Ventas
                 foreach (var r in resultados)
                     ResultadosBusqueda.Add(r);
 
-                // Si hay exactamente un resultado (ej: escaneó código de barras), agregar directo
+
                 if (ResultadosBusqueda.Count == 1)
                 {
                     ProductoSeleccionado = ResultadosBusqueda[0];
@@ -277,10 +261,6 @@ namespace ArtesaniasPOS.Core.ViewModels.Ventas
             }
         }
 
-        /// <summary>
-        /// Agrega el producto seleccionado al carrito.
-        /// Si ya existe, incrementa la cantidad.
-        /// </summary>
         private void AgregarAlCarrito()
         {
             if (ProductoSeleccionado == null) return;
@@ -307,6 +287,7 @@ namespace ArtesaniasPOS.Core.ViewModels.Ventas
                     Nombre = ProductoSeleccionado.Nombre,
                     PrecioUnitario = ProductoSeleccionado.PrecioBase,
                     StockDisponible = ProductoSeleccionado.StockActual,
+                    MontoMinimoDescuento = _montoMinimoDescuento,
                     Cantidad = 1
                 });
             }
@@ -314,10 +295,6 @@ namespace ArtesaniasPOS.Core.ViewModels.Ventas
             RecalcularTotales();
         }
 
-        /// <summary>
-        /// Quita un item del carrito. Recibe el CarritoItem como parámetro
-        /// del CommandParameter en XAML.
-        /// </summary>
         private void QuitarDelCarrito(object? parameter)
         {
             if (parameter is CarritoItem item)
@@ -327,9 +304,6 @@ namespace ArtesaniasPOS.Core.ViewModels.Ventas
             }
         }
 
-        /// <summary>
-        /// Confirma y registra la venta.
-        /// </summary>
         private async Task ConfirmarVentaAsync()
         {
             MensajeError = string.Empty;
@@ -385,10 +359,33 @@ namespace ArtesaniasPOS.Core.ViewModels.Ventas
 
                 var ventaId = await _ventaService.RegistrarVentaAsync(ventaDto);
 
+                var recibo = new ReciboDto
+                {
+                    VentaId = ventaId,
+                    NombreNegocio = _nombreNegocio,
+                    Vendedor = _nombreVendedor,
+                    Fecha = DateTime.Now,
+                    MedioPago = MedioPagoSeleccionado!.Nombre,
+                    Moneda = MonedaSeleccionada!.Simbolo,
+                    Items = Carrito.Select(i => new ReciboItemDto
+                    {
+                        Nombre = i.Nombre,
+                        Cantidad = i.Cantidad,
+                        PrecioUnitario = i.PrecioUnitario,
+                        Descuento = i.DescuentoItem,
+                        Subtotal = i.Subtotal
+                    }).ToList(),
+                    Subtotal = SubtotalCarrito,
+                    Total = TotalVenta,
+                    MontoPagado = MontoPagado,
+                    Cambio = Cambio
+                };
+
                 MensajeExito = $"Venta #{ventaId} registrada. Cambio: {SimboloMoneda}{Cambio:N2}";
 
-                // Limpiar para la siguiente venta
                 LimpiarCarrito();
+
+                ReciboGenerado?.Invoke(this, recibo);
             }
             catch (Exception ex)
             {
@@ -413,10 +410,8 @@ namespace ArtesaniasPOS.Core.ViewModels.Ventas
             RecalcularTotales();
         }
 
-        /// <summary>
-        /// Recalcula todas las propiedades calculadas y notifica a la UI.
-        /// Se llama cada vez que cambia el carrito.
-        /// </summary>
+        public event EventHandler<ReciboDto>? ReciboGenerado;
+
         private void RecalcularTotales()
         {
             OnPropertyChanged(nameof(SubtotalCarrito));
@@ -424,13 +419,12 @@ namespace ArtesaniasPOS.Core.ViewModels.Ventas
             OnPropertyChanged(nameof(TotalEnMoneda));
             OnPropertyChanged(nameof(Cambio));
             OnPropertyChanged(nameof(CantidadItems));
+            OnPropertyChanged(nameof(PuedeAplicarDescuentoGlobal));
+
+            if (!PuedeAplicarDescuentoGlobal && Descuento > 0)
+                Descuento = 0;
         }
 
-        /// <summary>
-        /// Escucha cambios en la colección del carrito Y en cada item.
-        /// Cuando se agrega un item, suscribe a su PropertyChanged
-        /// para recalcular cuando cambie la cantidad.
-        /// </summary>
         private void OnCarritoChanged(object? sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.NewItems != null)

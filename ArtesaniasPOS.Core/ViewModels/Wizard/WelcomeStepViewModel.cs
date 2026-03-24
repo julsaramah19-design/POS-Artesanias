@@ -1,9 +1,5 @@
 namespace ArtesaniasPOS.Core.ViewModels.Wizard
 {
-    /// <summary>
-    /// ViewModel para el paso de Bienvenida.
-    /// No tiene dependencias — solo expone textos para la vista.
-    /// </summary>
     public class WelcomeStepViewModel : ViewModelBase
     {
         public string TituloProducto => "ArtesaniasPOS";

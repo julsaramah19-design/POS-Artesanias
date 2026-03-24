@@ -78,4 +78,16 @@ namespace ArtesaniasPOS.Core.Converters
             throw new NotImplementedException();
         }
     }
+
+    public class DoubleToMoneyConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+            => value is double d ? d.ToString("N0") : "0";
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var texto = value?.ToString()?.Replace(".", "").Replace(",", "") ?? "0";
+            return double.TryParse(texto, out var resultado) ? resultado : 0d;
+        }
+    }
 }

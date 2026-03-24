@@ -11,5 +11,6 @@
         <converters:IntToVisibilityInvertedConverter x:Key="IntToVisibilityInvertedConverter"/>
         <converters:IntToBoolConverter x:Key="IntToBoolConverter"/>
         <converters:IntToVisibilityConverter x:Key="IntToVisibilityConverter"/>
+        <converters:DoubleToMoneyConverter x:Key="DoubleToMoneyConverter"/>
     </Application.Resources>
 </Application>

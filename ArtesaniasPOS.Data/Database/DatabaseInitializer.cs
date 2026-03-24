@@ -191,6 +191,9 @@ namespace ArtesaniasPOS.Data.Database
                     ('ColorSecundario', '#1E40AF', 'Color secundario de la app'),
                     ('TipoNegocio',     '',  'Tipo de negocio'),
                     ('WizardCompletado','0', 'Si ya se completó la configuración inicial');
+
+                INSERT OR IGNORE INTO ConfiguracionNegocio (Clave, Valor) 
+                VALUES ('MontoMinimoDescuento', '60000');
             ");
 
             var hash = BCrypt.Net.BCrypt.HashPassword("admin123");

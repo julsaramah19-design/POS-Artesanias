@@ -480,15 +480,18 @@
                         <DataGridTextColumn Header="Cantidad" Binding="{Binding Cantidad}" Width="80"/>
                         <DataGridTextColumn Header="Precio unit." Binding="{Binding PrecioUnitario, StringFormat='${0:N0}'}" Width="100"/>
                         <DataGridTextColumn Header="Subtotal" Binding="{Binding Subtotal, StringFormat='${0:N0}'}" Width="100"/>
+                        <DataGridTextColumn Header="Descuento" Binding="{Binding Descuento, StringFormat='${0:N0}'}" Width="90"/>
                     </DataGrid.Columns>
                 </DataGrid>
 
                 <Border Grid.Row="3" Background="#F0FDF4" CornerRadius="8" Padding="15,10" Margin="0,10,0,0">
-                    <Grid>
-                        <TextBlock Text="Total de la venta:" FontSize="14" FontWeight="SemiBold" Foreground="#059669"/>
-                        <TextBlock Text="{Binding VentaSeleccionada.Total, StringFormat='${0:N0}', Mode=OneWay}"
+                    <StackPanel>
+                        <Grid>
+                            <TextBlock Text="Total de la venta:" FontSize="14" FontWeight="SemiBold" Foreground="#059669"/>
+                            <TextBlock Text="{Binding VentaSeleccionada.Total, StringFormat='${0:N0}', Mode=OneWay}"
                                    FontSize="18" FontWeight="Bold" Foreground="#059669" HorizontalAlignment="Right"/>
-                    </Grid>
+                        </Grid>
+                    </StackPanel>
                 </Border>
             </Grid>
         </Border>
