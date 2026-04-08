@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
@@ -13,36 +14,51 @@ namespace ArtesaniasPOS.UI.Views.Ventas
 
         private void OnImprimir(object sender, RoutedEventArgs e)
         {
-            var printDialog = new PrintDialog();
-            if (printDialog.ShowDialog() == true)
+            var boton = sender as Button;
+            var panelBotones = boton?.Parent as FrameworkElement;
+
+            try
             {
-                // Escalar el contenido para formato ticket
-                var contenido = ReciboContent;
-                var capabilities = printDialog.PrintQueue.GetPrintCapabilities(printDialog.PrintTicket);
-                var area = capabilities.PageImageableArea;
+                if (panelBotones != null) panelBotones.Visibility = Visibility.Collapsed;
 
-                if (area != null)
+                var printDialog = new PrintDialog();
+                if (printDialog.ShowDialog() == true)
                 {
-                    var scale = area.ExtentWidth / contenido.ActualWidth;
-                    contenido.LayoutTransform = new ScaleTransform(scale, scale);
-                    var sz = new Size(area.ExtentWidth, double.PositiveInfinity);
-                    contenido.Measure(sz);
-                    contenido.Arrange(new Rect(new Point(area.OriginWidth, area.OriginHeight),
-                        contenido.DesiredSize));
+                    var contenido = ReciboContent;
+                    var capabilities = printDialog.PrintQueue.GetPrintCapabilities(printDialog.PrintTicket);
+                    var area = capabilities.PageImageableArea;
+
+                    if (area != null)
+                    {
+                        double margenSeguridad = 0.95;
+                        double anchoDisponible = area.ExtentWidth * margenSeguridad;
+
+                        var scale = anchoDisponible / contenido.ActualWidth;
+                        contenido.LayoutTransform = new ScaleTransform(scale, scale);
+
+                        Size sz = new Size(area.ExtentWidth, double.PositiveInfinity);
+                        contenido.Measure(sz);
+                        contenido.Arrange(new Rect(new Point(area.OriginWidth, area.OriginHeight), contenido.DesiredSize));
+                    }
+
+                    printDialog.PrintVisual(contenido, "Recibo Venta - ArtesaniasPOS");
                 }
-
-                printDialog.PrintVisual(contenido, $"Recibo Venta");
-
-                // Restaurar escala
-                contenido.LayoutTransform = Transform.Identity;
-                contenido.InvalidateMeasure();
-                contenido.UpdateLayout();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al imprimir: {ex.Message}", "Hardware Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                if (panelBotones != null) panelBotones.Visibility = Visibility.Visible;
+                ReciboContent.LayoutTransform = Transform.Identity;
+                ReciboContent.UpdateLayout();
             }
         }
 
         private void OnCerrar(object sender, RoutedEventArgs e)
         {
-            Close();
+            this.Close();
         }
     }
 }

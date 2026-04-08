@@ -13,6 +13,7 @@
         public double Total { get; set; }
         public double MontoPagado { get; set; }
         public double Cambio { get; set; }
+        public string FechaFormateada => Fecha.ToString("dd/MM/yyyy hh:mm tt");
     }
 
     public class ReciboItemDto

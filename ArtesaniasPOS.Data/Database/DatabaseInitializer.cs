@@ -170,15 +170,6 @@ namespace ArtesaniasPOS.Data.Database
                     ('USD', 'Dólar',           'US$', 4100.0, 0),
                     ('EUR', 'Euro',            '€',   4400.0, 0);
 
-                INSERT INTO MedioPago (Nombre)
-                VALUES
-                    ('Efectivo'),
-                    ('Tarjeta Débito'),
-                    ('Tarjeta Crédito'),
-                    ('Nequi'),
-                    ('Daviplata');
-                INSERT INTO Categoria (Nombre) VALUES ('General'), ('Artesanías'), ('Accesorios');
-
                 INSERT INTO ConfiguracionNegocio (Clave, Valor, Descripcion)
                 VALUES
                     ('NombreNegocio',   '',  'Nombre del negocio'),

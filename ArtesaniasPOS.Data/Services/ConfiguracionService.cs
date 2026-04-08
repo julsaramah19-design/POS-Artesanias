@@ -4,13 +4,6 @@ using ArtesaniasPOS.Core.Interfaces;
 
 namespace ArtesaniasPOS.Data.Services
 {
-    /// <summary>
-    /// Implementación concreta de IConfiguracionService usando Dapper + SQLite.
-    /// 
-    /// Los ViewModels en Core no conocen esta clase — solo conocen
-    /// IConfiguracionService. El proyecto principal (WPF) es quien
-    /// conecta la interfaz con esta implementación al arrancar.
-    /// </summary>
     public class ConfiguracionService : IConfiguracionService
     {
         private readonly string _connectionString;

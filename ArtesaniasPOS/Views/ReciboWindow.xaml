@@ -56,15 +56,20 @@
                         <DataTemplate>
                             <StackPanel Margin="0,3">
                                 <Grid>
-                                    <TextBlock FontSize="11" FontFamily="Consolas" Foreground="#1F2937"
-                                               TextTrimming="CharacterEllipsis">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" FontSize="11" FontFamily="Consolas"
+                                               Foreground="#1F2937" TextWrapping="Wrap" Margin="0,0,8,0">
                                         <Run Text="{Binding Cantidad, Mode=OneWay}"/>
                                         <Run Text="x"/>
                                         <Run Text="{Binding Nombre, Mode=OneWay}"/>
                                     </TextBlock>
-                                    <TextBlock Text="{Binding Subtotal, StringFormat='${0:N0}'}"
+                                    <TextBlock Grid.Column="1" Text="{Binding Subtotal, StringFormat='${0:N0}'}"
                                                FontSize="11" FontFamily="Consolas"
-                                               HorizontalAlignment="Right" Foreground="#1F2937"/>
+                                               HorizontalAlignment="Right" VerticalAlignment="Top"
+                                               Foreground="#1F2937"/>
                                 </Grid>
                                 <Grid Visibility="{Binding TieneDescuento, Converter={StaticResource BoolToVisibilityConverter}}"
                                       Margin="15,0,0,0">
