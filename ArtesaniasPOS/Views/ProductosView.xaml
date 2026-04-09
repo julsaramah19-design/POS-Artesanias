@@ -274,7 +274,7 @@
                         </DataGridTemplateColumn>
 
                         <!-- Botones de acción (solo Admin) -->
-                        <DataGridTemplateColumn Header="" Width="130">
+                        <DataGridTemplateColumn Header="" Width="170">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal"
@@ -335,6 +335,35 @@
                                                 </Style>
                                             </Button.Style>
                                         </Button>
+
+                                        <!-- Imprimir etiqueta -->
+                                        <Button Command="{Binding DataContext.ImprimirEtiquetaCommand, 
+                                                RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                            Cursor="Hand" Margin="4,0,0,0">
+                                            <Button.Style>
+                                                <Style TargetType="Button">
+                                                    <Setter Property="Template">
+                                                        <Setter.Value>
+                                                            <ControlTemplate TargetType="Button">
+                                                                <Border x:Name="PrintBorder"
+                                                                    Background="#F0FDF4"
+                                                                    CornerRadius="6"
+                                                                    Padding="8,4">
+                                                                    <TextBlock Text="🖨️" FontSize="12"/>
+                                                                </Border>
+                                                                <ControlTemplate.Triggers>
+                                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                                        <Setter TargetName="PrintBorder" 
+                                        Property="Background" Value="#DCFCE7"/>
+                                                                    </Trigger>
+                                                                </ControlTemplate.Triggers>
+                                                            </ControlTemplate>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </Style>
+                                            </Button.Style>
+                                        </Button>
+
                                     </StackPanel>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>

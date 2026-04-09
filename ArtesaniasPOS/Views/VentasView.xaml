@@ -25,7 +25,11 @@
                     <ColumnDefinition Width="10"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <TextBox Grid.Column="0" Text="{Binding TextoBusqueda, UpdateSourceTrigger=PropertyChanged}" Padding="14,11" FontSize="14">
+                <TextBox x:Name="TxtBusqueda" 
+         Grid.Column="0" 
+         Text="{Binding TextoBusqueda, UpdateSourceTrigger=PropertyChanged}" 
+         Padding="14,11" 
+         FontSize="14">
                     <TextBox.Style>
                         <Style TargetType="TextBox">
                             <Setter Property="Background" Value="White"/>
@@ -34,10 +38,18 @@
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="TextBox">
-                                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="10">
+                                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                CornerRadius="10">
                                             <Grid>
                                                 <ScrollViewer x:Name="PART_ContentHost" Margin="{TemplateBinding Padding}"/>
-                                                <TextBlock Text="&#x1F50D; Escanear codigo o buscar producto..." FontSize="14" Foreground="#9CA3AF" Margin="16,11,0,0" IsHitTestVisible="False" Visibility="{Binding Text, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource StringToVisibilityInvertedConverter}}"/>
+                                                <TextBlock Text="&#x1F50D; Escanear codigo o buscar producto..." 
+                                           FontSize="14" 
+                                           Foreground="#9CA3AF" 
+                                           Margin="16,11,0,0" 
+                                           IsHitTestVisible="False" 
+                                           Visibility="{Binding Text, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource StringToVisibilityInvertedConverter}}"/>
                                             </Grid>
                                         </Border>
                                     </ControlTemplate>

@@ -15,6 +15,7 @@ namespace ArtesaniasPOS.Core.ViewModels.Ventas
         private readonly string _nombreVendedor;
         private string _nombreNegocio = string.Empty;
         private double _montoMinimoDescuento = 60_000;
+        private readonly IProductoService _productoService;
 
         private string _textoBusqueda = string.Empty;
         private ProductoBusquedaDto? _productoSeleccionado;
@@ -26,12 +27,13 @@ namespace ArtesaniasPOS.Core.ViewModels.Ventas
         private string _mensajeExito = string.Empty;
         private bool _isLoading;
 
-        public VentasViewModel(IVentaService ventaService, IMonedaService monedaService, IConfiguracionService configuracionService, int usuarioId, string nombreVendedor)
+        public VentasViewModel(IVentaService ventaService, IMonedaService monedaService, IConfiguracionService configuracionService, IProductoService productoService, int usuarioId, string nombreVendedor)
         {
             _ventaService = ventaService;
             _monedaService = monedaService;
             _configuracionService = configuracionService;
             _usuarioId = usuarioId;
+            _productoService = productoService;
             _nombreVendedor = nombreVendedor;
 
             Carrito.CollectionChanged += OnCarritoChanged;
@@ -199,6 +201,85 @@ namespace ArtesaniasPOS.Core.ViewModels.Ventas
 
         #endregion
 
+
+        private async Task BuscarAsync()
+        {
+            if (string.IsNullOrWhiteSpace(TextoBusqueda)) return;
+
+            string codigoNormalizado = TextoBusqueda.Replace("'", "-").Trim().ToUpper();
+
+            MensajeError = string.Empty;
+            try
+            {
+                // 1. Intentar búsqueda por código de barras exacto (Modo Pistola)
+                var producto = await _productoService.ObtenerPorCodigoBarrasAsync(codigoNormalizado);
+
+                if (producto != null)
+                {
+                    // Convertimos el DTO si es necesario o lo asignamos
+                    ProductoSeleccionado = producto;
+                    AgregarAlCarrito(); // Agrega directo
+                    TextoBusqueda = string.Empty; // Limpia para el siguiente escaneo
+                    ResultadosBusqueda.Clear();
+                    return; // Terminamos aquí si fue exitoso
+                }
+
+                // 2. Si no fue código exacto, buscar por nombre o lista
+                var resultados = await _ventaService.BuscarProductosAsync(TextoBusqueda);
+                ResultadosBusqueda.Clear();
+                foreach (var r in resultados)
+                    ResultadosBusqueda.Add(r);
+
+                if (ResultadosBusqueda.Count == 0)
+                {
+                    MensajeError = "Producto no encontrado.";
+                }
+                else if (ResultadosBusqueda.Count == 1)
+                {
+                    // Si solo hay uno, lo agregamos de una vez
+                    ProductoSeleccionado = ResultadosBusqueda[0];
+                    AgregarAlCarrito();
+                    TextoBusqueda = string.Empty;
+                    ResultadosBusqueda.Clear();
+                }
+            }
+            catch (Exception ex)
+            {
+                MensajeError = $"Error: {ex.Message}";
+            }
+        }
+
+        private void AgregarAlCarrito()
+        {
+            if (ProductoSeleccionado == null) return;
+
+            MensajeError = string.Empty;
+            var existente = Carrito.FirstOrDefault(i => i.ProductoId == ProductoSeleccionado.Id);
+
+            if (existente != null)
+            {
+                if (existente.Cantidad < existente.StockDisponible)
+                    existente.Cantidad++;
+                else
+                    MensajeError = $"Stock máximo alcanzado.";
+            }
+            else
+            {
+                Carrito.Add(new CarritoItem
+                {
+                    ProductoId = ProductoSeleccionado.Id,
+                    CodigoBarras = ProductoSeleccionado.CodigoBarras,
+                    Nombre = ProductoSeleccionado.Nombre,
+                    PrecioUnitario = ProductoSeleccionado.PrecioBase,
+                    StockDisponible = ProductoSeleccionado.StockActual,
+                    MontoMinimoDescuento = _montoMinimoDescuento,
+                    Cantidad = 1
+                });
+            }
+
+            ProductoSeleccionado = null; // Reset para la siguiente acción
+            RecalcularTotales();
+        }
         public async Task InicializarAsync()
         {
             IsLoading = true;
@@ -233,68 +314,6 @@ namespace ArtesaniasPOS.Core.ViewModels.Ventas
                 IsLoading = false;
             }
         }
-
-        private async Task BuscarAsync()
-        {
-            if (string.IsNullOrWhiteSpace(TextoBusqueda)) return;
-
-            MensajeError = string.Empty;
-            try
-            {
-                var resultados = await _ventaService.BuscarProductosAsync(TextoBusqueda);
-                ResultadosBusqueda.Clear();
-                foreach (var r in resultados)
-                    ResultadosBusqueda.Add(r);
-
-
-                if (ResultadosBusqueda.Count == 1)
-                {
-                    ProductoSeleccionado = ResultadosBusqueda[0];
-                    AgregarAlCarrito();
-                    TextoBusqueda = string.Empty;
-                    ResultadosBusqueda.Clear();
-                }
-            }
-            catch (Exception ex)
-            {
-                MensajeError = $"Error al buscar: {ex.Message}";
-            }
-        }
-
-        private void AgregarAlCarrito()
-        {
-            if (ProductoSeleccionado == null) return;
-
-            MensajeError = string.Empty;
-            MensajeExito = string.Empty;
-
-            var existente = Carrito.FirstOrDefault(
-                i => i.ProductoId == ProductoSeleccionado.Id);
-
-            if (existente != null)
-            {
-                if (existente.Cantidad < existente.StockDisponible)
-                    existente.Cantidad++;
-                else
-                    MensajeError = $"Stock máximo alcanzado para {existente.Nombre}.";
-            }
-            else
-            {
-                Carrito.Add(new CarritoItem
-                {
-                    ProductoId = ProductoSeleccionado.Id,
-                    CodigoBarras = ProductoSeleccionado.CodigoBarras,
-                    Nombre = ProductoSeleccionado.Nombre,
-                    PrecioUnitario = ProductoSeleccionado.PrecioBase,
-                    StockDisponible = ProductoSeleccionado.StockActual,
-                    MontoMinimoDescuento = _montoMinimoDescuento,
-                    Cantidad = 1
-                });
-            }
-
-            RecalcularTotales();
-        }
-
         private void QuitarDelCarrito(object? parameter)
         {
             if (parameter is CarritoItem item)

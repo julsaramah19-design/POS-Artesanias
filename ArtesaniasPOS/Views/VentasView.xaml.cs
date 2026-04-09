@@ -10,6 +10,9 @@ namespace ArtesaniasPOS.UI.Views.Ventas
         {
             InitializeComponent();
             DataContextChanged += OnDataContextChanged;
+
+            // Foco inicial al cargar el módulo
+            Loaded += (s, e) => TxtBusqueda.Focus();
         }
 
         private void OnDataContextChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
@@ -25,6 +28,9 @@ namespace ArtesaniasPOS.UI.Views.Ventas
         {
             var ventana = new ReciboWindow { DataContext = recibo };
             ventana.ShowDialog();
+
+            // Regresar el foco al TextBox después de vender
+            TxtBusqueda.Focus();
         }
     }
 }

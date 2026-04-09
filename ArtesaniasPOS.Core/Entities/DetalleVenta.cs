@@ -12,5 +12,7 @@
         // Navegación
         public string NombreProducto { get; set; } = string.Empty;
         public string CodigoBarras { get; set; } = string.Empty;
+        public decimal TotalDetalle => Cantidad * PrecioUnitario;
+
     }
 }

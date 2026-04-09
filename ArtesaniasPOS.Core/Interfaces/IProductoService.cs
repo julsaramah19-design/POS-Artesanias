@@ -13,6 +13,8 @@ namespace ArtesaniasPOS.Core.Interfaces
         Task DesactivarAsync(int id);
         Task<IEnumerable<CategoriaDto>> ObtenerCategoriasAsync();
         Task<string> GenerarCodigoBarrasAsync();
+
+        Task<ProductoBusquedaDto?> ObtenerPorCodigoBarrasAsync(string codigo);
     }
 
     /// <summary>
