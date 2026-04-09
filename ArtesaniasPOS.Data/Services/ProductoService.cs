@@ -45,6 +45,26 @@ namespace ArtesaniasPOS.Data.Services
             return await connection.QueryAsync<ProductoListaDto>(sql, parametros);
         }
 
+        public async Task<ProductoBusquedaDto?> ObtenerPorCodigoBarrasAsync(string codigo)
+        {
+            using var connection = new SqliteConnection(_connectionString);
+
+            // Consulta SQL para buscar la coincidencia exacta del código de barras
+            var sql = @"
+                SELECT 
+                    p.Id, 
+                    p.CodigoBarras, 
+                    p.Nombre, 
+                    p.PrecioBase, 
+                    p.StockActual
+                FROM Producto p
+                WHERE p.CodigoBarras = @codigo AND p.Activo = 1 
+                LIMIT 1";
+
+            // Ejecutamos la consulta usando Dapper
+            return await connection.QueryFirstOrDefaultAsync<ProductoBusquedaDto>(sql, new { codigo });
+        }
+
         public async Task<ProductoDetalleDto?> ObtenerPorIdAsync(int id)
         {
             using var connection = new SqliteConnection(_connectionString);
