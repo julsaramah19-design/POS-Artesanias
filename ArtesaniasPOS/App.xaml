@@ -1,9 +1,10 @@
-﻿<Application x:Class="ArtesaniasPOS.UI.App"
+<Application x:Class="ArtesaniasPOS.UI.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:converters="clr-namespace:ArtesaniasPOS.Core.Converters;assembly=ArtesaniasPOS.Core"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
+        <!-- ===== CONVERTERS (keep existing) ===== -->
         <converters:StringToVisibilityConverter x:Key="StringToVisibilityConverter"/>
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <converters:BoolToVisibilityInvertedConverter x:Key="BoolToVisibilityInvertedConverter"/>
@@ -12,5 +13,101 @@
         <converters:IntToBoolConverter x:Key="IntToBoolConverter"/>
         <converters:IntToVisibilityConverter x:Key="IntToVisibilityConverter"/>
         <converters:DoubleToMoneyConverter x:Key="DoubleToMoneyConverter"/>
+
+        <!-- ===== COLOR PALETTE ===== -->
+        <SolidColorBrush x:Key="PrimaryBrush"                Color="#9d3d1c"/>
+        <SolidColorBrush x:Key="PrimaryContainerBrush"       Color="#bd5532"/>
+        <SolidColorBrush x:Key="OnPrimaryBrush"              Color="#ffffff"/>
+        <SolidColorBrush x:Key="SidebarBrush"                Color="#32261f"/>
+        <SolidColorBrush x:Key="BackgroundBrush"             Color="#fbf9f7"/>
+        <SolidColorBrush x:Key="SurfaceBrush"                Color="#ffffff"/>
+        <SolidColorBrush x:Key="SurfaceContainerLowBrush"    Color="#f5f3f1"/>
+        <SolidColorBrush x:Key="SurfaceContainerBrush"       Color="#efedec"/>
+        <SolidColorBrush x:Key="OnSurfaceBrush"              Color="#1b1c1b"/>
+        <SolidColorBrush x:Key="OnSurfaceVariantBrush"       Color="#56423c"/>
+        <SolidColorBrush x:Key="OutlineBrush"                Color="#8a726b"/>
+        <SolidColorBrush x:Key="OutlineVariantBrush"         Color="#ddc0b8"/>
+        <SolidColorBrush x:Key="ErrorBrush"                  Color="#ba1a1a"/>
+        <SolidColorBrush x:Key="ErrorContainerBrush"         Color="#ffdad6"/>
+        <SolidColorBrush x:Key="SidebarSubtleBrush"          Color="#cbb4a8"/>
+
+        <!-- ===== SHARED STYLES ===== -->
+
+        <!-- Primary Button -->
+        <Style x:Key="ButtonPrimary" TargetType="Button">
+            <Setter Property="Foreground"        Value="White"/>
+            <Setter Property="FontSize"          Value="14"/>
+            <Setter Property="FontWeight"        Value="SemiBold"/>
+            <Setter Property="FontFamily"        Value="Segoe UI"/>
+            <Setter Property="Cursor"            Value="Hand"/>
+            <Setter Property="BorderThickness"   Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd"
+                                Background="#9d3d1c"
+                                CornerRadius="10"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#bd5532"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="Bd" Property="Opacity" Value="0.45"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Modern TextBox with rounded corners -->
+        <Style x:Key="TextBoxModern" TargetType="TextBox">
+            <Setter Property="FontFamily"      Value="Segoe UI"/>
+            <Setter Property="FontSize"        Value="13"/>
+            <Setter Property="Foreground"      Value="#1b1c1b"/>
+            <Setter Property="Background"      Value="#f5f3f1"/>
+            <Setter Property="BorderBrush"     Value="#ddc0b8"/>
+            <Setter Property="BorderThickness" Value="1.5"/>
+            <Setter Property="Padding"         Value="12,10"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8">
+                            <ScrollViewer x:Name="PART_ContentHost"
+                                          Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter Property="BorderBrush" Value="#9d3d1c"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Card Border style -->
+        <Style x:Key="CardBorder" TargetType="Border">
+            <Setter Property="Background"       Value="White"/>
+            <Setter Property="BorderBrush"      Value="#ddc0b8"/>
+            <Setter Property="BorderThickness"  Value="1"/>
+            <Setter Property="CornerRadius"     Value="12"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect Color="#56423c"
+                                      Opacity="0.08"
+                                      BlurRadius="16"
+                                      ShadowDepth="2"
+                                      Direction="270"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Application.Resources>
 </Application>

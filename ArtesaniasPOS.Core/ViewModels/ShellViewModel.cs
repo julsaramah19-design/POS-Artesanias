@@ -12,8 +12,8 @@ namespace ArtesaniasPOS.Core.ViewModels
 
         private MenuItemModel? _menuSeleccionado;
         private ViewModelBase? _contenidoActual;
-        private string _colorPrimario = "#3B82F6";
-        private string _colorSecundario = "#1E40AF";
+        private string _colorPrimario = "#9d3d1c";
+        private string _colorSecundario = "#32261f";
         private string _nombreNegocio = string.Empty;
         private readonly IProductoService _productoService;
         private readonly IVentaService _ventaService;
@@ -92,8 +92,8 @@ namespace ArtesaniasPOS.Core.ViewModels
             var config = await _configuracionService.ObtenerTodasAsync();
 
             NombreNegocio = config.GetValueOrDefault("NombreNegocio", "ArtesaniasPOS");
-            ColorPrimario = config.GetValueOrDefault("ColorPrimario", "#3B82F6");
-            ColorSecundario = config.GetValueOrDefault("ColorSecundario", "#1E40AF");
+            ColorPrimario = config.GetValueOrDefault("ColorPrimario", "#9d3d1c");
+            ColorSecundario = config.GetValueOrDefault("ColorSecundario", "#32261f");
 
 
             if (MenuItems.Count > 0)

@@ -178,8 +178,8 @@ namespace ArtesaniasPOS.Data.Database
                     ('Direccion',       '',  'Dirección del negocio'),
                     ('Email',           '',  'Email de contacto'),
                     ('LogoPath',        '',  'Ruta del logo'),
-                    ('ColorPrimario',   '#3B82F6', 'Color principal de la app'),
-                    ('ColorSecundario', '#1E40AF', 'Color secundario de la app'),
+                    ('ColorPrimario',   '#9d3d1c', 'Color principal de la app'),
+                    ('ColorSecundario', '#32261f', 'Color secundario de la app'),
                     ('TipoNegocio',     '',  'Tipo de negocio'),
                     ('WizardCompletado','0', 'Si ya se completó la configuración inicial');
 

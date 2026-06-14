@@ -4,186 +4,149 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
-             d:DesignHeight="550" d:DesignWidth="700">
+             d:DesignHeight="560" d:DesignWidth="640">
 
-    <Grid>
+    <UserControl.Resources>
+        <Style x:Key="WizardField" TargetType="TextBox">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#ddc0b8"/>
+            <Setter Property="BorderThickness" Value="1.5"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border x:Name="Bd"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8">
+                            <ScrollViewer x:Name="PART_ContentHost"
+                                          Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="#9d3d1c"/>
+                                <Setter TargetName="Bd" Property="BorderThickness" Value="2"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="WizardPasswordField" TargetType="PasswordBox">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#ddc0b8"/>
+            <Setter Property="BorderThickness" Value="1.5"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="PasswordBox">
+                        <Border x:Name="Bd"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8">
+                            <ScrollViewer x:Name="PART_ContentHost"
+                                          Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="#9d3d1c"/>
+                                <Setter TargetName="Bd" Property="BorderThickness" Value="2"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="FieldLabel" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="#56423c"/>
+            <Setter Property="Margin" Value="0,0,0,6"/>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Background="#fbf9f7">
         <ScrollViewer VerticalScrollBarVisibility="Auto"
                       HorizontalScrollBarVisibility="Disabled">
+            <StackPanel MaxWidth="460" Margin="40,32" HorizontalAlignment="Center">
 
-            <StackPanel MaxWidth="520" Margin="40,20"
-                        HorizontalAlignment="Center">
-
-                <!-- Título -->
-                <TextBlock Text="🔐 Usuario administrador"
-                           FontSize="26" FontWeight="Bold"
-                           Foreground="#1F2937"
-                           Margin="0,0,0,5"/>
-                <TextBlock Text="Configura tus credenciales de acceso al sistema."
-                           FontSize="13" Foreground="#6B7280"
-                           Margin="0,0,0,25"/>
+                <!-- Encabezado -->
+                <TextBlock Text="Acceso al sistema" FontFamily="Palatino Linotype"
+                           FontSize="30" FontWeight="Bold" Foreground="#9d3d1c"
+                           Margin="0,0,0,4"/>
+                <TextBlock Text="Crea las credenciales para el administrador principal."
+                           FontFamily="Segoe UI" FontSize="13" Foreground="#8a726b"
+                           Margin="0,0,0,24"/>
 
                 <!-- Aviso de seguridad -->
-                <Border Background="#FEF3C7" CornerRadius="8"
-                        Padding="12" Margin="0,0,0,20">
-                    <TextBlock TextWrapping="Wrap" FontSize="12"
-                               Foreground="#92400E">
-                        <Run FontWeight="SemiBold">⚠️ Importante:</Run>
-                        <Run> Cambia las credenciales por defecto para proteger tu negocio.</Run>
-                    </TextBlock>
+                <Border Background="#ffdbd0" CornerRadius="10"
+                        BorderBrush="#ffb59e" BorderThickness="1"
+                        Padding="14,12" Margin="0,0,0,24">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="🔑" FontSize="18" VerticalAlignment="Center"
+                                   Margin="0,0,10,0"/>
+                        <TextBlock FontFamily="Segoe UI" FontSize="12" Foreground="#9d3d1c"
+                                   TextWrapping="Wrap" VerticalAlignment="Center">
+                            <Run FontWeight="SemiBold">Importante:</Run>
+                            <Run> Guarda bien estas credenciales. Las necesitarás para iniciar sesión.</Run>
+                        </TextBlock>
+                    </StackPanel>
                 </Border>
 
                 <!-- Nombre completo -->
-                <TextBlock Text="Nombre completo *"
-                           FontSize="13" FontWeight="SemiBold"
-                           Foreground="#374151" Margin="0,0,0,6"/>
+                <TextBlock Text="Nombre completo *" Style="{StaticResource FieldLabel}"/>
                 <TextBox Text="{Binding Nombre, UpdateSourceTrigger=PropertyChanged}"
-                         Padding="12,10" FontSize="14"
-                         MaxLength="100">
-                    <TextBox.Style>
-                        <Style TargetType="TextBox">
-                            <Setter Property="Background" Value="#F9FAFB"/>
-                            <Setter Property="BorderBrush" Value="#D1D5DB"/>
-                            <Setter Property="BorderThickness" Value="1.5"/>
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="TextBox">
-                                        <Border Background="{TemplateBinding Background}"
-                                                BorderBrush="{TemplateBinding BorderBrush}"
-                                                BorderThickness="{TemplateBinding BorderThickness}"
-                                                CornerRadius="8">
-                                            <ScrollViewer x:Name="PART_ContentHost"
-                                                          Margin="{TemplateBinding Padding}"/>
-                                        </Border>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </TextBox.Style>
-                </TextBox>
+                         Padding="12,11" MaxLength="100"
+                         Style="{StaticResource WizardField}"
+                         Margin="0,0,0,18"/>
 
                 <!-- Nombre de usuario -->
-                <TextBlock Text="Nombre de usuario *"
-                           FontSize="13" FontWeight="SemiBold"
-                           Foreground="#374151" Margin="0,16,0,6"/>
+                <TextBlock Text="Nombre de usuario *" Style="{StaticResource FieldLabel}"/>
                 <TextBox Text="{Binding NombreUsuario, UpdateSourceTrigger=PropertyChanged}"
-                         Padding="12,10" FontSize="14"
-                         MaxLength="50">
-                    <TextBox.Style>
-                        <Style TargetType="TextBox">
-                            <Setter Property="Background" Value="#F9FAFB"/>
-                            <Setter Property="BorderBrush" Value="#D1D5DB"/>
-                            <Setter Property="BorderThickness" Value="1.5"/>
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="TextBox">
-                                        <Border Background="{TemplateBinding Background}"
-                                                BorderBrush="{TemplateBinding BorderBrush}"
-                                                BorderThickness="{TemplateBinding BorderThickness}"
-                                                CornerRadius="8">
-                                            <ScrollViewer x:Name="PART_ContentHost"
-                                                          Margin="{TemplateBinding Padding}"/>
-                                        </Border>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </TextBox.Style>
-                </TextBox>
+                         Padding="12,11" MaxLength="50"
+                         Style="{StaticResource WizardField}"
+                         Margin="0,0,0,18"/>
 
                 <!-- Contraseña -->
                 <TextBlock Text="Contraseña * (mínimo 6 caracteres)"
-                           FontSize="13" FontWeight="SemiBold"
-                           Foreground="#374151" Margin="0,16,0,6"/>
+                           Style="{StaticResource FieldLabel}"/>
                 <PasswordBox x:Name="PasswordField"
-                             Padding="12,10" FontSize="14"
-                             MaxLength="50"
-                             PasswordChanged="OnPasswordChanged">
-                    <PasswordBox.Style>
-                        <Style TargetType="PasswordBox">
-                            <Setter Property="Background" Value="#F9FAFB"/>
-                            <Setter Property="BorderBrush" Value="#D1D5DB"/>
-                            <Setter Property="BorderThickness" Value="1.5"/>
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="PasswordBox">
-                                        <Border Background="{TemplateBinding Background}"
-                                                BorderBrush="{TemplateBinding BorderBrush}"
-                                                BorderThickness="{TemplateBinding BorderThickness}"
-                                                CornerRadius="8">
-                                            <ScrollViewer x:Name="PART_ContentHost"
-                                                          Margin="{TemplateBinding Padding}"/>
-                                        </Border>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </PasswordBox.Style>
-                </PasswordBox>
+                             Padding="12,11" MaxLength="50"
+                             Style="{StaticResource WizardPasswordField}"
+                             PasswordChanged="OnPasswordChanged"
+                             Margin="0,0,0,18"/>
 
                 <!-- Confirmar contraseña -->
-                <TextBlock Text="Confirmar contraseña *"
-                           FontSize="13" FontWeight="SemiBold"
-                           Foreground="#374151" Margin="0,16,0,6"/>
+                <TextBlock Text="Confirmar contraseña *" Style="{StaticResource FieldLabel}"/>
                 <PasswordBox x:Name="ConfirmPasswordField"
-                             Padding="12,10" FontSize="14"
-                             MaxLength="50"
-                             PasswordChanged="OnConfirmPasswordChanged">
-                    <PasswordBox.Style>
-                        <Style TargetType="PasswordBox">
-                            <Setter Property="Background" Value="#F9FAFB"/>
-                            <Setter Property="BorderBrush" Value="#D1D5DB"/>
-                            <Setter Property="BorderThickness" Value="1.5"/>
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="PasswordBox">
-                                        <Border Background="{TemplateBinding Background}"
-                                                BorderBrush="{TemplateBinding BorderBrush}"
-                                                BorderThickness="{TemplateBinding BorderThickness}"
-                                                CornerRadius="8">
-                                            <ScrollViewer x:Name="PART_ContentHost"
-                                                          Margin="{TemplateBinding Padding}"/>
-                                        </Border>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </PasswordBox.Style>
-                </PasswordBox>
+                             Padding="12,11" MaxLength="50"
+                             Style="{StaticResource WizardPasswordField}"
+                             PasswordChanged="OnConfirmPasswordChanged"
+                             Margin="0,0,0,8"/>
 
                 <!-- Indicador de coincidencia -->
                 <TextBlock x:Name="PasswordMatchIndicator"
-                           FontSize="12" Margin="0,8,0,0"
+                           FontFamily="Segoe UI" FontSize="12"
+                           Margin="0,0,0,0"
                            Visibility="Collapsed"/>
 
-                <!-- Mensaje de error -->
-                <Border x:Name="ErrorBorder"
-                        Background="#FEE2E2" CornerRadius="8"
-                        Padding="12" Margin="0,15,0,0"
-                        Visibility="{Binding MensajeError, 
+                <!-- Error -->
+                <Border Background="#ffdad6" CornerRadius="8"
+                        BorderBrush="#ffb4ab" BorderThickness="1"
+                        Padding="12,10" Margin="0,14,0,0"
+                        Visibility="{Binding MensajeError,
                             Converter={StaticResource StringToVisibilityConverter},
                             FallbackValue=Collapsed}">
                     <TextBlock Text="{Binding MensajeError}"
-                               FontSize="12" Foreground="#DC2626"
-                               TextWrapping="Wrap"/>
+                               FontFamily="Segoe UI" FontSize="12"
+                               Foreground="#ba1a1a" TextWrapping="Wrap"/>
                 </Border>
 
-                <!-- Indicador de pasos -->
-                <StackPanel Orientation="Horizontal"
-                            HorizontalAlignment="Center"
-                            Margin="0,25,0,5">
-                    <Border Width="50" Height="6" CornerRadius="3"
-                            Background="#10B981" Margin="4,0"/>
-                    <Border Width="50" Height="6" CornerRadius="3"
-                            Background="#10B981" Margin="4,0"/>
-                    <Border Width="50" Height="6" CornerRadius="3"
-                            Background="#10B981" Margin="4,0"/>
-                    <Border Width="50" Height="6" CornerRadius="3"
-                            Background="#3B82F6" Margin="4,0"/>
-                </StackPanel>
-                <TextBlock Text="Paso 4 de 4 — Último paso"
-                           FontSize="12" Foreground="#9CA3AF"
-                           HorizontalAlignment="Center"
-                           Margin="0,0,0,20"/>
             </StackPanel>
         </ScrollViewer>
     </Grid>
