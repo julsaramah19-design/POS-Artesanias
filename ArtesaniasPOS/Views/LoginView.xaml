@@ -4,99 +4,122 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
-             d:DesignHeight="600" d:DesignWidth="800">
+             d:DesignHeight="600" d:DesignWidth="800"
+             Background="{StaticResource BackgroundBrush}">
 
+    <!-- Full-screen background with decorative circles -->
     <Grid>
-        <Grid.ColumnDefinitions>
-            <!-- Panel izquierdo decorativo -->
-            <ColumnDefinition Width="1.2*"/>
-            <!-- Panel derecho con formulario -->
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
+        <!-- Decorative circle top-left -->
+        <Border Width="520" Height="520"
+                CornerRadius="260"
+                Background="#9d3d1c"
+                Opacity="0.07"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                Margin="-180,-180,0,0"/>
 
-        <!-- Panel izquierdo: branding -->
-        <Border Grid.Column="0" CornerRadius="0">
-            <Border.Background>
-                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                    <GradientStop Color="#3B82F6" Offset="0"/>
-                    <GradientStop Color="#8B5CF6" Offset="0.5"/>
-                    <GradientStop Color="#EC4899" Offset="1"/>
-                </LinearGradientBrush>
-            </Border.Background>
+        <!-- Decorative circle bottom-right -->
+        <Border Width="400" Height="400"
+                CornerRadius="200"
+                Background="#9d3d1c"
+                Opacity="0.07"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                Margin="0,0,-140,-140"/>
 
-            <StackPanel VerticalAlignment="Center"
-                        HorizontalAlignment="Center"
-                        Margin="40">
+        <!-- Decorative small accent circle -->
+        <Border Width="200" Height="200"
+                CornerRadius="100"
+                Background="#9d3d1c"
+                Opacity="0.05"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                Margin="0,60,80,0"/>
 
-                <!-- Ícono -->
-                <Border Width="90" Height="90" CornerRadius="20"
-                        Background="#FFFFFF20"
-                        HorizontalAlignment="Center"
-                        Margin="0,0,0,25">
-                    <TextBlock Text="🛍️" FontSize="42"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center"/>
-                </Border>
+        <!-- Centered login card -->
+        <Border MaxWidth="460"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Background="White"
+                CornerRadius="16"
+                BorderBrush="#ddc0b8"
+                BorderThickness="1"
+                Padding="48,44">
+            <Border.Effect>
+                <DropShadowEffect Color="#56423c"
+                                  Opacity="0.12"
+                                  BlurRadius="32"
+                                  ShadowDepth="4"
+                                  Direction="270"/>
+            </Border.Effect>
 
-                <TextBlock Text="ArtesaniasPOS"
-                           FontSize="32" FontWeight="Bold"
-                           Foreground="White"
+            <StackPanel>
+                <!-- Brand header -->
+                <TextBlock Text="Artesanías"
+                           FontFamily="Palatino Linotype"
+                           FontSize="42"
+                           FontWeight="Bold"
+                           Foreground="#9d3d1c"
                            HorizontalAlignment="Center"
-                           Margin="0,0,0,10"/>
+                           Margin="0,0,0,4"/>
 
-                <TextBlock Text="{Binding NombreNegocio}"
-                           FontSize="16"
-                           Foreground="#FFFFFFCC"
-                           HorizontalAlignment="Center"
-                           Margin="0,0,0,30"/>
-
-                <TextBlock Text="Tu sistema de ventas&#x0a;rápido, fácil y confiable."
+                <TextBlock Text="POS Profesional"
+                           FontFamily="Segoe UI"
                            FontSize="14"
-                           Foreground="#FFFFFF99"
-                           TextAlignment="Center"
-                           TextWrapping="Wrap"
-                           LineHeight="22"
-                           HorizontalAlignment="Center"/>
-            </StackPanel>
-        </Border>
+                           Foreground="#56423c"
+                           HorizontalAlignment="Center"
+                           Margin="0,0,0,20"/>
 
-        <!-- Panel derecho: formulario de login -->
-        <Grid Grid.Column="1" Background="White">
-            <StackPanel VerticalAlignment="Center"
-                        MaxWidth="320"
-                        Margin="40,0">
+                <!-- Decorative divider -->
+                <Grid Margin="0,0,0,28" HorizontalAlignment="Center" Width="200">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0" Height="1" Background="#ddc0b8" VerticalAlignment="Center"/>
+                    <Border Grid.Column="1" Width="8" Height="8" CornerRadius="4" Background="#9d3d1c" Margin="10,0"/>
+                    <Border Grid.Column="2" Height="1" Background="#ddc0b8" VerticalAlignment="Center"/>
+                </Grid>
 
-                <TextBlock Text="Iniciar sesión"
-                           FontSize="26" FontWeight="Bold"
-                           Foreground="#1F2937"
-                           Margin="0,0,0,8"/>
-
-                <TextBlock Text="Ingresa tus credenciales para continuar"
-                           FontSize="13" Foreground="#6B7280"
-                           Margin="0,0,0,30"/>
-
-                <!-- Usuario -->
+                <!-- Usuario label -->
                 <TextBlock Text="Usuario"
-                           FontSize="13" FontWeight="SemiBold"
-                           Foreground="#374151" Margin="0,0,0,6"/>
+                           FontFamily="Segoe UI"
+                           FontSize="12"
+                           FontWeight="SemiBold"
+                           Foreground="#56423c"
+                           Margin="0,0,0,6"/>
+
+                <!-- Usuario field -->
                 <TextBox Text="{Binding NombreUsuario, UpdateSourceTrigger=PropertyChanged}"
-                         Padding="12,10" FontSize="14"
-                         MaxLength="50">
+                         MaxLength="50"
+                         FontFamily="Segoe UI"
+                         FontSize="14"
+                         Foreground="#1b1c1b"
+                         Background="#f5f3f1"
+                         BorderBrush="#ddc0b8"
+                         BorderThickness="1.5"
+                         Padding="14,11"
+                         Margin="0,0,0,0">
                     <TextBox.Style>
                         <Style TargetType="TextBox">
-                            <Setter Property="Background" Value="#F9FAFB"/>
-                            <Setter Property="BorderBrush" Value="#D1D5DB"/>
-                            <Setter Property="BorderThickness" Value="1.5"/>
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="TextBox">
-                                        <Border Background="{TemplateBinding Background}"
+                                        <Border x:Name="TBBorder"
+                                                Background="{TemplateBinding Background}"
                                                 BorderBrush="{TemplateBinding BorderBrush}"
                                                 BorderThickness="{TemplateBinding BorderThickness}"
                                                 CornerRadius="8">
                                             <ScrollViewer x:Name="PART_ContentHost"
                                                           Margin="{TemplateBinding Padding}"/>
                                         </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsFocused" Value="True">
+                                                <Setter TargetName="TBBorder" Property="BorderBrush" Value="#9d3d1c"/>
+                                                <Setter TargetName="TBBorder" Property="Background" Value="White"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
                                     </ControlTemplate>
                                 </Setter.Value>
                             </Setter>
@@ -104,95 +127,118 @@
                     </TextBox.Style>
                 </TextBox>
 
-                <!-- Contraseña -->
+                <!-- Contraseña label -->
                 <TextBlock Text="Contraseña"
-                           FontSize="13" FontWeight="SemiBold"
-                           Foreground="#374151" Margin="0,18,0,6"/>
-                <PasswordBox x:Name="PasswordField"
-                             Padding="12,10" FontSize="14"
-                             MaxLength="50"
-                             PasswordChanged="OnPasswordChanged">
-                    <PasswordBox.Style>
-                        <Style TargetType="PasswordBox">
-                            <Setter Property="Background" Value="#F9FAFB"/>
-                            <Setter Property="BorderBrush" Value="#D1D5DB"/>
-                            <Setter Property="BorderThickness" Value="1.5"/>
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="PasswordBox">
-                                        <Border Background="{TemplateBinding Background}"
-                                                BorderBrush="{TemplateBinding BorderBrush}"
-                                                BorderThickness="{TemplateBinding BorderThickness}"
-                                                CornerRadius="8">
-                                            <ScrollViewer x:Name="PART_ContentHost"
-                                                          Margin="{TemplateBinding Padding}"/>
-                                        </Border>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </PasswordBox.Style>
-                </PasswordBox>
+                           FontFamily="Segoe UI"
+                           FontSize="12"
+                           FontWeight="SemiBold"
+                           Foreground="#56423c"
+                           Margin="0,18,0,6"/>
 
-                <!-- Mensaje de error -->
-                <Border Background="#FEE2E2" CornerRadius="8"
-                        Padding="12" Margin="0,18,0,0"
-                        Visibility="{Binding MensajeError, 
+                <!-- Contraseña field with show/hide overlay -->
+                <Grid>
+                    <PasswordBox x:Name="PasswordField"
+                                 MaxLength="50"
+                                 FontSize="14"
+                                 Padding="14,11"
+                                 PasswordChanged="OnPasswordChanged"
+                                 Background="#f5f3f1"
+                                 BorderBrush="#ddc0b8"
+                                 BorderThickness="1.5">
+                        <PasswordBox.Style>
+                            <Style TargetType="PasswordBox">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="PasswordBox">
+                                            <Border x:Name="PBBorder"
+                                                    Background="{TemplateBinding Background}"
+                                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                                    CornerRadius="8">
+                                                <ScrollViewer x:Name="PART_ContentHost"
+                                                              Margin="{TemplateBinding Padding}"/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsFocused" Value="True">
+                                                    <Setter TargetName="PBBorder" Property="BorderBrush" Value="#9d3d1c"/>
+                                                    <Setter TargetName="PBBorder" Property="Background" Value="White"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </PasswordBox.Style>
+                    </PasswordBox>
+
+                    <!-- Eye icon toggle (decorative, right-aligned inside field) -->
+                    <TextBlock Text="&#x1F441;"
+                               FontSize="13"
+                               Foreground="#8a726b"
+                               HorizontalAlignment="Right"
+                               VerticalAlignment="Center"
+                               Margin="0,0,14,0"
+                               IsHitTestVisible="False"/>
+                </Grid>
+
+                <!-- Error message -->
+                <Border Background="#ffdad6"
+                        CornerRadius="8"
+                        Padding="14,10"
+                        Margin="0,18,0,0"
+                        Visibility="{Binding MensajeError,
                             Converter={StaticResource StringToVisibilityConverter}}">
-                    <TextBlock Text="{Binding MensajeError}"
-                               FontSize="12" Foreground="#DC2626"
-                               TextWrapping="Wrap"/>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#x26A0;"
+                                   FontSize="13"
+                                   Foreground="#ba1a1a"
+                                   Margin="0,0,8,0"
+                                   VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding MensajeError}"
+                                   FontFamily="Segoe UI"
+                                   FontSize="12"
+                                   Foreground="#ba1a1a"
+                                   TextWrapping="Wrap"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
                 </Border>
 
-                <!-- Botón login -->
-                <Button Content="Entrar"
+                <!-- Login button -->
+                <Button Content="Iniciar sesión"
                         Command="{Binding LoginCommand}"
-                        Padding="14,12"
-                        FontSize="15" FontWeight="SemiBold"
+                        Padding="14,13"
+                        FontSize="15"
+                        FontWeight="SemiBold"
+                        FontFamily="Segoe UI"
+                        Cursor="Hand"
                         Margin="0,22,0,0"
-                        Cursor="Hand">
-                    <Button.Style>
-                        <Style TargetType="Button">
-                            <Setter Property="Foreground" Value="White"/>
-                            <Setter Property="BorderThickness" Value="0"/>
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="Button">
-                                        <Border x:Name="BtnBorder"
-                                                CornerRadius="8"
-                                                Padding="{TemplateBinding Padding}">
-                                            <Border.Background>
-                                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                                    <GradientStop Color="#3B82F6" Offset="0"/>
-                                                    <GradientStop Color="#8B5CF6" Offset="1"/>
-                                                </LinearGradientBrush>
-                                            </Border.Background>
-                                            <ContentPresenter HorizontalAlignment="Center"
-                                                              VerticalAlignment="Center"/>
-                                        </Border>
-                                        <ControlTemplate.Triggers>
-                                            <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter TargetName="BtnBorder" Property="Opacity" Value="0.9"/>
-                                            </Trigger>
-                                            <Trigger Property="IsEnabled" Value="False">
-                                                <Setter TargetName="BtnBorder" Property="Opacity" Value="0.5"/>
-                                            </Trigger>
-                                        </ControlTemplate.Triggers>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </Button.Style>
-                </Button>
+                        Style="{StaticResource ButtonPrimary}"/>
 
-                <!-- Loading -->
+                <!-- Loading indicator -->
                 <TextBlock Text="Verificando..."
-                           FontSize="12" Foreground="#6B7280"
+                           FontFamily="Segoe UI"
+                           FontSize="12"
+                           Foreground="#8a726b"
                            HorizontalAlignment="Center"
-                           Margin="0,10,0,0"
-                           Visibility="{Binding IsLoading, 
+                           Margin="0,12,0,0"
+                           Visibility="{Binding IsLoading,
                                Converter={StaticResource BoolToVisibilityConverter}}"/>
+
+                <!-- Footer -->
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Center"
+                            Margin="0,24,0,0">
+                    <Border Width="8" Height="8" CornerRadius="4"
+                            Background="#9d3d1c"
+                            Margin="0,0,8,0"
+                            VerticalAlignment="Center"/>
+                    <TextBlock Text="Versión 1.0  ·  Sistema POS Artesanías"
+                               FontFamily="Segoe UI"
+                               FontSize="11"
+                               Foreground="#8a726b"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
             </StackPanel>
-        </Grid>
+        </Border>
     </Grid>
 </UserControl>
