@@ -4,229 +4,137 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
-             d:DesignHeight="550" d:DesignWidth="700">
+             d:DesignHeight="580" d:DesignWidth="640">
 
-    <Grid>
+    <UserControl.Resources>
+        <!-- Campo de texto reutilizable -->
+        <Style x:Key="WizardField" TargetType="TextBox">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#ddc0b8"/>
+            <Setter Property="BorderThickness" Value="1.5"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border x:Name="Bd"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8">
+                            <ScrollViewer x:Name="PART_ContentHost"
+                                          Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="#9d3d1c"/>
+                                <Setter TargetName="Bd" Property="BorderThickness" Value="2"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="FieldLabel" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="#56423c"/>
+            <Setter Property="Margin" Value="0,0,0,6"/>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Background="#fbf9f7">
         <ScrollViewer VerticalScrollBarVisibility="Auto"
                       HorizontalScrollBarVisibility="Disabled">
+            <StackPanel MaxWidth="500" Margin="40,32" HorizontalAlignment="Center">
 
-            <StackPanel MaxWidth="520" Margin="40,20"
-                        HorizontalAlignment="Center">
+                <!-- Encabezado del paso -->
+                <TextBlock Text="Tu negocio" FontFamily="Palatino Linotype"
+                           FontSize="30" FontWeight="Bold" Foreground="#9d3d1c"
+                           Margin="0,0,0,4"/>
+                <TextBlock Text="Esta información aparecerá en tus recibos y facturas."
+                           FontFamily="Segoe UI" FontSize="13" Foreground="#8a726b"
+                           Margin="0,0,0,28"/>
 
-                <!-- Título del paso -->
-                <TextBlock Text="🏪 Datos de tu negocio"
-                           FontSize="26" FontWeight="Bold"
-                           Foreground="#1F2937"
-                           Margin="0,0,0,5"/>
-                <TextBlock Text="Esta información aparecerá en tus facturas y recibos."
-                           FontSize="13" Foreground="#6B7280"
-                           Margin="0,0,0,25"/>
-
-                <!-- Nombre del negocio (obligatorio) -->
-                <TextBlock Text="Nombre del negocio *"
-                           FontSize="13" FontWeight="SemiBold"
-                           Foreground="#374151" Margin="0,0,0,6"/>
+                <!-- Nombre del negocio -->
+                <TextBlock Text="Nombre del negocio *" Style="{StaticResource FieldLabel}"/>
                 <TextBox Text="{Binding NombreNegocio, UpdateSourceTrigger=PropertyChanged}"
-                         Padding="12,10" FontSize="14"
-                         MaxLength="100">
-                    <TextBox.Style>
-                        <Style TargetType="TextBox">
-                            <Setter Property="Background" Value="#F9FAFB"/>
-                            <Setter Property="BorderBrush" Value="#D1D5DB"/>
-                            <Setter Property="BorderThickness" Value="1.5"/>
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="TextBox">
-                                        <Border Background="{TemplateBinding Background}"
-                                                BorderBrush="{TemplateBinding BorderBrush}"
-                                                BorderThickness="{TemplateBinding BorderThickness}"
-                                                CornerRadius="8">
-                                            <ScrollViewer x:Name="PART_ContentHost"
-                                                          Margin="{TemplateBinding Padding}"/>
-                                        </Border>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </TextBox.Style>
-                </TextBox>
+                         Padding="12,11" MaxLength="100"
+                         Style="{StaticResource WizardField}"
+                         Margin="0,0,0,18"/>
 
                 <!-- NIT -->
-                <TextBlock Text="NIT / Cédula"
-                           FontSize="13" FontWeight="SemiBold"
-                           Foreground="#374151" Margin="0,16,0,6"/>
+                <TextBlock Text="NIT / Cédula" Style="{StaticResource FieldLabel}"/>
                 <TextBox Text="{Binding NIT, UpdateSourceTrigger=PropertyChanged}"
-                         Padding="12,10" FontSize="14"
-                         MaxLength="20">
-                    <TextBox.Style>
-                        <Style TargetType="TextBox">
-                            <Setter Property="Background" Value="#F9FAFB"/>
-                            <Setter Property="BorderBrush" Value="#D1D5DB"/>
-                            <Setter Property="BorderThickness" Value="1.5"/>
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="TextBox">
-                                        <Border Background="{TemplateBinding Background}"
-                                                BorderBrush="{TemplateBinding BorderBrush}"
-                                                BorderThickness="{TemplateBinding BorderThickness}"
-                                                CornerRadius="8">
-                                            <ScrollViewer x:Name="PART_ContentHost"
-                                                          Margin="{TemplateBinding Padding}"/>
-                                        </Border>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </TextBox.Style>
-                </TextBox>
+                         Padding="12,11" MaxLength="20"
+                         Style="{StaticResource WizardField}"
+                         Margin="0,0,0,18"/>
 
-                <!-- Teléfono y Email en fila -->
-                <Grid Margin="0,16,0,0">
+                <!-- Teléfono + Email -->
+                <Grid Margin="0,0,0,18">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="16"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-
                     <StackPanel Grid.Column="0">
-                        <TextBlock Text="Teléfono"
-                                   FontSize="13" FontWeight="SemiBold"
-                                   Foreground="#374151" Margin="0,0,0,6"/>
+                        <TextBlock Text="Teléfono" Style="{StaticResource FieldLabel}"/>
                         <TextBox Text="{Binding Telefono, UpdateSourceTrigger=PropertyChanged}"
-                                 Padding="12,10" FontSize="14"
-                                 MaxLength="15">
-                            <TextBox.Style>
-                                <Style TargetType="TextBox">
-                                    <Setter Property="Background" Value="#F9FAFB"/>
-                                    <Setter Property="BorderBrush" Value="#D1D5DB"/>
-                                    <Setter Property="BorderThickness" Value="1.5"/>
-                                    <Setter Property="Template">
-                                        <Setter.Value>
-                                            <ControlTemplate TargetType="TextBox">
-                                                <Border Background="{TemplateBinding Background}"
-                                                        BorderBrush="{TemplateBinding BorderBrush}"
-                                                        BorderThickness="{TemplateBinding BorderThickness}"
-                                                        CornerRadius="8">
-                                                    <ScrollViewer x:Name="PART_ContentHost"
-                                                                  Margin="{TemplateBinding Padding}"/>
-                                                </Border>
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                            </TextBox.Style>
-                        </TextBox>
+                                 Padding="12,11" MaxLength="15"
+                                 Style="{StaticResource WizardField}"/>
                     </StackPanel>
-
                     <StackPanel Grid.Column="2">
-                        <TextBlock Text="Email"
-                                   FontSize="13" FontWeight="SemiBold"
-                                   Foreground="#374151" Margin="0,0,0,6"/>
+                        <TextBlock Text="Email" Style="{StaticResource FieldLabel}"/>
                         <TextBox Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}"
-                                 Padding="12,10" FontSize="14"
-                                 MaxLength="100">
-                            <TextBox.Style>
-                                <Style TargetType="TextBox">
-                                    <Setter Property="Background" Value="#F9FAFB"/>
-                                    <Setter Property="BorderBrush" Value="#D1D5DB"/>
-                                    <Setter Property="BorderThickness" Value="1.5"/>
-                                    <Setter Property="Template">
-                                        <Setter.Value>
-                                            <ControlTemplate TargetType="TextBox">
-                                                <Border Background="{TemplateBinding Background}"
-                                                        BorderBrush="{TemplateBinding BorderBrush}"
-                                                        BorderThickness="{TemplateBinding BorderThickness}"
-                                                        CornerRadius="8">
-                                                    <ScrollViewer x:Name="PART_ContentHost"
-                                                                  Margin="{TemplateBinding Padding}"/>
-                                                </Border>
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                            </TextBox.Style>
-                        </TextBox>
+                                 Padding="12,11" MaxLength="100"
+                                 Style="{StaticResource WizardField}"/>
                     </StackPanel>
                 </Grid>
 
                 <!-- Dirección -->
-                <TextBlock Text="Dirección"
-                           FontSize="13" FontWeight="SemiBold"
-                           Foreground="#374151" Margin="0,16,0,6"/>
+                <TextBlock Text="Dirección" Style="{StaticResource FieldLabel}"/>
                 <TextBox Text="{Binding Direccion, UpdateSourceTrigger=PropertyChanged}"
-                         Padding="12,10" FontSize="14"
-                         MaxLength="200">
-                    <TextBox.Style>
-                        <Style TargetType="TextBox">
-                            <Setter Property="Background" Value="#F9FAFB"/>
-                            <Setter Property="BorderBrush" Value="#D1D5DB"/>
-                            <Setter Property="BorderThickness" Value="1.5"/>
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="TextBox">
-                                        <Border Background="{TemplateBinding Background}"
-                                                BorderBrush="{TemplateBinding BorderBrush}"
-                                                BorderThickness="{TemplateBinding BorderThickness}"
-                                                CornerRadius="8">
-                                            <ScrollViewer x:Name="PART_ContentHost"
-                                                          Margin="{TemplateBinding Padding}"/>
-                                        </Border>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </TextBox.Style>
-                </TextBox>
+                         Padding="12,11" MaxLength="200"
+                         Style="{StaticResource WizardField}"
+                         Margin="0,0,0,18"/>
 
                 <!-- Logo -->
-                <TextBlock Text="Logo del negocio"
-                           FontSize="13" FontWeight="SemiBold"
-                           Foreground="#374151" Margin="0,16,0,6"/>
-
-                <Border BorderBrush="#D1D5DB" BorderThickness="1.5"
-                        CornerRadius="8" Background="#F9FAFB"
-                        Padding="15" Cursor="Hand"
-                        x:Name="LogoDropArea">
-
+                <TextBlock Text="Logo del negocio" Style="{StaticResource FieldLabel}"/>
+                <Border BorderBrush="#ddc0b8" BorderThickness="1.5"
+                        CornerRadius="10" Background="White"
+                        Padding="20,16" Cursor="Hand"
+                        x:Name="LogoDropArea" Margin="0,0,0,8">
                     <StackPanel HorizontalAlignment="Center">
-                        <!-- Preview del logo si existe -->
                         <Image x:Name="LogoPreview"
-                               MaxHeight="80" MaxWidth="200"
+                               MaxHeight="70" MaxWidth="180"
                                Margin="0,0,0,10"
                                Visibility="Collapsed"/>
-
-                        <TextBlock Text="📷 Click para seleccionar logo"
-                                   FontSize="13" Foreground="#6B7280"
+                        <TextBlock Text="📷  Clic para seleccionar logo"
+                                   FontFamily="Segoe UI" FontSize="13"
+                                   Foreground="#8a726b"
                                    HorizontalAlignment="Center"/>
-                        <TextBlock Text="PNG, JPG — máximo 2MB"
-                                   FontSize="11" Foreground="#9CA3AF"
+                        <TextBlock Text="PNG o JPG — máximo 2 MB"
+                                   FontFamily="Segoe UI" FontSize="11"
+                                   Foreground="#8a726b" Opacity="0.7"
                                    HorizontalAlignment="Center"
                                    Margin="0,4,0,0"/>
                     </StackPanel>
-
                     <Border.InputBindings>
                         <MouseBinding MouseAction="LeftClick"
                                       Command="{Binding SeleccionarLogoCommand}"/>
                     </Border.InputBindings>
                 </Border>
 
-                <!-- Indicador de pasos -->
-                <StackPanel Orientation="Horizontal"
-                            HorizontalAlignment="Center"
-                            Margin="0,25,0,5">
-                    <Border Width="50" Height="6" CornerRadius="3"
-                            Background="#10B981" Margin="4,0"/>
-                    <Border Width="50" Height="6" CornerRadius="3"
-                            Background="#3B82F6" Margin="4,0"/>
-                    <Border Width="50" Height="6" CornerRadius="3"
-                            Background="#E5E7EB" Margin="4,0"/>
-                    <Border Width="50" Height="6" CornerRadius="3"
-                            Background="#E5E7EB" Margin="4,0"/>
-                </StackPanel>
-                <TextBlock Text="Paso 2 de 4 — Tu negocio"
-                           FontSize="12" Foreground="#9CA3AF"
-                           HorizontalAlignment="Center"
-                           Margin="0,0,0,20"/>
+                <!-- Nota aclaratoria -->
+                <Border Background="#ffdbd0" CornerRadius="8" Padding="12,10" Margin="0,4,0,0">
+                    <TextBlock FontFamily="Segoe UI" FontSize="12" Foreground="#9d3d1c"
+                               TextWrapping="Wrap">
+                        <Run FontWeight="SemiBold">💡</Run>
+                        <Run> Puedes actualizar estos datos más adelante desde Configuración.</Run>
+                    </TextBlock>
+                </Border>
+
             </StackPanel>
         </ScrollViewer>
     </Grid>
