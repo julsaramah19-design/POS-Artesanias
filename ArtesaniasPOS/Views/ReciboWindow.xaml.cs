@@ -36,10 +36,17 @@ namespace ArtesaniasPOS.UI.Views.Ventas
             var sb = new System.Text.StringBuilder();
             sb.Append("\x1B\x40");
 
-            sb.Append("\x1B\x61\x01");      
-            sb.Append("\x1B\x21\x30");      
+            sb.Append("\x1B\x61\x01");
+            sb.Append("\x1B\x21\x30");
             sb.AppendLine(recibo.NombreNegocio);
             sb.Append("\x1B\x21\x00");
+
+            // Datos del negocio (centrados, fuente normal)
+            if (!string.IsNullOrWhiteSpace(recibo.Direccion))
+                sb.AppendLine(recibo.Direccion);
+            if (!string.IsNullOrWhiteSpace(recibo.Telefono))
+                sb.AppendLine("Tel: " + recibo.Telefono);
+
             sb.AppendLine(new string('=', 32));
 
             // Cabecera: alinear izquierda

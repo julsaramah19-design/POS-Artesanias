@@ -18,6 +18,15 @@
                 <!-- Encabezado -->
                 <TextBlock Text="{Binding NombreNegocio}" FontSize="16" FontWeight="Bold"
                            HorizontalAlignment="Center" Foreground="#1F2937"/>
+                <TextBlock Text="{Binding Direccion}" FontSize="11" FontFamily="Consolas"
+                           HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap"
+                           Foreground="#6B7280" Margin="0,2,0,0"
+                           Visibility="{Binding Direccion, Converter={StaticResource StringToVisibilityConverter}}"/>
+                <TextBlock FontSize="11" FontFamily="Consolas"
+                           HorizontalAlignment="Center" Foreground="#6B7280"
+                           Visibility="{Binding Telefono, Converter={StaticResource StringToVisibilityConverter}}">
+                    <Run Text="Tel: "/><Run Text="{Binding Telefono, Mode=OneWay}"/>
+                </TextBlock>
                 <TextBlock Text="================================"
                            FontFamily="Consolas" FontSize="11" Foreground="#9CA3AF"
                            HorizontalAlignment="Center" Margin="0,4,0,4"/>

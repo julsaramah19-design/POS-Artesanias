@@ -19,6 +19,7 @@ namespace ArtesaniasPOS.Core.ViewModels.Configuracion
             GuardarCommand = new AsyncRelayCommand(async _ => await GuardarAsync());
             EditarCommand = new RelayCommand(_ => PrepararEdicion(), _ => Seleccionado != null);
             EliminarCommand = new AsyncRelayCommand(async _ => await EliminarAsync(), _ => Seleccionado != null);
+            ToggleActivoCommand = new AsyncRelayCommand(async _ => await ToggleActivoAsync(), _ => Seleccionado != null);
             CancelarCommand = new RelayCommand(_ => LimpiarFormulario());
         }
 
@@ -32,6 +33,7 @@ namespace ArtesaniasPOS.Core.ViewModels.Configuracion
         public ICommand GuardarCommand { get; }
         public ICommand EditarCommand { get; }
         public ICommand EliminarCommand { get; }
+        public ICommand ToggleActivoCommand { get; }
         public ICommand CancelarCommand { get; }
 
         public async Task CargarAsync()
@@ -56,6 +58,7 @@ namespace ArtesaniasPOS.Core.ViewModels.Configuracion
             {
                 if (EsEdicion) await _service.ActualizarMedioPagoAsync(_editandoId, Nombre);
                 else await _service.CrearMedioPagoAsync(Nombre);
+                Core.Notifier.Exito(EsEdicion ? "Medio de pago actualizado" : "Medio de pago agregado");
                 LimpiarFormulario(); await CargarAsync();
             }
             catch (Exception ex) { MensajeError = $"Error: {ex.Message}"; }
@@ -65,6 +68,22 @@ namespace ArtesaniasPOS.Core.ViewModels.Configuracion
         {
             if (Seleccionado == null) return;
             await _service.DesactivarMedioPagoAsync(Seleccionado.Id);
+            await CargarAsync();
+        }
+
+        private async Task ToggleActivoAsync()
+        {
+            if (Seleccionado == null) return;
+            if (Seleccionado.Activo)
+            {
+                await _service.DesactivarMedioPagoAsync(Seleccionado.Id);
+                Core.Notifier.Info("Medio de pago desactivado");
+            }
+            else
+            {
+                await _service.ActivarMedioPagoAsync(Seleccionado.Id);
+                Core.Notifier.Exito("Medio de pago reactivado");
+            }
             await CargarAsync();
         }
 

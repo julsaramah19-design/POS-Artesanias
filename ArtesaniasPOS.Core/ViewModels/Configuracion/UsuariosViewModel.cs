@@ -25,6 +25,7 @@ namespace ArtesaniasPOS.Core.ViewModels.Configuracion
             GuardarCommand = new AsyncRelayCommand(async _ => await GuardarAsync());
             EditarCommand = new AsyncRelayCommand(async _ => PrepararEdicion(), _ => Seleccionado != null);
             EliminarCommand = new AsyncRelayCommand(async _ => await EliminarAsync(), _ => Seleccionado != null);
+            ToggleActivoCommand = new AsyncRelayCommand(async _ => await ToggleActivoAsync(), _ => Seleccionado != null);
             CancelarCommand = new RelayCommand(_ => { FormularioVisible = false; });
         }
 
@@ -46,6 +47,7 @@ namespace ArtesaniasPOS.Core.ViewModels.Configuracion
         public ICommand GuardarCommand { get; }
         public ICommand EditarCommand { get; }
         public ICommand EliminarCommand { get; }
+        public ICommand ToggleActivoCommand { get; }
         public ICommand CancelarCommand { get; }
 
         public async Task CargarAsync()
@@ -104,6 +106,7 @@ namespace ArtesaniasPOS.Core.ViewModels.Configuracion
                       Password = Password, PerfilId = PerfilSeleccionado.Id });
                     MensajeExito = "Usuario creado.";
                 }
+                Core.Notifier.Exito(MensajeExito);
                 FormularioVisible = false;
                 await CargarAsync();
             }
@@ -114,6 +117,22 @@ namespace ArtesaniasPOS.Core.ViewModels.Configuracion
         {
             if (Seleccionado == null) return;
             await _service.DesactivarUsuarioAsync(Seleccionado.Id);
+            await CargarAsync();
+        }
+
+        private async Task ToggleActivoAsync()
+        {
+            if (Seleccionado == null) return;
+            if (Seleccionado.Activo)
+            {
+                await _service.DesactivarUsuarioAsync(Seleccionado.Id);
+                Core.Notifier.Info("Usuario desactivado");
+            }
+            else
+            {
+                await _service.ActivarUsuarioAsync(Seleccionado.Id);
+                Core.Notifier.Exito("Usuario reactivado");
+            }
             await CargarAsync();
         }
     }

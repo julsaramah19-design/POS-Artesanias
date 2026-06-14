@@ -32,6 +32,26 @@ namespace ArtesaniasPOS.Data.Services
             var ahora = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
 
             using var connection = new SqliteConnection(_connectionString);
+
+            // ¿Ya existe ese nombre de usuario? (la columna es UNIQUE)
+            var existente = await connection.QueryFirstOrDefaultAsync<(int Id, long Activo)?>(
+                "SELECT Id, Activo FROM Usuario WHERE NombreUsuario = @u COLLATE NOCASE",
+                new { u = usuario.NombreUsuario });
+
+            if (existente is { } e)
+            {
+                if (e.Activo == 1)
+                    throw new InvalidOperationException(
+                        $"Ya existe un usuario con el nombre de usuario \"{usuario.NombreUsuario}\".");
+
+                // Estaba inactivo: lo reactivamos con los nuevos datos.
+                await connection.ExecuteAsync(@"
+                    UPDATE Usuario SET Nombre = @Nombre, PerfilId = @PerfilId,
+                           PasswordHash = @Hash, Activo = 1 WHERE Id = @Id",
+                    new { e.Id, usuario.Nombre, usuario.PerfilId, Hash = hash });
+                return;
+            }
+
             await connection.ExecuteAsync(@"
                 INSERT INTO Usuario (PerfilId, Nombre, NombreUsuario, PasswordHash, Activo, FechaCreacion)
                 VALUES (@PerfilId, @Nombre, @NombreUsuario, @Hash, 1, @Fecha)",
@@ -65,6 +85,12 @@ namespace ArtesaniasPOS.Data.Services
             await connection.ExecuteAsync("UPDATE Usuario SET Activo = 0 WHERE Id = @Id", new { Id = id });
         }
 
+        public async Task ActivarUsuarioAsync(int id)
+        {
+            using var connection = new SqliteConnection(_connectionString);
+            await connection.ExecuteAsync("UPDATE Usuario SET Activo = 1 WHERE Id = @Id", new { Id = id });
+        }
+
         public async Task<IEnumerable<PerfilDto>> ObtenerPerfilesAsync()
         {
             using var connection = new SqliteConnection(_connectionString);
@@ -83,9 +109,24 @@ namespace ArtesaniasPOS.Data.Services
 
         public async Task CrearCategoriaAsync(string nombre)
         {
+            var nombreT = nombre.Trim();
             using var connection = new SqliteConnection(_connectionString);
+
+            var existente = await connection.QueryFirstOrDefaultAsync<(int Id, long Activo)?>(
+                "SELECT Id, Activo FROM Categoria WHERE Nombre = @n COLLATE NOCASE", new { n = nombreT });
+
+            if (existente is { } e)
+            {
+                if (e.Activo == 1)
+                    throw new InvalidOperationException($"Ya existe una categoría llamada \"{nombreT}\".");
+
+                await connection.ExecuteAsync(
+                    "UPDATE Categoria SET Activo = 1, Nombre = @n WHERE Id = @Id", new { n = nombreT, e.Id });
+                return;
+            }
+
             await connection.ExecuteAsync(
-                "INSERT INTO Categoria (Nombre, Activo) VALUES (@Nombre, 1)", new { Nombre = nombre.Trim() });
+                "INSERT INTO Categoria (Nombre, Activo) VALUES (@Nombre, 1)", new { Nombre = nombreT });
         }
 
         public async Task ActualizarCategoriaAsync(int id, string nombre)
@@ -101,6 +142,12 @@ namespace ArtesaniasPOS.Data.Services
             await connection.ExecuteAsync("UPDATE Categoria SET Activo = 0 WHERE Id = @Id", new { Id = id });
         }
 
+        public async Task ActivarCategoriaAsync(int id)
+        {
+            using var connection = new SqliteConnection(_connectionString);
+            await connection.ExecuteAsync("UPDATE Categoria SET Activo = 1 WHERE Id = @Id", new { Id = id });
+        }
+
         // ===================== MEDIOS DE PAGO =====================
 
         public async Task<IEnumerable<MedioPagoAdminDto>> ObtenerMediosPagoAsync()
@@ -112,9 +159,24 @@ namespace ArtesaniasPOS.Data.Services
 
         public async Task CrearMedioPagoAsync(string nombre)
         {
+            var nombreT = nombre.Trim();
             using var connection = new SqliteConnection(_connectionString);
+
+            var existente = await connection.QueryFirstOrDefaultAsync<(int Id, long Activo)?>(
+                "SELECT Id, Activo FROM MedioPago WHERE Nombre = @n COLLATE NOCASE", new { n = nombreT });
+
+            if (existente is { } e)
+            {
+                if (e.Activo == 1)
+                    throw new InvalidOperationException($"Ya existe un medio de pago llamado \"{nombreT}\".");
+
+                await connection.ExecuteAsync(
+                    "UPDATE MedioPago SET Activo = 1, Nombre = @n WHERE Id = @Id", new { n = nombreT, e.Id });
+                return;
+            }
+
             await connection.ExecuteAsync(
-                "INSERT INTO MedioPago (Nombre, Activo) VALUES (@Nombre, 1)", new { Nombre = nombre.Trim() });
+                "INSERT INTO MedioPago (Nombre, Activo) VALUES (@Nombre, 1)", new { Nombre = nombreT });
         }
 
         public async Task ActualizarMedioPagoAsync(int id, string nombre)
@@ -128,6 +190,12 @@ namespace ArtesaniasPOS.Data.Services
         {
             using var connection = new SqliteConnection(_connectionString);
             await connection.ExecuteAsync("UPDATE MedioPago SET Activo = 0 WHERE Id = @Id", new { Id = id });
+        }
+
+        public async Task ActivarMedioPagoAsync(int id)
+        {
+            using var connection = new SqliteConnection(_connectionString);
+            await connection.ExecuteAsync("UPDATE MedioPago SET Activo = 1 WHERE Id = @Id", new { Id = id });
         }
     }
 }

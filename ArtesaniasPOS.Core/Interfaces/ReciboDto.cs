@@ -4,6 +4,8 @@
     {
         public int VentaId { get; set; }
         public string NombreNegocio { get; set; } = string.Empty;
+        public string Direccion { get; set; } = string.Empty;
+        public string Telefono { get; set; } = string.Empty;
         public string Vendedor { get; set; } = string.Empty;
         public DateTime Fecha { get; set; }
         public string MedioPago { get; set; } = string.Empty;

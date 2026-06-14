@@ -147,11 +147,12 @@ namespace ArtesaniasPOS.Core.ViewModels.Productos
 
         private async Task AbrirNuevoAsync()
         {
-            var codigo = await _productoService.GenerarCodigoBarrasAsync();
+            // El código inicia vacío: el usuario escanea el código de barras
+            // impreso del producto (o lo genera con el botón si no tiene uno).
             var categorias = await _productoService.ObtenerCategoriasAsync();
 
             FormularioVm = new ProductoFormularioViewModel(
-                _productoService, categorias, null, codigo);
+                _productoService, categorias, null, null);
 
             FormularioVm.Guardado += async (s, e) => { CerrarPanel(); await CargarProductosAsync(); };
             FormularioVm.Cancelado += (s, e) => CerrarPanel();
@@ -181,6 +182,7 @@ namespace ArtesaniasPOS.Core.ViewModels.Productos
         {
             if (ProductoSeleccionado == null) return;
             await _productoService.DesactivarAsync(ProductoSeleccionado.Id);
+            Core.Notifier.Info("Producto desactivado");
             await CargarProductosAsync();
         }
 

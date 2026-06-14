@@ -12,6 +12,7 @@
              xmlns:reportesViews="clr-namespace:ArtesaniasPOS.UI.Views.Reportes"
              xmlns:configVm="clr-namespace:ArtesaniasPOS.Core.ViewModels.Configuracion;assembly=ArtesaniasPOS.Core"
              xmlns:configViews="clr-namespace:ArtesaniasPOS.UI.Views.Configuracion"
+             xmlns:rootViews="clr-namespace:ArtesaniasPOS.UI.Views"
              mc:Ignorable="d"
              d:DesignHeight="600" d:DesignWidth="900">
 
@@ -36,6 +37,10 @@
                            HorizontalAlignment="Center"
                            Margin="0,8,0,0"/>
             </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type vm:InicioViewModel}">
+            <rootViews:InicioView/>
         </DataTemplate>
 
         <DataTemplate DataType="{x:Type prodVm:ProductosViewModel}">
