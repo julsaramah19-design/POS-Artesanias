@@ -30,5 +30,10 @@
                        FontSize="16" Foreground="#6B7280"
                        HorizontalAlignment="Center"/>
         </StackPanel>
+
+        <!-- Contenedor de notificaciones (toasts) -->
+        <StackPanel x:Name="ToastHost"
+                    VerticalAlignment="Top" HorizontalAlignment="Right"
+                    Margin="0,16,18,0" Panel.ZIndex="1000" IsHitTestVisible="False"/>
     </Grid>
 </Window>

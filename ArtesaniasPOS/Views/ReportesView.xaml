@@ -4,223 +4,308 @@
              d:DesignHeight="650" d:DesignWidth="950"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d">
-    <Grid Margin="25,20">
+             mc:Ignorable="d"
+             Background="#fbf9f7">
+
+    <UserControl.Resources>
+
+        <!-- Botón de rango rápido (Hoy / 7 días / 30 días) -->
+        <Style x:Key="RangoRapidoBtn" TargetType="Button">
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Margin" Value="0,0,6,0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd" Background="#f5f3f1" CornerRadius="8"
+                                Padding="14,7" BorderBrush="#ddc0b8" BorderThickness="1"
+                                TextElement.Foreground="#56423c">
+                            <ContentPresenter VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#efe2da"/>
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="#cbb4a8"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Botón primario (Filtrar) -->
+        <Style x:Key="BtnFiltrar" TargetType="Button">
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd" Background="#9d3d1c" CornerRadius="8" Padding="18,8">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="&#xE71C;" FontFamily="Segoe MDL2 Assets"
+                                           FontSize="12" Foreground="White"
+                                           VerticalAlignment="Center" Margin="0,0,7,0"/>
+                                <TextBlock Text="Filtrar" FontFamily="Segoe UI" FontSize="12.5"
+                                           FontWeight="SemiBold" Foreground="White"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#bd5532"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Tab segmentado con estado activo (Tag="active") -->
+        <Style x:Key="TabBtn" TargetType="Button">
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Margin" Value="0,0,6,0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd" Background="Transparent" CornerRadius="8"
+                                Padding="14,8" TextElement.Foreground="#56423c">
+                            <ContentPresenter VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#f0e6e0"/>
+                            </Trigger>
+                            <Trigger Property="Tag" Value="active">
+                                <Setter TargetName="Bd" Property="Background" Value="#9d3d1c"/>
+                                <Setter TargetName="Bd" Property="TextElement.Foreground" Value="White"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- DataGrid: encabezado -->
+        <Style x:Key="GridHeader" TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="#f5f3f1"/>
+            <Setter Property="Foreground" Value="#8a726b"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="Padding" Value="14,10"/>
+            <Setter Property="BorderBrush" Value="#e6dcd6"/>
+            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+        </Style>
+
+        <!-- DataGrid: celda -->
+        <Style x:Key="GridCell" TargetType="DataGridCell">
+            <Setter Property="Padding" Value="14,8"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Foreground" Value="#1b1c1b"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="DataGridCell">
+                        <Border Padding="{TemplateBinding Padding}" Background="{TemplateBinding Background}">
+                            <ContentPresenter VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- DataGrid: fila (con selección terracota) -->
+        <Style x:Key="GridRow" TargetType="DataGridRow">
+            <Setter Property="Background" Value="White"/>
+            <Style.Triggers>
+                <Trigger Property="AlternationIndex" Value="1">
+                    <Setter Property="Background" Value="#faf8f6"/>
+                </Trigger>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="#f7e8e1"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Margin="28,24">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- HEADER + FILTROS -->
-        <StackPanel Grid.Row="0" Margin="0,0,0,18">
-            <TextBlock Text="📊 Reportes" FontSize="24" FontWeight="Bold"
-                       Foreground="#1F2937" Margin="0,0,0,12"/>
-            <StackPanel Orientation="Horizontal">
-                <Button Command="{Binding HoyCommand}" Cursor="Hand" Margin="0,0,6,0">
-                    <Button.Style>
-                        <Style TargetType="Button">
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="Button">
-                                        <Border x:Name="Bd" Background="#EFF6FF" CornerRadius="6" Padding="14,7" BorderBrush="#BFDBFE" BorderThickness="1">
-                                            <TextBlock Text="Hoy" FontSize="12" FontWeight="SemiBold" Foreground="#2563EB"/>
-                                        </Border>
-                                        <ControlTemplate.Triggers>
-                                            <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter TargetName="Bd" Property="Background" Value="#DBEAFE"/>
-                                            </Trigger>
-                                        </ControlTemplate.Triggers>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </Button.Style>
-                </Button>
-                <Button Command="{Binding SemanaCommand}" Cursor="Hand" Margin="0,0,6,0">
-                    <Button.Style>
-                        <Style TargetType="Button">
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="Button">
-                                        <Border x:Name="Bd" Background="#F0FDF4" CornerRadius="6" Padding="14,7" BorderBrush="#BBF7D0" BorderThickness="1">
-                                            <TextBlock Text="7 días" FontSize="12" FontWeight="SemiBold" Foreground="#059669"/>
-                                        </Border>
-                                        <ControlTemplate.Triggers>
-                                            <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter TargetName="Bd" Property="Background" Value="#DCFCE7"/>
-                                            </Trigger>
-                                        </ControlTemplate.Triggers>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </Button.Style>
-                </Button>
-                <Button Command="{Binding MesCommand}" Cursor="Hand" Margin="0,0,20,0">
-                    <Button.Style>
-                        <Style TargetType="Button">
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="Button">
-                                        <Border x:Name="Bd" Background="#FFF7ED" CornerRadius="6" Padding="14,7" BorderBrush="#FED7AA" BorderThickness="1">
-                                            <TextBlock Text="30 días" FontSize="12" FontWeight="SemiBold" Foreground="#EA580C"/>
-                                        </Border>
-                                        <ControlTemplate.Triggers>
-                                            <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter TargetName="Bd" Property="Background" Value="#FFEDD5"/>
-                                            </Trigger>
-                                        </ControlTemplate.Triggers>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </Button.Style>
-                </Button>
-                <TextBlock Text="Desde:" FontSize="12" Foreground="#6B7280" VerticalAlignment="Center" Margin="0,0,6,0"/>
-                <DatePicker SelectedDate="{Binding FechaDesde}" FontSize="12" Margin="0,0,12,0"/>
-                <TextBlock Text="Hasta:" FontSize="12" Foreground="#6B7280" VerticalAlignment="Center" Margin="0,0,6,0"/>
-                <DatePicker SelectedDate="{Binding FechaHasta}" FontSize="12" Margin="0,0,12,0"/>
-                <Button Command="{Binding FiltrarCommand}" Cursor="Hand">
-                    <Button.Style>
-                        <Style TargetType="Button">
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="Button">
-                                        <Border x:Name="Bd" CornerRadius="6" Padding="14,7">
-                                            <Border.Background>
-                                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                                    <GradientStop Color="#3B82F6" Offset="0"/>
-                                                    <GradientStop Color="#8B5CF6" Offset="1"/>
-                                                </LinearGradientBrush>
-                                            </Border.Background>
-                                            <TextBlock Text="Filtrar" FontSize="12" FontWeight="SemiBold" Foreground="White"/>
-                                        </Border>
-                                        <ControlTemplate.Triggers>
-                                            <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter TargetName="Bd" Property="Opacity" Value="0.9"/>
-                                            </Trigger>
-                                        </ControlTemplate.Triggers>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </Button.Style>
-                </Button>
-            </StackPanel>
-        </StackPanel>
+        <!-- ==================== HEADER + FILTROS ==================== -->
+        <Grid Grid.Row="0" Margin="0,0,0,20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
 
-        <!-- TARJETAS KPI -->
-        <Grid Grid.Row="1" Margin="0,0,0,18">
+            <!-- Título -->
+            <StackPanel Grid.Row="0" Margin="0,0,0,16">
+                <TextBlock Text="Reportes"
+                           FontFamily="Palatino Linotype" FontSize="28" FontWeight="Bold"
+                           Foreground="#1b1c1b"/>
+                <TextBlock Text="Analiza el desempeño de tu negocio"
+                           FontFamily="Segoe UI" FontSize="13" Foreground="#8a726b"
+                           Margin="0,2,0,0"/>
+            </StackPanel>
+
+            <!-- Barra de filtros -->
+            <Border Grid.Row="1" Background="White" CornerRadius="12"
+                    BorderBrush="#ddc0b8" BorderThickness="1" Padding="14,11">
+                <Border.Effect>
+                    <DropShadowEffect Color="#56423c" Opacity="0.06" BlurRadius="14"
+                                      ShadowDepth="2" Direction="270"/>
+                </Border.Effect>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Rangos rápidos -->
+                    <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                        <Button Command="{Binding HoyCommand}" Style="{StaticResource RangoRapidoBtn}">
+                            <TextBlock Text="Hoy" FontFamily="Segoe UI" FontSize="12" FontWeight="SemiBold"/>
+                        </Button>
+                        <Button Command="{Binding SemanaCommand}" Style="{StaticResource RangoRapidoBtn}">
+                            <TextBlock Text="7 días" FontFamily="Segoe UI" FontSize="12" FontWeight="SemiBold"/>
+                        </Button>
+                        <Button Command="{Binding MesCommand}" Style="{StaticResource RangoRapidoBtn}">
+                            <TextBlock Text="30 días" FontFamily="Segoe UI" FontSize="12" FontWeight="SemiBold"/>
+                        </Button>
+                    </StackPanel>
+
+                    <!-- Fechas + filtrar -->
+                    <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock Text="Desde" FontFamily="Segoe UI" FontSize="12" Foreground="#8a726b"
+                                   VerticalAlignment="Center" Margin="0,0,6,0"/>
+                        <DatePicker SelectedDate="{Binding FechaDesde}" FontSize="12"
+                                    VerticalAlignment="Center" Margin="0,0,12,0"/>
+                        <TextBlock Text="Hasta" FontFamily="Segoe UI" FontSize="12" Foreground="#8a726b"
+                                   VerticalAlignment="Center" Margin="0,0,6,0"/>
+                        <DatePicker SelectedDate="{Binding FechaHasta}" FontSize="12"
+                                    VerticalAlignment="Center" Margin="0,0,14,0"/>
+                        <Button Command="{Binding FiltrarCommand}" Style="{StaticResource BtnFiltrar}"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- ==================== TARJETAS KPI ==================== -->
+        <Grid Grid.Row="1" Margin="0,0,0,20">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="12"/>
+                <ColumnDefinition Width="14"/>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="12"/>
+                <ColumnDefinition Width="14"/>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="12"/>
+                <ColumnDefinition Width="14"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Border Grid.Column="0" Background="White" CornerRadius="10" Padding="18,15" BorderBrush="#E5E7EB" BorderThickness="1">
+
+            <!-- Ventas -->
+            <Border Grid.Column="0" Background="White" CornerRadius="14" Padding="20,18"
+                    BorderBrush="#ddc0b8" BorderThickness="1">
+                <Border.Effect>
+                    <DropShadowEffect Color="#56423c" Opacity="0.07" BlurRadius="16" ShadowDepth="2" Direction="270"/>
+                </Border.Effect>
                 <StackPanel>
-                    <TextBlock Text="🧾 Ventas" FontSize="12" Foreground="#6B7280" FontWeight="SemiBold"/>
-                    <TextBlock Text="{Binding TotalVentas}" FontSize="32" FontWeight="Bold" Foreground="#1F2937" Margin="0,6,0,0"/>
-                    <TextBlock Text="transacciones" FontSize="11" Foreground="#9CA3AF"/>
+                    <Border Background="#f7e8e1" CornerRadius="10" Width="42" Height="42"
+                            HorizontalAlignment="Left">
+                        <TextBlock Text="🧾" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <TextBlock Text="{Binding TotalVentas}" FontFamily="Segoe UI" FontSize="30"
+                               FontWeight="Bold" Foreground="#1b1c1b" Margin="0,12,0,0"/>
+                    <TextBlock Text="Ventas realizadas" FontFamily="Segoe UI" FontSize="11.5"
+                               Foreground="#8a726b" Margin="0,1,0,0"/>
                 </StackPanel>
             </Border>
-            <Border Grid.Column="2" Background="White" CornerRadius="10" Padding="18,15" BorderBrush="#E5E7EB" BorderThickness="1">
+
+            <!-- Ingresos -->
+            <Border Grid.Column="2" Background="White" CornerRadius="14" Padding="20,18"
+                    BorderBrush="#ddc0b8" BorderThickness="1">
+                <Border.Effect>
+                    <DropShadowEffect Color="#56423c" Opacity="0.07" BlurRadius="16" ShadowDepth="2" Direction="270"/>
+                </Border.Effect>
                 <StackPanel>
-                    <TextBlock Text="💰 Ingresos" FontSize="12" Foreground="#6B7280" FontWeight="SemiBold"/>
-                    <TextBlock Text="{Binding IngresoTotal, StringFormat='${0:N0}'}" FontSize="32" FontWeight="Bold" Foreground="#059669" Margin="0,6,0,0"/>
-                    <TextBlock Text="total vendido" FontSize="11" Foreground="#9CA3AF"/>
+                    <Border Background="#e6f0e9" CornerRadius="10" Width="42" Height="42"
+                            HorizontalAlignment="Left">
+                        <TextBlock Text="💰" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <TextBlock Text="{Binding IngresoTotal, StringFormat='${0:N0}'}" FontFamily="Segoe UI"
+                               FontSize="30" FontWeight="Bold" Foreground="#3f6b4f" Margin="0,12,0,0"/>
+                    <TextBlock Text="Ingresos totales" FontFamily="Segoe UI" FontSize="11.5"
+                               Foreground="#8a726b" Margin="0,1,0,0"/>
                 </StackPanel>
             </Border>
-            <Border Grid.Column="4" Background="White" CornerRadius="10" Padding="18,15" BorderBrush="#E5E7EB" BorderThickness="1">
+
+            <!-- Productos -->
+            <Border Grid.Column="4" Background="White" CornerRadius="14" Padding="20,18"
+                    BorderBrush="#ddc0b8" BorderThickness="1">
+                <Border.Effect>
+                    <DropShadowEffect Color="#56423c" Opacity="0.07" BlurRadius="16" ShadowDepth="2" Direction="270"/>
+                </Border.Effect>
                 <StackPanel>
-                    <TextBlock Text="📦 Productos" FontSize="12" Foreground="#6B7280" FontWeight="SemiBold"/>
-                    <TextBlock Text="{Binding ProductosVendidos}" FontSize="32" FontWeight="Bold" Foreground="#2563EB" Margin="0,6,0,0"/>
-                    <TextBlock Text="unidades vendidas" FontSize="11" Foreground="#9CA3AF"/>
+                    <Border Background="#efe7e2" CornerRadius="10" Width="42" Height="42"
+                            HorizontalAlignment="Left">
+                        <TextBlock Text="📦" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <TextBlock Text="{Binding ProductosVendidos}" FontFamily="Segoe UI" FontSize="30"
+                               FontWeight="Bold" Foreground="#1b1c1b" Margin="0,12,0,0"/>
+                    <TextBlock Text="Unidades vendidas" FontFamily="Segoe UI" FontSize="11.5"
+                               Foreground="#8a726b" Margin="0,1,0,0"/>
                 </StackPanel>
             </Border>
-            <Border Grid.Column="6" Background="White" CornerRadius="10" Padding="18,15" BorderBrush="#E5E7EB" BorderThickness="1">
+
+            <!-- Ticket promedio -->
+            <Border Grid.Column="6" Background="White" CornerRadius="14" Padding="20,18"
+                    BorderBrush="#ddc0b8" BorderThickness="1">
+                <Border.Effect>
+                    <DropShadowEffect Color="#56423c" Opacity="0.07" BlurRadius="16" ShadowDepth="2" Direction="270"/>
+                </Border.Effect>
                 <StackPanel>
-                    <TextBlock Text="🎯 Promedio" FontSize="12" Foreground="#6B7280" FontWeight="SemiBold"/>
-                    <TextBlock Text="{Binding TicketPromedio, StringFormat='${0:N0}'}" FontSize="32" FontWeight="Bold" Foreground="#9333EA" Margin="0,6,0,0"/>
-                    <TextBlock Text="por venta" FontSize="11" Foreground="#9CA3AF"/>
+                    <Border Background="#f7efdf" CornerRadius="10" Width="42" Height="42"
+                            HorizontalAlignment="Left">
+                        <TextBlock Text="🎯" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <TextBlock Text="{Binding TicketPromedio, StringFormat='${0:N0}'}" FontFamily="Segoe UI"
+                               FontSize="30" FontWeight="Bold" Foreground="#1b1c1b" Margin="0,12,0,0"/>
+                    <TextBlock Text="Ticket promedio" FontFamily="Segoe UI" FontSize="11.5"
+                               Foreground="#8a726b" Margin="0,1,0,0"/>
                 </StackPanel>
             </Border>
         </Grid>
 
-        <!-- TABS + TABLAS -->
-        <Border Grid.Row="2" Background="White" CornerRadius="10" BorderBrush="#E5E7EB" BorderThickness="1">
+        <!-- ==================== TABS + TABLAS ==================== -->
+        <Border Grid.Row="2" Background="White" CornerRadius="14"
+                BorderBrush="#ddc0b8" BorderThickness="1">
+            <Border.Effect>
+                <DropShadowEffect Color="#56423c" Opacity="0.07" BlurRadius="18" ShadowDepth="2" Direction="270"/>
+            </Border.Effect>
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="15,12,15,0">
-                    <Button Content="📋 Historial" Cursor="Hand" Margin="0,0,4,0" Click="OnTabHistorial">
-                        <Button.Style>
-                            <Style TargetType="Button">
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate TargetType="Button">
-                                            <Border x:Name="Bd" CornerRadius="6" Padding="12,7" Background="#EFF6FF" BorderBrush="#BFDBFE" BorderThickness="1">
-                                                <ContentPresenter HorizontalAlignment="Center"/>
-                                            </Border>
-                                            <ControlTemplate.Triggers>
-                                                <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter TargetName="Bd" Property="Background" Value="#DBEAFE"/>
-                                                </Trigger>
-                                            </ControlTemplate.Triggers>
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style>
-                        </Button.Style>
-                    </Button>
-                    <Button Content="⭐ Productos top" Cursor="Hand" Margin="0,0,4,0" Click="OnTabProductosTop">
-                        <Button.Style>
-                            <Style TargetType="Button">
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate TargetType="Button">
-                                            <Border x:Name="Bd" CornerRadius="6" Padding="12,7" Background="#F0FDF4" BorderBrush="#BBF7D0" BorderThickness="1">
-                                                <ContentPresenter HorizontalAlignment="Center"/>
-                                            </Border>
-                                            <ControlTemplate.Triggers>
-                                                <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter TargetName="Bd" Property="Background" Value="#DCFCE7"/>
-                                                </Trigger>
-                                            </ControlTemplate.Triggers>
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style>
-                        </Button.Style>
-                    </Button>
-                    <Button Content="👤 Por vendedor" Cursor="Hand" Click="OnTabVendedor">
-                        <Button.Style>
-                            <Style TargetType="Button">
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate TargetType="Button">
-                                            <Border x:Name="Bd" CornerRadius="6" Padding="12,7" Background="#FFF7ED" BorderBrush="#FED7AA" BorderThickness="1">
-                                                <ContentPresenter HorizontalAlignment="Center"/>
-                                            </Border>
-                                            <ControlTemplate.Triggers>
-                                                <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter TargetName="Bd" Property="Background" Value="#FFEDD5"/>
-                                                </Trigger>
-                                            </ControlTemplate.Triggers>
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style>
-                        </Button.Style>
-                    </Button>
-                </StackPanel>
+                <!-- Barra de tabs -->
+                <Border Grid.Row="0" BorderBrush="#efedec" BorderThickness="0,0,0,1" Padding="14,12">
+                    <StackPanel Orientation="Horizontal">
+                        <Button x:Name="TabHistorialBtn" Tag="active"
+                                Style="{StaticResource TabBtn}" Click="OnTabHistorial">
+                            <TextBlock Text="📋  Historial" FontFamily="Segoe UI" FontSize="12.5" FontWeight="SemiBold"/>
+                        </Button>
+                        <Button x:Name="TabProductosBtn"
+                                Style="{StaticResource TabBtn}" Click="OnTabProductosTop">
+                            <TextBlock Text="⭐  Productos top" FontFamily="Segoe UI" FontSize="12.5" FontWeight="SemiBold"/>
+                        </Button>
+                        <Button x:Name="TabVendedorBtn"
+                                Style="{StaticResource TabBtn}" Click="OnTabVendedor">
+                            <TextBlock Text="👤  Por vendedor" FontFamily="Segoe UI" FontSize="12.5" FontWeight="SemiBold"/>
+                        </Button>
+                    </StackPanel>
+                </Border>
 
                 <!-- Historial -->
                 <DataGrid x:Name="GridHistorial" Grid.Row="1"
@@ -228,60 +313,45 @@
                           SelectedItem="{Binding VentaSeleccionada}"
                           AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False"
                           HeadersVisibility="Column" GridLinesVisibility="Horizontal"
-                          HorizontalGridLinesBrush="#F3F4F6" BorderThickness="0" Background="Transparent"
-                          RowBackground="White" AlternatingRowBackground="#FAFBFC" FontSize="12"
-                          SelectionMode="Single" Margin="0,8,0,0">
-                    <DataGrid.ColumnHeaderStyle>
-                        <Style TargetType="DataGridColumnHeader">
-                            <Setter Property="Background" Value="#F9FAFB"/>
-                            <Setter Property="Foreground" Value="#6B7280"/>
-                            <Setter Property="FontWeight" Value="SemiBold"/>
-                            <Setter Property="FontSize" Value="11"/>
-                            <Setter Property="Padding" Value="12,8"/>
-                            <Setter Property="BorderBrush" Value="#E5E7EB"/>
-                            <Setter Property="BorderThickness" Value="0,0,0,1"/>
-                        </Style>
-                    </DataGrid.ColumnHeaderStyle>
-                    <DataGrid.CellStyle>
-                        <Style TargetType="DataGridCell">
-                            <Setter Property="Padding" Value="12,6"/>
-                            <Setter Property="BorderThickness" Value="0"/>
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="DataGridCell">
-                                        <Border Padding="{TemplateBinding Padding}" Background="{TemplateBinding Background}">
-                                            <ContentPresenter VerticalAlignment="Center"/>
-                                        </Border>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </DataGrid.CellStyle>
+                          HorizontalGridLinesBrush="#f3eeeb" BorderThickness="0" Background="Transparent"
+                          RowStyle="{StaticResource GridRow}"
+                          ColumnHeaderStyle="{StaticResource GridHeader}"
+                          CellStyle="{StaticResource GridCell}"
+                          FontFamily="Segoe UI" FontSize="12"
+                          SelectionMode="Single" Margin="0,4,0,0">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="#" Binding="{Binding VentaId}" Width="50"/>
-                        <DataGridTextColumn Header="Fecha" Binding="{Binding FechaVenta}" Width="145"/>
-                        <DataGridTextColumn Header="Vendedor" Binding="{Binding Vendedor}" Width="120"/>
-                        <DataGridTextColumn Header="Medio pago" Binding="{Binding MedioPago}" Width="100"/>
-                        <DataGridTextColumn Header="Items" Binding="{Binding CantidadItems}" Width="55"/>
-                        <DataGridTextColumn Header="Total" Binding="{Binding Total, StringFormat='${0:N0}'}" Width="90"/>
-                        <!-- Botón ver detalle -->
-                        <DataGridTemplateColumn Header="" Width="80">
+                        <DataGridTextColumn Header="FECHA" Binding="{Binding FechaVenta}" Width="150"/>
+                        <DataGridTextColumn Header="VENDEDOR" Binding="{Binding Vendedor}" Width="130"/>
+                        <DataGridTextColumn Header="MEDIO PAGO" Binding="{Binding MedioPago}" Width="110"/>
+                        <DataGridTextColumn Header="ITEMS" Binding="{Binding CantidadItems}" Width="60"/>
+                        <DataGridTextColumn Header="TOTAL" Binding="{Binding Total, StringFormat='${0:N0}'}" Width="100">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                    <Setter Property="Foreground" Value="#3f6b4f"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTemplateColumn Header="" Width="*">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <Button Command="{Binding DataContext.VerDetalleCommand,
                                                 RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                            Cursor="Hand">
+                                            Cursor="Hand" HorizontalAlignment="Right">
                                         <Button.Style>
                                             <Style TargetType="Button">
                                                 <Setter Property="Template">
                                                     <Setter.Value>
                                                         <ControlTemplate TargetType="Button">
-                                                            <Border x:Name="Bd" Background="#EFF6FF" CornerRadius="6" Padding="8,4">
-                                                                <TextBlock Text="👁 Ver" FontSize="11" Foreground="#2563EB"/>
+                                                            <Border x:Name="Bd" Background="#f5f3f1" CornerRadius="7"
+                                                                    Padding="11,5" BorderBrush="#ddc0b8" BorderThickness="1">
+                                                                <TextBlock Text="Ver detalle" FontFamily="Segoe UI"
+                                                                           FontSize="11" FontWeight="SemiBold" Foreground="#9d3d1c"/>
                                                             </Border>
                                                             <ControlTemplate.Triggers>
                                                                 <Trigger Property="IsMouseOver" Value="True">
-                                                                    <Setter TargetName="Bd" Property="Background" Value="#DBEAFE"/>
+                                                                    <Setter TargetName="Bd" Property="Background" Value="#f7e8e1"/>
                                                                 </Trigger>
                                                             </ControlTemplate.Triggers>
                                                         </ControlTemplate>
@@ -296,95 +366,86 @@
                     </DataGrid.Columns>
                 </DataGrid>
 
+                <!-- Productos top -->
                 <DataGrid x:Name="GridProductosTop" Grid.Row="1" ItemsSource="{Binding ProductosTop}"
                           AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False"
                           HeadersVisibility="Column" GridLinesVisibility="Horizontal"
-                          HorizontalGridLinesBrush="#F3F4F6" BorderThickness="0" Background="Transparent"
-                          RowBackground="White" AlternatingRowBackground="#FAFBFC" FontSize="12"
-                          Margin="0,8,0,0" Visibility="Collapsed">
-                    <DataGrid.ColumnHeaderStyle>
-                        <Style TargetType="DataGridColumnHeader">
-                            <Setter Property="Background" Value="#F9FAFB"/>
-                            <Setter Property="Foreground" Value="#6B7280"/>
-                            <Setter Property="FontWeight" Value="SemiBold"/>
-                            <Setter Property="FontSize" Value="11"/>
-                            <Setter Property="Padding" Value="12,8"/>
-                            <Setter Property="BorderBrush" Value="#E5E7EB"/>
-                            <Setter Property="BorderThickness" Value="0,0,0,1"/>
-                        </Style>
-                    </DataGrid.ColumnHeaderStyle>
-                    <DataGrid.CellStyle>
-                        <Style TargetType="DataGridCell">
-                            <Setter Property="Padding" Value="12,6"/>
-                            <Setter Property="BorderThickness" Value="0"/>
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="DataGridCell">
-                                        <Border Padding="{TemplateBinding Padding}" Background="{TemplateBinding Background}">
-                                            <ContentPresenter VerticalAlignment="Center"/>
-                                        </Border>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </DataGrid.CellStyle>
+                          HorizontalGridLinesBrush="#f3eeeb" BorderThickness="0" Background="Transparent"
+                          RowStyle="{StaticResource GridRow}"
+                          ColumnHeaderStyle="{StaticResource GridHeader}"
+                          CellStyle="{StaticResource GridCell}"
+                          FontFamily="Segoe UI" FontSize="12"
+                          Margin="0,4,0,0" Visibility="Collapsed">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Producto" Binding="{Binding Nombre}" Width="*"/>
-                        <DataGridTextColumn Header="Cantidad vendida" Binding="{Binding CantidadVendida}" Width="150"/>
-                        <DataGridTextColumn Header="Total generado" Binding="{Binding TotalGenerado, StringFormat='${0:N0}'}" Width="150"/>
+                        <DataGridTextColumn Header="PRODUCTO" Binding="{Binding Nombre}" Width="*"/>
+                        <DataGridTextColumn Header="CANTIDAD VENDIDA" Binding="{Binding CantidadVendida}" Width="170"/>
+                        <DataGridTextColumn Header="TOTAL GENERADO" Binding="{Binding TotalGenerado, StringFormat='${0:N0}'}" Width="170">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                    <Setter Property="Foreground" Value="#3f6b4f"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
                     </DataGrid.Columns>
                 </DataGrid>
 
+                <!-- Por vendedor -->
                 <DataGrid x:Name="GridVendedores" Grid.Row="1" ItemsSource="{Binding VentasPorVendedor}"
                           AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False"
                           HeadersVisibility="Column" GridLinesVisibility="Horizontal"
-                          HorizontalGridLinesBrush="#F3F4F6" BorderThickness="0" Background="Transparent"
-                          RowBackground="White" AlternatingRowBackground="#FAFBFC" FontSize="12"
-                          Margin="0,8,0,0" Visibility="Collapsed">
-                    <DataGrid.ColumnHeaderStyle>
-                        <Style TargetType="DataGridColumnHeader">
-                            <Setter Property="Background" Value="#F9FAFB"/>
-                            <Setter Property="Foreground" Value="#6B7280"/>
-                            <Setter Property="FontWeight" Value="SemiBold"/>
-                            <Setter Property="FontSize" Value="11"/>
-                            <Setter Property="Padding" Value="12,8"/>
-                            <Setter Property="BorderBrush" Value="#E5E7EB"/>
-                            <Setter Property="BorderThickness" Value="0,0,0,1"/>
-                        </Style>
-                    </DataGrid.ColumnHeaderStyle>
-                    <DataGrid.CellStyle>
-                        <Style TargetType="DataGridCell">
-                            <Setter Property="Padding" Value="12,6"/>
-                            <Setter Property="BorderThickness" Value="0"/>
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="DataGridCell">
-                                        <Border Padding="{TemplateBinding Padding}" Background="{TemplateBinding Background}">
-                                            <ContentPresenter VerticalAlignment="Center"/>
-                                        </Border>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </DataGrid.CellStyle>
+                          HorizontalGridLinesBrush="#f3eeeb" BorderThickness="0" Background="Transparent"
+                          RowStyle="{StaticResource GridRow}"
+                          ColumnHeaderStyle="{StaticResource GridHeader}"
+                          CellStyle="{StaticResource GridCell}"
+                          FontFamily="Segoe UI" FontSize="12"
+                          Margin="0,4,0,0" Visibility="Collapsed">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Vendedor" Binding="{Binding Vendedor}" Width="*"/>
-                        <DataGridTextColumn Header="Cantidad ventas" Binding="{Binding CantidadVentas}" Width="150"/>
-                        <DataGridTextColumn Header="Total vendido" Binding="{Binding TotalVendido, StringFormat='${0:N0}'}" Width="150"/>
+                        <DataGridTextColumn Header="VENDEDOR" Binding="{Binding Vendedor}" Width="*"/>
+                        <DataGridTextColumn Header="CANTIDAD VENTAS" Binding="{Binding CantidadVentas}" Width="170"/>
+                        <DataGridTextColumn Header="TOTAL VENDIDO" Binding="{Binding TotalVendido, StringFormat='${0:N0}'}" Width="170">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                    <Setter Property="Foreground" Value="#3f6b4f"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
                     </DataGrid.Columns>
                 </DataGrid>
+
+                <!-- Estado vacío (sin ventas en el rango) -->
+                <StackPanel Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center"
+                            IsHitTestVisible="False"
+                            Visibility="{Binding Historial.Count, Converter={StaticResource IntToVisibilityInvertedConverter}}">
+                    <Border Width="76" Height="76" CornerRadius="38" Background="#f5f3f1"
+                            HorizontalAlignment="Center">
+                        <TextBlock Text="&#x1F4CA;" FontSize="34" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <TextBlock Text="No hay ventas en este rango"
+                               FontFamily="Palatino Linotype" FontSize="18" FontWeight="Bold"
+                               Foreground="#1b1c1b" HorizontalAlignment="Center" Margin="0,16,0,0"/>
+                    <TextBlock Text="Prueba con otro rango de fechas o registra una venta."
+                               FontFamily="Segoe UI" FontSize="13" Foreground="#8a726b"
+                               HorizontalAlignment="Center" TextAlignment="Center" MaxWidth="320"
+                               TextWrapping="Wrap" Margin="0,6,0,0"/>
+                </StackPanel>
             </Grid>
         </Border>
 
+        <!-- ==================== PANEL DE DETALLE ==================== -->
         <Border Grid.Row="2"
                 Background="White"
-                CornerRadius="10"
-                BorderBrush="#3B82F6"
-                BorderThickness="2"
-                Padding="20"
+                CornerRadius="14"
+                BorderBrush="#9d3d1c"
+                BorderThickness="1.5"
+                Padding="24,20"
                 Panel.ZIndex="10"
                 Visibility="{Binding DetalleVisible,
                     Converter={StaticResource BoolToVisibilityConverter}}">
+            <Border.Effect>
+                <DropShadowEffect Color="#56423c" Opacity="0.18" BlurRadius="28" ShadowDepth="0"/>
+            </Border.Effect>
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -393,26 +454,38 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <Grid Grid.Row="0" Margin="0,0,0,12">
+                <!-- Encabezado -->
+                <Grid Grid.Row="0" Margin="0,0,0,14">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="📋 Detalle de venta #"
-                                   FontSize="16" FontWeight="Bold" Foreground="#1F2937"/>
-                        <TextBlock Text="{Binding VentaSeleccionada.VentaId}"
-                                   FontSize="16" FontWeight="Bold" Foreground="#3B82F6"/>
+                        <TextBlock Text="Detalle de venta"
+                                   FontFamily="Palatino Linotype" FontSize="20" FontWeight="Bold"
+                                   Foreground="#1b1c1b"/>
+                        <Border Background="#f7e8e1" CornerRadius="7" Padding="9,3" Margin="10,2,0,0"
+                                VerticalAlignment="Center">
+                            <TextBlock FontFamily="Segoe UI" FontSize="13" FontWeight="Bold" Foreground="#9d3d1c">
+                                <Run Text="#"/><Run Text="{Binding VentaSeleccionada.VentaId, Mode=OneWay}"/>
+                            </TextBlock>
+                        </Border>
                     </StackPanel>
-                    <Button HorizontalAlignment="Right"
+                    <Button HorizontalAlignment="Right" VerticalAlignment="Top"
                             Command="{Binding CerrarDetalleCommand}" Cursor="Hand">
                         <Button.Style>
                             <Style TargetType="Button">
                                 <Setter Property="Template">
                                     <Setter.Value>
                                         <ControlTemplate TargetType="Button">
-                                            <Border x:Name="Bd" Background="#F3F4F6" CornerRadius="6" Padding="10,5">
-                                                <TextBlock Text="✕ Cerrar" FontSize="12" Foreground="#6B7280"/>
+                                            <Border x:Name="Bd" Background="#efedec" CornerRadius="7" Padding="11,6">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="&#xE711;" FontFamily="Segoe MDL2 Assets"
+                                                               FontSize="10" Foreground="#56423c"
+                                                               VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                                    <TextBlock Text="Cerrar" FontFamily="Segoe UI" FontSize="12"
+                                                               Foreground="#56423c" VerticalAlignment="Center"/>
+                                                </StackPanel>
                                             </Border>
                                             <ControlTemplate.Triggers>
                                                 <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter TargetName="Bd" Property="Background" Value="#E5E7EB"/>
+                                                    <Setter TargetName="Bd" Property="Background" Value="#ddc0b8"/>
                                                 </Trigger>
                                             </ControlTemplate.Triggers>
                                         </ControlTemplate>
@@ -423,75 +496,58 @@
                     </Button>
                 </Grid>
 
-                <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,12">
-                    <Border Background="#F9FAFB" CornerRadius="6" Padding="10,6" Margin="0,0,10,0">
-                        <TextBlock FontSize="12" Foreground="#6B7280">
-                            <Run Text="📅"/><Run Text="{Binding VentaSeleccionada.Fecha, Mode=OneWay}"/>
+                <!-- Chips meta -->
+                <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,14">
+                    <Border Background="#f5f3f1" CornerRadius="8" Padding="11,7" Margin="0,0,10,0"
+                            BorderBrush="#e6dcd6" BorderThickness="1">
+                        <TextBlock FontFamily="Segoe UI" FontSize="12" Foreground="#56423c">
+                            <Run Text="📅  "/><Run Text="{Binding VentaSeleccionada.Fecha, Mode=OneWay}"/>
                         </TextBlock>
                     </Border>
-                    <Border Background="#F9FAFB" CornerRadius="6" Padding="10,6" Margin="0,0,10,0">
-                        <TextBlock FontSize="12" Foreground="#6B7280">
-                            <Run Text="👤"/><Run Text="{Binding VentaSeleccionada.Vendedor, Mode=OneWay}"/>
+                    <Border Background="#f5f3f1" CornerRadius="8" Padding="11,7" Margin="0,0,10,0"
+                            BorderBrush="#e6dcd6" BorderThickness="1">
+                        <TextBlock FontFamily="Segoe UI" FontSize="12" Foreground="#56423c">
+                            <Run Text="👤  "/><Run Text="{Binding VentaSeleccionada.Vendedor, Mode=OneWay}"/>
                         </TextBlock>
                     </Border>
-                    <Border Background="#F9FAFB" CornerRadius="6" Padding="10,6">
-                        <TextBlock FontSize="12" Foreground="#6B7280">
-                            <Run Text="💳"/><Run Text="{Binding VentaSeleccionada.MedioPago, Mode=OneWay}"/>
+                    <Border Background="#f5f3f1" CornerRadius="8" Padding="11,7"
+                            BorderBrush="#e6dcd6" BorderThickness="1">
+                        <TextBlock FontFamily="Segoe UI" FontSize="12" Foreground="#56423c">
+                            <Run Text="💳  "/><Run Text="{Binding VentaSeleccionada.MedioPago, Mode=OneWay}"/>
                         </TextBlock>
                     </Border>
                 </StackPanel>
 
+                <!-- Detalle -->
                 <DataGrid Grid.Row="2"
                           ItemsSource="{Binding DetalleVenta}"
                           AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False"
                           HeadersVisibility="Column" GridLinesVisibility="Horizontal"
-                          HorizontalGridLinesBrush="#F3F4F6" BorderThickness="1" BorderBrush="#E5E7EB"
-                          Background="White" RowBackground="White" AlternatingRowBackground="#FAFBFC"
-                          FontSize="12">
-                    <DataGrid.ColumnHeaderStyle>
-                        <Style TargetType="DataGridColumnHeader">
-                            <Setter Property="Background" Value="#F9FAFB"/>
-                            <Setter Property="Foreground" Value="#6B7280"/>
-                            <Setter Property="FontWeight" Value="SemiBold"/>
-                            <Setter Property="FontSize" Value="11"/>
-                            <Setter Property="Padding" Value="12,8"/>
-                            <Setter Property="BorderBrush" Value="#E5E7EB"/>
-                            <Setter Property="BorderThickness" Value="0,0,0,1"/>
-                        </Style>
-                    </DataGrid.ColumnHeaderStyle>
-                    <DataGrid.CellStyle>
-                        <Style TargetType="DataGridCell">
-                            <Setter Property="Padding" Value="12,6"/>
-                            <Setter Property="BorderThickness" Value="0"/>
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="DataGridCell">
-                                        <Border Padding="{TemplateBinding Padding}" Background="{TemplateBinding Background}">
-                                            <ContentPresenter VerticalAlignment="Center"/>
-                                        </Border>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </DataGrid.CellStyle>
+                          HorizontalGridLinesBrush="#f3eeeb" BorderThickness="1" BorderBrush="#e6dcd6"
+                          Background="White"
+                          RowStyle="{StaticResource GridRow}"
+                          ColumnHeaderStyle="{StaticResource GridHeader}"
+                          CellStyle="{StaticResource GridCell}"
+                          FontFamily="Segoe UI" FontSize="12">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Código" Binding="{Binding CodigoBarras}" Width="120"/>
-                        <DataGridTextColumn Header="Producto" Binding="{Binding Producto}" Width="*"/>
-                        <DataGridTextColumn Header="Cantidad" Binding="{Binding Cantidad}" Width="80"/>
-                        <DataGridTextColumn Header="Precio unit." Binding="{Binding PrecioUnitario, StringFormat='${0:N0}'}" Width="100"/>
-                        <DataGridTextColumn Header="Subtotal" Binding="{Binding Subtotal, StringFormat='${0:N0}'}" Width="100"/>
-                        <DataGridTextColumn Header="Descuento" Binding="{Binding Descuento, StringFormat='${0:N0}'}" Width="90"/>
+                        <DataGridTextColumn Header="CÓDIGO" Binding="{Binding CodigoBarras}" Width="130"/>
+                        <DataGridTextColumn Header="PRODUCTO" Binding="{Binding Producto}" Width="*"/>
+                        <DataGridTextColumn Header="CANT." Binding="{Binding Cantidad}" Width="70"/>
+                        <DataGridTextColumn Header="PRECIO UNIT." Binding="{Binding PrecioUnitario, StringFormat='${0:N0}'}" Width="110"/>
+                        <DataGridTextColumn Header="SUBTOTAL" Binding="{Binding Subtotal, StringFormat='${0:N0}'}" Width="110"/>
+                        <DataGridTextColumn Header="DESCUENTO" Binding="{Binding Descuento, StringFormat='${0:N0}'}" Width="100"/>
                     </DataGrid.Columns>
                 </DataGrid>
 
-                <Border Grid.Row="3" Background="#F0FDF4" CornerRadius="8" Padding="15,10" Margin="0,10,0,0">
-                    <StackPanel>
-                        <Grid>
-                            <TextBlock Text="Total de la venta:" FontSize="14" FontWeight="SemiBold" Foreground="#059669"/>
-                            <TextBlock Text="{Binding VentaSeleccionada.Total, StringFormat='${0:N0}', Mode=OneWay}"
-                                   FontSize="18" FontWeight="Bold" Foreground="#059669" HorizontalAlignment="Right"/>
-                        </Grid>
-                    </StackPanel>
+                <!-- Total -->
+                <Border Grid.Row="3" Background="#e6f0e9" CornerRadius="10" Padding="18,12" Margin="0,12,0,0">
+                    <Grid>
+                        <TextBlock Text="Total de la venta" FontFamily="Segoe UI" FontSize="14"
+                                   FontWeight="SemiBold" Foreground="#3f6b4f" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding VentaSeleccionada.Total, StringFormat='${0:N0}', Mode=OneWay}"
+                                   FontFamily="Segoe UI" FontSize="20" FontWeight="Bold" Foreground="#3f6b4f"
+                                   HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                    </Grid>
                 </Border>
             </Grid>
         </Border>

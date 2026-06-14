@@ -16,12 +16,16 @@ namespace ArtesaniasPOS.UI
         private readonly IVentaService _ventaService;
         private readonly IReporteService _reporteService;
         private readonly IConfiguracionAdminService _configuracionAdminService;
+        private readonly IBackupService _backupService;
 
         public MainWindow()
         {
             InitializeComponent();
 
-            var connectionString = $"Data Source={ObtenerRutaBD()}";
+            MigrarBaseDatosSiHaceFalta();
+
+            var rutaBd = ArtesaniasPOS.Data.Database.AppSettings.DbPath;
+            var connectionString = $"Data Source={rutaBd}";
 
             _configuracionService = new ConfiguracionService(connectionString);
             _monedaService = new MonedaService(connectionString);
@@ -31,17 +35,44 @@ namespace ArtesaniasPOS.UI
             _ventaService = new VentaService(connectionString);
             _reporteService = new ReporteService(connectionString);
             _configuracionAdminService = new ConfiguracionAdminService(connectionString);
+            _backupService = new BackupService();
 
             var dbInit = new ArtesaniasPOS.Data.Database.DatabaseInitializer(connectionString);
             dbInit.Initialize();
 
+            // Notificaciones (toasts) disponibles en toda la app.
+            ToastService.Initialize(ToastHost);
+            ArtesaniasPOS.Core.Notifier.Handler = (mensaje, tipo) => ToastService.Show(mensaje, tipo);
+
+            // Respaldo automático al cerrar la aplicación.
+            Closed += (s, e) => _backupService.RespaldoAutomatico();
+
             Loaded += async (s, e) => await VerificarWizardAsync();
         }
 
-        private string ObtenerRutaBD()
+        /// <summary>
+        /// Versiones anteriores guardaban la base de datos junto al ejecutable
+        /// (carpeta bin), que se borra al recompilar. Si existe esa base antigua
+        /// y aún no hay una en la ubicación persistente (%APPDATA%), la copiamos
+        /// para no perder la información.
+        /// </summary>
+        private void MigrarBaseDatosSiHaceFalta()
         {
-            var carpeta = AppDomain.CurrentDomain.BaseDirectory;
-            return System.IO.Path.Combine(carpeta, "ArtesaniasPOS.db");
+            try
+            {
+                var destino = ArtesaniasPOS.Data.Database.AppSettings.DbPath;
+                if (System.IO.File.Exists(destino)) return;
+
+                var legacy = System.IO.Path.Combine(
+                    AppDomain.CurrentDomain.BaseDirectory, "ArtesaniasPOS.db");
+                if (System.IO.File.Exists(legacy))
+                {
+                    System.IO.Directory.CreateDirectory(
+                        System.IO.Path.GetDirectoryName(destino)!);
+                    System.IO.File.Copy(legacy, destino);
+                }
+            }
+            catch { /* si falla la migración, se creará una base nueva */ }
         }
         private async Task VerificarWizardAsync()
         {
@@ -98,7 +129,7 @@ namespace ArtesaniasPOS.UI
 
         private async Task MostrarShellAsync(SesionUsuario sesion)
         {
-            var shellVm = new ShellViewModel(sesion, _configuracionService, _productoService, _ventaService, _monedaService, _reporteService, _configuracionAdminService);
+            var shellVm = new ShellViewModel(sesion, _configuracionService, _productoService, _ventaService, _monedaService, _reporteService, _configuracionAdminService, _backupService);
 
 
             shellVm.SesionCerrada += (s, e) => MostrarLogin();
