@@ -20,16 +20,18 @@ namespace ArtesaniasPOS.Core.ViewModels
         private readonly IMonedaService _monedaService;
         private readonly IReporteService _reporteService;
         private readonly IConfiguracionAdminService _configuracionAdminService;
+        private readonly IBackupService _backupService;
 
-        public ShellViewModel(SesionUsuario sesion,IConfiguracionService configuracionService,IProductoService productoService,IVentaService ventaService, IMonedaService monedaService, IReporteService reporteService, IConfiguracionAdminService configuracionAdminService)      
+        public ShellViewModel(SesionUsuario sesion,IConfiguracionService configuracionService,IProductoService productoService,IVentaService ventaService, IMonedaService monedaService, IReporteService reporteService, IConfiguracionAdminService configuracionAdminService, IBackupService backupService)
         {
             _sesion = sesion;
             _configuracionService = configuracionService;
             _productoService = productoService;
-            _ventaService = ventaService;       
+            _ventaService = ventaService;
             _monedaService = monedaService;
             _reporteService = reporteService;
             _configuracionAdminService = configuracionAdminService;
+            _backupService = backupService;
 
 
             CerrarSesionCommand = new RelayCommand(_ => CerrarSesion());
@@ -154,6 +156,11 @@ namespace ArtesaniasPOS.Core.ViewModels
         {
             switch (menuItem.Modulo)
             {
+                case "Dashboard":
+                    ContenidoActual = new InicioViewModel(
+                        NombreNegocio, _sesion.Nombre, _sesion.EsAdmin);
+                    break;
+
                 case "Productos":
                     var productosVm = new ViewModels.Productos.ProductosViewModel(
                         _productoService, _sesion.EsAdmin);
@@ -166,9 +173,10 @@ namespace ArtesaniasPOS.Core.ViewModels
                         _ventaService,
                         _monedaService,
                         _configuracionService,
-                        _productoService,  // <--- AGREGA ESTO AQUÍ
+                        _productoService,
                         _sesion.UsuarioId,
-                        _sesion.Nombre);
+                        _sesion.Nombre,
+                        _backupService);
                     ContenidoActual = ventasVm;
                     await ventasVm.InicializarAsync();
                     break;
@@ -181,7 +189,7 @@ namespace ArtesaniasPOS.Core.ViewModels
 
                 case "Configuracion":
                     var configVm = new ViewModels.Configuracion.ConfiguracionContainerViewModel(
-                        _configuracionAdminService);
+                        _configuracionAdminService, _configuracionService, _backupService);
                     ContenidoActual = configVm;
                     await configVm.InicializarAsync();
                     break;

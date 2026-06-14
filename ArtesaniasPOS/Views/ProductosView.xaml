@@ -470,6 +470,23 @@
                 </DataGrid>
             </Border>
 
+            <!-- Estado vacío -->
+            <StackPanel Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Center"
+                        IsHitTestVisible="False"
+                        Visibility="{Binding Productos.Count, Converter={StaticResource IntToVisibilityInvertedConverter}}">
+                <Border Width="76" Height="76" CornerRadius="38" Background="#f5f3f1"
+                        HorizontalAlignment="Center">
+                    <TextBlock Text="&#x1F4E6;" FontSize="34" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Border>
+                <TextBlock Text="Aún no hay productos"
+                           FontFamily="Palatino Linotype" FontSize="18" FontWeight="Bold"
+                           Foreground="#1b1c1b" HorizontalAlignment="Center" Margin="0,16,0,0"/>
+                <TextBlock Text="Crea tu primer producto o escanea su código de barras para empezar."
+                           FontFamily="Segoe UI" FontSize="13" Foreground="#8a726b"
+                           HorizontalAlignment="Center" TextAlignment="Center" MaxWidth="320"
+                           TextWrapping="Wrap" Margin="0,6,0,0"/>
+            </StackPanel>
+
             <!-- Error message -->
             <Border Grid.Row="3"
                     Background="#ffdad6"
@@ -497,6 +514,8 @@
 
         <!-- ==================== RIGHT PANEL: FORM ==================== -->
         <Border Grid.Column="1"
+                x:Name="FormPanel"
+                IsVisibleChanged="FormPanel_IsVisibleChanged"
                 Width="368"
                 Background="White"
                 BorderBrush="#ddc0b8"
@@ -589,41 +608,99 @@
                                    FontSize="12"
                                    FontWeight="SemiBold"
                                    Foreground="#56423c"
+                                   Margin="0,0,0,2"/>
+                        <TextBlock Text="Escanea el código del producto con el lector, o genera uno."
+                                   FontFamily="Segoe UI"
+                                   FontSize="10.5"
+                                   Foreground="#8a726b"
+                                   TextWrapping="Wrap"
                                    Margin="0,0,0,5"/>
-                        <TextBox Text="{Binding CodigoBarras, UpdateSourceTrigger=PropertyChanged}"
-                                 Padding="12,9"
-                                 FontFamily="Consolas"
-                                 FontSize="13"
-                                 MaxLength="30"
-                                 Margin="0,0,0,14"
-                                 Background="#f5f3f1"
-                                 BorderBrush="#ddc0b8"
-                                 BorderThickness="1.5">
-                            <TextBox.Style>
-                                <Style TargetType="TextBox">
-                                    <Setter Property="Template">
-                                        <Setter.Value>
-                                            <ControlTemplate TargetType="TextBox">
-                                                <Border x:Name="CBBorder"
-                                                        Background="{TemplateBinding Background}"
-                                                        BorderBrush="{TemplateBinding BorderBrush}"
-                                                        BorderThickness="{TemplateBinding BorderThickness}"
-                                                        CornerRadius="8">
-                                                    <ScrollViewer x:Name="PART_ContentHost"
-                                                                  Margin="{TemplateBinding Padding}"/>
-                                                </Border>
-                                                <ControlTemplate.Triggers>
-                                                    <Trigger Property="IsFocused" Value="True">
-                                                        <Setter TargetName="CBBorder" Property="BorderBrush" Value="#9d3d1c"/>
-                                                        <Setter TargetName="CBBorder" Property="Background" Value="White"/>
-                                                    </Trigger>
-                                                </ControlTemplate.Triggers>
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                            </TextBox.Style>
-                        </TextBox>
+                        <Grid Margin="0,0,0,14">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBox Grid.Column="0"
+                                     x:Name="CodigoBarrasTextBox"
+                                     KeyDown="CodigoBarrasTextBox_KeyDown"
+                                     Text="{Binding CodigoBarras, UpdateSourceTrigger=PropertyChanged}"
+                                     Padding="12,9"
+                                     FontFamily="Consolas"
+                                     FontSize="13"
+                                     MaxLength="30"
+                                     Background="#f5f3f1"
+                                     BorderBrush="#ddc0b8"
+                                     BorderThickness="1.5">
+                                <TextBox.Style>
+                                    <Style TargetType="TextBox">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="TextBox">
+                                                    <Border x:Name="CBBorder"
+                                                            Background="{TemplateBinding Background}"
+                                                            BorderBrush="{TemplateBinding BorderBrush}"
+                                                            BorderThickness="{TemplateBinding BorderThickness}"
+                                                            CornerRadius="8">
+                                                        <ScrollViewer x:Name="PART_ContentHost"
+                                                                      Margin="{TemplateBinding Padding}"/>
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsFocused" Value="True">
+                                                            <Setter TargetName="CBBorder" Property="BorderBrush" Value="#9d3d1c"/>
+                                                            <Setter TargetName="CBBorder" Property="Background" Value="White"/>
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </TextBox.Style>
+                            </TextBox>
+
+                            <!-- Generar código (para productos sin código impreso) -->
+                            <Button Grid.Column="1"
+                                    Command="{Binding GenerarCodigoCommand}"
+                                    Cursor="Hand"
+                                    ToolTip="Generar un código automático"
+                                    Margin="8,0,0,0">
+                                <Button.Style>
+                                    <Style TargetType="Button">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Border x:Name="GenBorder"
+                                                            Background="#f5f3f1"
+                                                            BorderBrush="#ddc0b8"
+                                                            BorderThickness="1.5"
+                                                            CornerRadius="8"
+                                                            Padding="11,9">
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <TextBlock Text="&#xE8C8;"
+                                                                       FontFamily="Segoe MDL2 Assets"
+                                                                       FontSize="13"
+                                                                       Foreground="#9d3d1c"
+                                                                       VerticalAlignment="Center"
+                                                                       Margin="0,0,6,0"/>
+                                                            <TextBlock Text="Generar"
+                                                                       FontFamily="Segoe UI"
+                                                                       FontSize="12"
+                                                                       Foreground="#9d3d1c"
+                                                                       VerticalAlignment="Center"/>
+                                                        </StackPanel>
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter TargetName="GenBorder" Property="Background" Value="#ddc0b8"/>
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+                        </Grid>
 
                         <!-- Nombre -->
                         <TextBlock Text="Nombre *"

@@ -93,6 +93,112 @@
             </Setter>
         </Style>
 
+        <!-- Warm input box (config modules) -->
+        <Style x:Key="InputBoxWarm" TargetType="TextBox">
+            <Setter Property="FontFamily"      Value="Segoe UI"/>
+            <Setter Property="FontSize"        Value="13"/>
+            <Setter Property="Foreground"      Value="#1b1c1b"/>
+            <Setter Property="Background"      Value="#f5f3f1"/>
+            <Setter Property="BorderBrush"     Value="#ddc0b8"/>
+            <Setter Property="BorderThickness" Value="1.5"/>
+            <Setter Property="Padding"         Value="11,9"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border x:Name="Bd"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8">
+                            <ScrollViewer x:Name="PART_ContentHost" Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="#9d3d1c"/>
+                                <Setter TargetName="Bd" Property="Background" Value="White"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Warm ComboBox (config modules) -->
+        <Style x:Key="ComboWarm" TargetType="ComboBox">
+            <Setter Property="Background"      Value="#f5f3f1"/>
+            <Setter Property="BorderBrush"     Value="#ddc0b8"/>
+            <Setter Property="BorderThickness" Value="1.5"/>
+            <Setter Property="Padding"         Value="10,8"/>
+            <Setter Property="FontSize"        Value="13"/>
+            <Setter Property="FontFamily"      Value="Segoe UI"/>
+        </Style>
+
+        <!-- Secondary / ghost button -->
+        <Style x:Key="ButtonGhost" TargetType="Button">
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd" Background="#f5f3f1" BorderBrush="#ddc0b8"
+                                BorderThickness="1.5" CornerRadius="8"
+                                Padding="{TemplateBinding Padding}"
+                                TextElement.Foreground="#56423c">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#efe2da"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="Bd" Property="Opacity" Value="0.45"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- DataGrid: encabezado cálido -->
+        <Style x:Key="GridHeaderWarm" TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="#f5f3f1"/>
+            <Setter Property="Foreground" Value="#8a726b"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="Padding" Value="14,10"/>
+            <Setter Property="BorderBrush" Value="#e6dcd6"/>
+            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+        </Style>
+
+        <!-- DataGrid: celda cálida -->
+        <Style x:Key="GridCellWarm" TargetType="DataGridCell">
+            <Setter Property="Padding" Value="14,8"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Foreground" Value="#1b1c1b"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="DataGridCell">
+                        <Border Padding="{TemplateBinding Padding}" Background="{TemplateBinding Background}">
+                            <ContentPresenter VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- DataGrid: fila cálida (selección terracota) -->
+        <Style x:Key="GridRowWarm" TargetType="DataGridRow">
+            <Setter Property="Background" Value="White"/>
+            <Style.Triggers>
+                <Trigger Property="AlternationIndex" Value="1">
+                    <Setter Property="Background" Value="#faf8f6"/>
+                </Trigger>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="#f7e8e1"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
         <!-- Card Border style -->
         <Style x:Key="CardBorder" TargetType="Border">
             <Setter Property="Background"       Value="White"/>

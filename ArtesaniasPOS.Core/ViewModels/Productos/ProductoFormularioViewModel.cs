@@ -62,6 +62,11 @@ namespace ArtesaniasPOS.Core.ViewModels.Productos
                 _ => !IsLoading);
 
             CancelarCommand = new RelayCommand(_ => Cancelado?.Invoke(this, EventArgs.Empty));
+
+            // Para productos sin código de barras impreso: genera un ART-xxxxxx.
+            // El flujo normal es escanear el código existente directamente.
+            GenerarCodigoCommand = new AsyncRelayCommand(async _ =>
+                CodigoBarras = await _productoService.GenerarCodigoBarrasAsync());
         }
 
         #region Propiedades
@@ -131,6 +136,7 @@ namespace ArtesaniasPOS.Core.ViewModels.Productos
 
         public ICommand GuardarCommand { get; }
         public ICommand CancelarCommand { get; }
+        public ICommand GenerarCodigoCommand { get; }
 
         /// <summary>
         /// Se dispara cuando el producto se guardó correctamente.
@@ -196,6 +202,7 @@ namespace ArtesaniasPOS.Core.ViewModels.Productos
                 else
                     await _productoService.CrearAsync(dto);
 
+                Core.Notifier.Exito(EsEdicion ? "Producto actualizado" : "Producto creado");
                 Guardado?.Invoke(this, EventArgs.Empty);
             }
             catch (Exception ex)

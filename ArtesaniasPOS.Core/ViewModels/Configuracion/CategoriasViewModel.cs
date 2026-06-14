@@ -19,6 +19,7 @@ namespace ArtesaniasPOS.Core.ViewModels.Configuracion
             GuardarCommand = new AsyncRelayCommand(async _ => await GuardarAsync());
             EditarCommand = new RelayCommand(_ => PrepararEdicion(), _ => Seleccionada != null);
             EliminarCommand = new AsyncRelayCommand(async _ => await EliminarAsync(), _ => Seleccionada != null);
+            ToggleActivoCommand = new AsyncRelayCommand(async _ => await ToggleActivoAsync(), _ => Seleccionada != null);
             CancelarCommand = new RelayCommand(_ => LimpiarFormulario());
         }
 
@@ -32,6 +33,7 @@ namespace ArtesaniasPOS.Core.ViewModels.Configuracion
         public ICommand GuardarCommand { get; }
         public ICommand EditarCommand { get; }
         public ICommand EliminarCommand { get; }
+        public ICommand ToggleActivoCommand { get; }
         public ICommand CancelarCommand { get; }
 
         public async Task CargarAsync()
@@ -56,6 +58,7 @@ namespace ArtesaniasPOS.Core.ViewModels.Configuracion
             {
                 if (EsEdicion) await _service.ActualizarCategoriaAsync(_editandoId, Nombre);
                 else await _service.CrearCategoriaAsync(Nombre);
+                Core.Notifier.Exito(EsEdicion ? "Categoría actualizada" : "Categoría agregada");
                 LimpiarFormulario(); await CargarAsync();
             }
             catch (Exception ex) { MensajeError = $"Error: {ex.Message}"; }
@@ -65,6 +68,22 @@ namespace ArtesaniasPOS.Core.ViewModels.Configuracion
         {
             if (Seleccionada == null) return;
             await _service.DesactivarCategoriaAsync(Seleccionada.Id);
+            await CargarAsync();
+        }
+
+        private async Task ToggleActivoAsync()
+        {
+            if (Seleccionada == null) return;
+            if (Seleccionada.Activo)
+            {
+                await _service.DesactivarCategoriaAsync(Seleccionada.Id);
+                Core.Notifier.Info("Categoría desactivada");
+            }
+            else
+            {
+                await _service.ActivarCategoriaAsync(Seleccionada.Id);
+                Core.Notifier.Exito("Categoría reactivada");
+            }
             await CargarAsync();
         }
 

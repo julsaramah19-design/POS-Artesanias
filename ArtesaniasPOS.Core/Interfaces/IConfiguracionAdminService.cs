@@ -7,6 +7,7 @@ namespace ArtesaniasPOS.Core.Interfaces
         Task CrearUsuarioAsync(UsuarioCrearDto usuario);
         Task ActualizarUsuarioAsync(UsuarioEditarDto usuario);
         Task DesactivarUsuarioAsync(int id);
+        Task ActivarUsuarioAsync(int id);
         Task<IEnumerable<PerfilDto>> ObtenerPerfilesAsync();
 
         // === CATEGORÍAS ===
@@ -14,12 +15,14 @@ namespace ArtesaniasPOS.Core.Interfaces
         Task CrearCategoriaAsync(string nombre);
         Task ActualizarCategoriaAsync(int id, string nombre);
         Task DesactivarCategoriaAsync(int id);
+        Task ActivarCategoriaAsync(int id);
 
         // === MEDIOS DE PAGO ===
         Task<IEnumerable<MedioPagoAdminDto>> ObtenerMediosPagoAsync();
         Task CrearMedioPagoAsync(string nombre);
         Task ActualizarMedioPagoAsync(int id, string nombre);
         Task DesactivarMedioPagoAsync(int id);
+        Task ActivarMedioPagoAsync(int id);
     }
 
     public class UsuarioListaDto

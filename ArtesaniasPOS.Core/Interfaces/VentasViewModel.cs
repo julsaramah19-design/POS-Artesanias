@@ -14,8 +14,11 @@ namespace ArtesaniasPOS.Core.ViewModels.Ventas
         private readonly IConfiguracionService _configuracionService;
         private readonly string _nombreVendedor;
         private string _nombreNegocio = string.Empty;
+        private string _direccionNegocio = string.Empty;
+        private string _telefonoNegocio = string.Empty;
         private double _montoMinimoDescuento = 60_000;
         private readonly IProductoService _productoService;
+        private readonly IBackupService? _backupService;
 
         private string _textoBusqueda = string.Empty;
         private ProductoBusquedaDto? _productoSeleccionado;
@@ -27,7 +30,7 @@ namespace ArtesaniasPOS.Core.ViewModels.Ventas
         private string _mensajeExito = string.Empty;
         private bool _isLoading;
 
-        public VentasViewModel(IVentaService ventaService, IMonedaService monedaService, IConfiguracionService configuracionService, IProductoService productoService, int usuarioId, string nombreVendedor)
+        public VentasViewModel(IVentaService ventaService, IMonedaService monedaService, IConfiguracionService configuracionService, IProductoService productoService, int usuarioId, string nombreVendedor, IBackupService? backupService = null)
         {
             _ventaService = ventaService;
             _monedaService = monedaService;
@@ -35,6 +38,7 @@ namespace ArtesaniasPOS.Core.ViewModels.Ventas
             _usuarioId = usuarioId;
             _productoService = productoService;
             _nombreVendedor = nombreVendedor;
+            _backupService = backupService;
 
             Carrito.CollectionChanged += OnCarritoChanged;
 
@@ -298,6 +302,8 @@ namespace ArtesaniasPOS.Core.ViewModels.Ventas
 
 
                 _nombreNegocio = await _configuracionService.ObtenerValorAsync("NombreNegocio");
+                _direccionNegocio = await _configuracionService.ObtenerValorAsync("Direccion");
+                _telefonoNegocio = await _configuracionService.ObtenerValorAsync("Telefono");
 
                 var medios = await _ventaService.ObtenerMediosPagoAsync();
                 MediosPago.Clear();
@@ -382,6 +388,8 @@ namespace ArtesaniasPOS.Core.ViewModels.Ventas
                 {
                     VentaId = ventaId,
                     NombreNegocio = _nombreNegocio,
+                    Direccion = _direccionNegocio,
+                    Telefono = _telefonoNegocio,
                     Vendedor = _nombreVendedor,
                     Fecha = DateTime.Now,
                     MedioPago = MedioPagoSeleccionado!.Nombre,
@@ -405,6 +413,12 @@ namespace ArtesaniasPOS.Core.ViewModels.Ventas
                 LimpiarCarrito();
 
                 ReciboGenerado?.Invoke(this, recibo);
+
+                Core.Notifier.Exito($"Venta #{ventaId} registrada. Cambio: {SimboloMoneda}{Cambio:N2}");
+
+                // Acción clave: tras registrar una venta, refrescar el respaldo
+                // automático para no arriesgar la pérdida de ventas.
+                _backupService?.RespaldoAutomatico();
             }
             catch (Exception ex)
             {
