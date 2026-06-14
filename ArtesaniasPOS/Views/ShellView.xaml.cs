@@ -38,18 +38,21 @@ namespace ArtesaniasPOS.UI.Views
 
         private void AplicarColores(string primario, string secundario)
         {
-            try
+            // El sidebar es parte de la identidad de marca: usa siempre el
+            // degradado espresso cálido para mantener la coherencia con la
+            // paleta terracota/crema, sin depender de un color almacenado.
+            var gradiente = new LinearGradientBrush
             {
-                var colorPrimario = (Color)ColorConverter.ConvertFromString(primario);
-                var colorSecundario = (Color)ColorConverter.ConvertFromString(secundario);
+                StartPoint = new System.Windows.Point(0, 0),
+                EndPoint = new System.Windows.Point(0, 1)
+            };
+            gradiente.GradientStops.Add(new GradientStop(
+                (Color)ColorConverter.ConvertFromString("#3a2c26"), 0));
+            gradiente.GradientStops.Add(new GradientStop(
+                (Color)ColorConverter.ConvertFromString("#2b211c"), 1));
+            gradiente.Freeze();
 
-                SidebarGradientStart.Color = colorPrimario;
-                SidebarGradientEnd.Color = colorSecundario;
-            }
-            catch
-            {
-
-            }
+            SidebarBorder.Background = gradiente;
         }
     }
 }

@@ -15,25 +15,29 @@
              mc:Ignorable="d"
              d:DesignHeight="600" d:DesignWidth="900">
 
-    <!-- DataTemplate para el placeholder de módulos -->
     <UserControl.Resources>
+        <!-- DataTemplate for placeholder modules -->
         <DataTemplate DataType="{x:Type vm:PlaceholderViewModel}">
-            <StackPanel VerticalAlignment="Center"
-                        HorizontalAlignment="Center">
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                 <TextBlock Text="{Binding Icono}"
-                           FontSize="48"
+                           FontSize="52"
                            HorizontalAlignment="Center"
-                           Margin="0,0,0,15"/>
+                           Margin="0,0,0,16"/>
                 <TextBlock Text="{Binding Titulo}"
-                           FontSize="24" FontWeight="Bold"
-                           Foreground="#1F2937"
+                           FontFamily="Palatino Linotype"
+                           FontSize="26"
+                           FontWeight="Bold"
+                           Foreground="#1b1c1b"
                            HorizontalAlignment="Center"/>
                 <TextBlock Text="{Binding Mensaje}"
-                           FontSize="14" Foreground="#9CA3AF"
+                           FontFamily="Segoe UI"
+                           FontSize="14"
+                           Foreground="#8a726b"
                            HorizontalAlignment="Center"
                            Margin="0,8,0,0"/>
             </StackPanel>
         </DataTemplate>
+
         <DataTemplate DataType="{x:Type prodVm:ProductosViewModel}">
             <prodViews:ProductosView/>
         </DataTemplate>
@@ -50,79 +54,94 @@
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <!-- Sidebar -->
-            <ColumnDefinition Width="250"/>
-            <!-- Contenido principal -->
+            <ColumnDefinition Width="280"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
         <!-- ==================== SIDEBAR ==================== -->
-        <Border Grid.Column="0"
-                x:Name="SidebarBorder">
+        <Border Grid.Column="0" x:Name="SidebarBorder">
             <Border.Background>
                 <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                    <GradientStop x:Name="SidebarGradientStart" Color="#3B82F6" Offset="0"/>
-                    <GradientStop x:Name="SidebarGradientEnd" Color="#1E40AF" Offset="1"/>
+                    <GradientStop Color="#3a2c26" Offset="0"/>
+                    <GradientStop Color="#2b211c" Offset="1"/>
                 </LinearGradientBrush>
             </Border.Background>
-
             <Grid>
                 <Grid.RowDefinitions>
-                    <!-- Logo y nombre -->
                     <RowDefinition Height="Auto"/>
-                    <!-- Menú -->
                     <RowDefinition Height="*"/>
-                    <!-- Usuario y cerrar sesión -->
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <!-- Header del sidebar: nombre del negocio -->
-                <StackPanel Grid.Row="0" Margin="20,25,20,25">
-                    <TextBlock Text="🛍️" FontSize="28"
-                               Margin="0,0,0,10"/>
+                <!-- Sidebar header -->
+                <StackPanel Grid.Row="0" Margin="24,28,24,20">
                     <TextBlock Text="{Binding NombreNegocio}"
-                               FontSize="18" FontWeight="Bold"
+                               FontFamily="Palatino Linotype"
+                               FontSize="28"
+                               FontWeight="Bold"
                                Foreground="White"
-                               TextWrapping="Wrap"/>
+                               TextWrapping="Wrap"
+                               Margin="0,0,0,3"/>
+                    <TextBlock Text="POS Profesional"
+                               FontFamily="Segoe UI"
+                               FontSize="11"
+                               Foreground="#cbb4a8"/>
                 </StackPanel>
 
-                <!-- Separador -->
+                <!-- Separator -->
                 <Border Grid.Row="0"
                         VerticalAlignment="Bottom"
-                        Height="1" Background="#FFFFFF30"
-                        Margin="20,0"/>
+                        Height="1"
+                        Background="#22ffffff"
+                        Margin="16,0"/>
 
-                <!-- Menú de navegación -->
+                <!-- Navigation menu -->
                 <ListBox Grid.Row="1"
                          ItemsSource="{Binding MenuItems}"
                          SelectedItem="{Binding MenuSeleccionado}"
                          Background="Transparent"
                          BorderThickness="0"
-                         Margin="10,15,10,0">
+                         FocusVisualStyle="{x:Null}"
+                         Margin="0,16,8,0">
 
                     <ListBox.ItemContainerStyle>
                         <Style TargetType="ListBoxItem">
+                            <Setter Property="Padding"         Value="0"/>
+                            <Setter Property="Margin"          Value="0,2,0,0"/>
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="ListBoxItem">
                                         <Border x:Name="ItemBorder"
-                                                CornerRadius="10"
-                                                Padding="14,11"
-                                                Margin="0,2"
+                                                CornerRadius="0,22,22,0"
+                                                Padding="20,11"
                                                 Cursor="Hand"
                                                 Background="Transparent">
-                                            <ContentPresenter/>
+                                            <StackPanel x:Name="ItemContent"
+                                                        Orientation="Horizontal">
+                                                <TextBlock x:Name="IconText"
+                                                           Text="{Binding Icono}"
+                                                           FontSize="18"
+                                                           VerticalAlignment="Center"
+                                                           Margin="0,0,12,0"
+                                                           Foreground="White"/>
+                                                <TextBlock x:Name="TitleText"
+                                                           Text="{Binding Titulo}"
+                                                           FontFamily="Segoe UI"
+                                                           FontSize="14"
+                                                           Foreground="White"
+                                                           VerticalAlignment="Center"/>
+                                            </StackPanel>
                                         </Border>
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter TargetName="ItemBorder"
-                                                        Property="Background"
-                                                        Value="#FFFFFF18"/>
+                                                <Setter TargetName="ItemBorder" Property="Background" Value="#18ffffff"/>
                                             </Trigger>
                                             <Trigger Property="IsSelected" Value="True">
-                                                <Setter TargetName="ItemBorder"
-                                                        Property="Background"
-                                                        Value="#FFFFFF25"/>
+                                                <Setter TargetName="ItemBorder" Property="Background" Value="#9d3d1c"/>
+                                                <Setter TargetName="ItemContent" Property="Margin" Value="4,0,0,0"/>
+                                                <Setter TargetName="TitleText" Property="FontWeight" Value="SemiBold"/>
                                             </Trigger>
                                         </ControlTemplate.Triggers>
                                     </ControlTemplate>
@@ -133,62 +152,59 @@
 
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{Binding Icono}"
-                                           FontSize="18"
-                                           VerticalAlignment="Center"
-                                           Margin="0,0,12,0"/>
-                                <TextBlock Text="{Binding Titulo}"
-                                           FontSize="14"
-                                           Foreground="White"
-                                           VerticalAlignment="Center"/>
-                            </StackPanel>
+                            <!-- Content rendered inside ItemContainerStyle -->
+                            <ContentPresenter/>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
 
-                <!-- Footer: usuario logueado + cerrar sesión -->
-                <Border Grid.Row="2" Margin="10,0,10,15">
-                    <!-- Separador -->
+                <!-- Sidebar footer: user info + logout -->
+                <Border Grid.Row="2" Margin="0,0,0,14">
                     <StackPanel>
-                        <Border Height="1" Background="#FFFFFF30"
-                                Margin="10,0,10,12"/>
+                        <!-- Separator -->
+                        <Border Height="1" Background="#22ffffff" Margin="16,0,16,14"/>
 
-                        <!-- Info del usuario -->
-                        <Grid Margin="10,0,10,10">
+                        <!-- User info -->
+                        <Grid Margin="18,0,18,12">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
 
-                            <!-- Avatar circular con inicial -->
+                            <!-- Avatar circle -->
                             <Border Grid.Column="0"
-                                    Width="38" Height="38"
-                                    CornerRadius="19"
-                                    Background="#FFFFFF30"
+                                    Width="40" Height="40"
+                                    CornerRadius="20"
+                                    Background="#9d3d1c"
                                     Margin="0,0,12,0">
                                 <TextBlock Text="{Binding InicialUsuario}"
-                                           FontSize="16" FontWeight="Bold"
+                                           FontFamily="Segoe UI"
+                                           FontSize="16"
+                                           FontWeight="Bold"
                                            Foreground="White"
                                            HorizontalAlignment="Center"
                                            VerticalAlignment="Center"/>
                             </Border>
 
-                            <StackPanel Grid.Column="1"
-                                        VerticalAlignment="Center">
+                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
                                 <TextBlock Text="{Binding NombreUsuario}"
-                                           FontSize="13" FontWeight="SemiBold"
+                                           FontFamily="Segoe UI"
+                                           FontSize="13"
+                                           FontWeight="SemiBold"
                                            Foreground="White"/>
                                 <TextBlock Text="{Binding PerfilNombre}"
+                                           FontFamily="Segoe UI"
                                            FontSize="11"
-                                           Foreground="#FFFFFF99"/>
+                                           Foreground="#cbb4a8"
+                                           Margin="0,1,0,0"/>
                             </StackPanel>
                         </Grid>
 
-                        <!-- Botón cerrar sesión -->
+                        <!-- Logout button -->
                         <Button Command="{Binding CerrarSesionCommand}"
                                 Cursor="Hand"
-                                Margin="5,0">
+                                FocusVisualStyle="{x:Null}"
+                                Margin="12,0">
                             <Button.Style>
                                 <Style TargetType="Button">
                                     <Setter Property="Template">
@@ -196,24 +212,26 @@
                                             <ControlTemplate TargetType="Button">
                                                 <Border x:Name="LogoutBorder"
                                                         CornerRadius="8"
-                                                        Padding="12,8"
-                                                        Background="#FFFFFF10">
+                                                        Padding="14,9"
+                                                        Background="#12ffffff">
                                                     <StackPanel Orientation="Horizontal"
                                                                 HorizontalAlignment="Center">
-                                                        <TextBlock Text="🚪" FontSize="14"
+                                                        <TextBlock Text="&#xE8FB;"
+                                                                   FontFamily="Segoe MDL2 Assets"
+                                                                   FontSize="13"
+                                                                   Foreground="#cbb4a8"
                                                                    Margin="0,0,8,0"
                                                                    VerticalAlignment="Center"/>
                                                         <TextBlock Text="Cerrar sesión"
+                                                                   FontFamily="Segoe UI"
                                                                    FontSize="12"
-                                                                   Foreground="#FFFFFFCC"
+                                                                   Foreground="#cbb4a8"
                                                                    VerticalAlignment="Center"/>
                                                     </StackPanel>
                                                 </Border>
                                                 <ControlTemplate.Triggers>
                                                     <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter TargetName="LogoutBorder"
-                                                                Property="Background"
-                                                                Value="#FFFFFF20"/>
+                                                        <Setter TargetName="LogoutBorder" Property="Background" Value="#22ffffff"/>
                                                     </Trigger>
                                                 </ControlTemplate.Triggers>
                                             </ControlTemplate>
@@ -227,8 +245,8 @@
             </Grid>
         </Border>
 
-        <!-- ==================== CONTENIDO PRINCIPAL ==================== -->
-        <Grid Grid.Column="1" Background="#F3F4F6">
+        <!-- ==================== MAIN CONTENT ==================== -->
+        <Grid Grid.Column="1" Background="#fbf9f7">
             <ContentControl Content="{Binding ContenidoActual}"
                             Margin="0"/>
         </Grid>

@@ -4,26 +4,21 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
-             d:DesignHeight="600" d:DesignWidth="900">
+             d:DesignHeight="600" d:DesignWidth="900"
+             Background="#fbf9f7">
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <!-- Listado principal -->
             <ColumnDefinition Width="*"/>
-            <!-- Panel lateral formulario -->
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
 
-        <!-- ==================== PANEL IZQUIERDO: LISTADO ==================== -->
-        <Grid Grid.Column="0" Margin="25,20">
+        <!-- ==================== LEFT PANEL: PRODUCT LIST ==================== -->
+        <Grid Grid.Column="0" Margin="24,20">
             <Grid.RowDefinitions>
-                <!-- Header: título + botón nuevo -->
                 <RowDefinition Height="Auto"/>
-                <!-- Barra de búsqueda y filtros -->
                 <RowDefinition Height="Auto"/>
-                <!-- DataGrid -->
                 <RowDefinition Height="*"/>
-                <!-- Mensaje de error -->
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
@@ -35,60 +30,45 @@
                 </Grid.ColumnDefinitions>
 
                 <StackPanel Grid.Column="0">
-                    <TextBlock Text="📦 Productos"
-                               FontSize="24" FontWeight="Bold"
-                               Foreground="#1F2937"/>
+                    <TextBlock Text="Productos"
+                               FontFamily="Palatino Linotype"
+                               FontSize="28"
+                               FontWeight="Bold"
+                               Foreground="#1b1c1b"/>
                     <TextBlock Text="Gestiona el catálogo de tu negocio"
-                               FontSize="13" Foreground="#6B7280"
+                               FontFamily="Segoe UI"
+                               FontSize="12"
+                               Foreground="#8a726b"
                                Margin="0,3,0,0"/>
                 </StackPanel>
 
-                <!-- Botón Nuevo (solo Admin) -->
+                <!-- New product button (admin only) -->
                 <Button Grid.Column="1"
                         Command="{Binding NuevoCommand}"
                         Cursor="Hand"
-                        Visibility="{Binding PuedeEditar, 
-                            Converter={StaticResource BoolToVisibilityConverter}}">
-                    <Button.Style>
-                        <Style TargetType="Button">
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="Button">
-                                        <Border x:Name="BtnBorder"
-                                                CornerRadius="8"
-                                                Padding="16,10">
-                                            <Border.Background>
-                                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                                    <GradientStop Color="#3B82F6" Offset="0"/>
-                                                    <GradientStop Color="#8B5CF6" Offset="1"/>
-                                                </LinearGradientBrush>
-                                            </Border.Background>
-                                            <StackPanel Orientation="Horizontal">
-                                                <TextBlock Text="＋" FontSize="16"
-                                                           Foreground="White"
-                                                           VerticalAlignment="Center"
-                                                           Margin="0,0,6,0"/>
-                                                <TextBlock Text="Nuevo producto"
-                                                           FontSize="13" FontWeight="SemiBold"
-                                                           Foreground="White"
-                                                           VerticalAlignment="Center"/>
-                                            </StackPanel>
-                                        </Border>
-                                        <ControlTemplate.Triggers>
-                                            <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter TargetName="BtnBorder" Property="Opacity" Value="0.9"/>
-                                            </Trigger>
-                                        </ControlTemplate.Triggers>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </Button.Style>
+                        Padding="18,11"
+                        Visibility="{Binding PuedeEditar,
+                            Converter={StaticResource BoolToVisibilityConverter}}"
+                        Style="{StaticResource ButtonPrimary}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xE710;"
+                                   FontFamily="Segoe MDL2 Assets"
+                                   FontSize="14"
+                                   Foreground="White"
+                                   Margin="0,0,8,0"
+                                   VerticalAlignment="Center"/>
+                        <TextBlock Text="Nuevo producto"
+                                   FontFamily="Segoe UI"
+                                   FontSize="13"
+                                   FontWeight="SemiBold"
+                                   Foreground="White"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
                 </Button>
             </Grid>
 
-            <!-- Barra de búsqueda y filtro -->
-            <Grid Grid.Row="1" Margin="0,0,0,15">
+            <!-- Search & filter bar -->
+            <Grid Grid.Row="1" Margin="0,0,0,14">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="12"/>
@@ -97,34 +77,45 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <!-- Búsqueda -->
+                <!-- Search TextBox -->
                 <TextBox Grid.Column="0"
                          Text="{Binding TextoBusqueda, UpdateSourceTrigger=PropertyChanged}"
-                         Padding="12,10" FontSize="13">
+                         FontFamily="Segoe UI"
+                         FontSize="13"
+                         Foreground="#1b1c1b"
+                         Background="#f5f3f1"
+                         BorderBrush="#ddc0b8"
+                         BorderThickness="1.5"
+                         Padding="14,10">
                     <TextBox.Style>
                         <Style TargetType="TextBox">
-                            <Setter Property="Background" Value="White"/>
-                            <Setter Property="BorderBrush" Value="#D1D5DB"/>
-                            <Setter Property="BorderThickness" Value="1.5"/>
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="TextBox">
-                                        <Border Background="{TemplateBinding Background}"
+                                        <Border x:Name="PSBorder"
+                                                Background="{TemplateBinding Background}"
                                                 BorderBrush="{TemplateBinding BorderBrush}"
                                                 BorderThickness="{TemplateBinding BorderThickness}"
                                                 CornerRadius="8">
                                             <Grid>
                                                 <ScrollViewer x:Name="PART_ContentHost"
                                                               Margin="{TemplateBinding Padding}"/>
-                                                <!-- Placeholder -->
-                                                <TextBlock Text="🔍 Buscar por nombre o código..."
-                                                           FontSize="13" Foreground="#9CA3AF"
-                                                           Margin="14,10,0,0"
+                                                <TextBlock Text="&#x1F50D;  Buscar por nombre o código..."
+                                                           FontFamily="Segoe UI"
+                                                           FontSize="13"
+                                                           Foreground="#8a726b"
+                                                           Margin="16,10,0,0"
                                                            IsHitTestVisible="False"
                                                            Visibility="{Binding Text, RelativeSource={RelativeSource TemplatedParent},
                                                                Converter={StaticResource StringToVisibilityInvertedConverter}}"/>
                                             </Grid>
                                         </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsFocused" Value="True">
+                                                <Setter TargetName="PSBorder" Property="BorderBrush" Value="#9d3d1c"/>
+                                                <Setter TargetName="PSBorder" Property="Background" Value="White"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
                                     </ControlTemplate>
                                 </Setter.Value>
                             </Setter>
@@ -135,22 +126,24 @@
                     </TextBox.InputBindings>
                 </TextBox>
 
-                <!-- Filtro por categoría -->
+                <!-- Category filter -->
                 <ComboBox Grid.Column="2"
                           ItemsSource="{Binding Categorias}"
                           SelectedItem="{Binding CategoriaFiltro}"
                           DisplayMemberPath="Nombre"
-                          Padding="12,10" FontSize="13">
+                          Padding="12,10"
+                          FontFamily="Segoe UI"
+                          FontSize="13">
                     <ComboBox.Style>
                         <Style TargetType="ComboBox">
-                            <Setter Property="Background" Value="White"/>
-                            <Setter Property="BorderBrush" Value="#D1D5DB"/>
+                            <Setter Property="Background"      Value="#f5f3f1"/>
+                            <Setter Property="BorderBrush"     Value="#ddc0b8"/>
                             <Setter Property="BorderThickness" Value="1.5"/>
                         </Style>
                     </ComboBox.Style>
                 </ComboBox>
 
-                <!-- Botón buscar -->
+                <!-- Search button -->
                 <Button Grid.Column="4"
                         Command="{Binding BuscarCommand}"
                         Cursor="Hand">
@@ -161,16 +154,19 @@
                                     <ControlTemplate TargetType="Button">
                                         <Border x:Name="SearchBorder"
                                                 Background="White"
-                                                BorderBrush="#D1D5DB"
+                                                BorderBrush="#ddc0b8"
                                                 BorderThickness="1.5"
                                                 CornerRadius="8"
-                                                Padding="14,9">
+                                                Padding="16,10">
                                             <TextBlock Text="Buscar"
-                                                       FontSize="13" Foreground="#374151"/>
+                                                       FontFamily="Segoe UI"
+                                                       FontSize="13"
+                                                       Foreground="#56423c"/>
                                         </Border>
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter TargetName="SearchBorder" Property="Background" Value="#F3F4F6"/>
+                                                <Setter TargetName="SearchBorder" Property="Background" Value="#f5f3f1"/>
+                                                <Setter TargetName="SearchBorder" Property="BorderBrush" Value="#9d3d1c"/>
                                             </Trigger>
                                         </ControlTemplate.Triggers>
                                     </ControlTemplate>
@@ -181,10 +177,16 @@
                 </Button>
             </Grid>
 
-            <!-- DataGrid -->
-            <Border Grid.Row="2" Background="White"
-                    CornerRadius="10"
-                    BorderBrush="#E5E7EB" BorderThickness="1">
+            <!-- DataGrid card -->
+            <Border Grid.Row="2"
+                    Background="White"
+                    CornerRadius="12"
+                    BorderBrush="#ddc0b8"
+                    BorderThickness="1">
+                <Border.Effect>
+                    <DropShadowEffect Color="#56423c" Opacity="0.06" BlurRadius="12" ShadowDepth="1" Direction="270"/>
+                </Border.Effect>
+
                 <DataGrid ItemsSource="{Binding Productos}"
                           SelectedItem="{Binding ProductoSeleccionado}"
                           AutoGenerateColumns="False"
@@ -193,32 +195,34 @@
                           CanUserDeleteRows="False"
                           HeadersVisibility="Column"
                           GridLinesVisibility="Horizontal"
-                          HorizontalGridLinesBrush="#F3F4F6"
+                          HorizontalGridLinesBrush="#efedec"
                           BorderThickness="0"
                           Background="Transparent"
                           RowBackground="White"
-                          AlternatingRowBackground="#FAFBFC"
+                          AlternatingRowBackground="#fbf9f7"
                           FontSize="13"
+                          FontFamily="Segoe UI"
                           SelectionMode="Single"
                           SelectionUnit="FullRow">
 
                     <DataGrid.ColumnHeaderStyle>
                         <Style TargetType="DataGridColumnHeader">
-                            <Setter Property="Background" Value="#F9FAFB"/>
-                            <Setter Property="Foreground" Value="#6B7280"/>
-                            <Setter Property="FontWeight" Value="SemiBold"/>
-                            <Setter Property="FontSize" Value="12"/>
-                            <Setter Property="Padding" Value="12,10"/>
-                            <Setter Property="BorderBrush" Value="#E5E7EB"/>
+                            <Setter Property="Background"      Value="#f5f3f1"/>
+                            <Setter Property="Foreground"      Value="#56423c"/>
+                            <Setter Property="FontWeight"      Value="SemiBold"/>
+                            <Setter Property="FontSize"        Value="12"/>
+                            <Setter Property="FontFamily"      Value="Segoe UI"/>
+                            <Setter Property="Padding"         Value="14,11"/>
+                            <Setter Property="BorderBrush"     Value="#efedec"/>
                             <Setter Property="BorderThickness" Value="0,0,0,1"/>
                         </Style>
                     </DataGrid.ColumnHeaderStyle>
 
                     <DataGrid.CellStyle>
                         <Style TargetType="DataGridCell">
-                            <Setter Property="Padding" Value="12,8"/>
+                            <Setter Property="Padding"         Value="14,9"/>
                             <Setter Property="BorderThickness" Value="0"/>
-                            <Setter Property="Foreground" Value="#374151"/>
+                            <Setter Property="Foreground"      Value="#1b1c1b"/>
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="DataGridCell">
@@ -231,75 +235,160 @@
                             </Setter>
                             <Style.Triggers>
                                 <Trigger Property="IsSelected" Value="True">
-                                    <Setter Property="Background" Value="#EFF6FF"/>
-                                    <Setter Property="Foreground" Value="#1E40AF"/>
+                                    <Setter Property="Background" Value="#fdf0ec"/>
+                                    <Setter Property="Foreground" Value="#9d3d1c"/>
                                 </Trigger>
                             </Style.Triggers>
                         </Style>
                     </DataGrid.CellStyle>
 
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Código" 
-                                            Binding="{Binding CodigoBarras}" 
-                                            Width="120"/>
-                        <DataGridTextColumn Header="Nombre" 
-                                            Binding="{Binding Nombre}" 
-                                            Width="*"/>
-                        <DataGridTextColumn Header="Categoría" 
-                                            Binding="{Binding CategoriaNombre}" 
-                                            Width="130"/>
-                        <DataGridTextColumn Header="Precio" 
-                                            Binding="{Binding PrecioBase, StringFormat='{}{0:N0}'}" 
-                                            Width="100"/>
-                        <DataGridTemplateColumn Header="Stock" Width="80">
+                        <!-- Barcode -->
+                        <DataGridTextColumn Header="Código"
+                                            Binding="{Binding CodigoBarras}"
+                                            Width="120">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="FontFamily" Value="Consolas"/>
+                                    <Setter Property="FontSize"   Value="12"/>
+                                    <Setter Property="Foreground" Value="#8a726b"/>
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+
+                        <!-- Product name with avatar -->
+                        <DataGridTemplateColumn Header="Nombre" Width="*">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding StockActual}"
-                                               Padding="6,2"
-                                               HorizontalAlignment="Center">
-                                        <TextBlock.Style>
-                                            <Style TargetType="TextBlock">
-                                                <Setter Property="Foreground" Value="#059669"/>
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding StockBajo}" Value="True">
-                                                        <Setter Property="Foreground" Value="#DC2626"/>
-                                                        <Setter Property="FontWeight" Value="Bold"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </TextBlock.Style>
-                                    </TextBlock>
+                                    <StackPanel Orientation="Horizontal" Margin="0,2">
+                                        <Border Width="30" Height="30"
+                                                CornerRadius="15"
+                                                Background="#fdf0ec"
+                                                BorderBrush="#ddc0b8"
+                                                BorderThickness="1"
+                                                Margin="0,0,10,0"
+                                                VerticalAlignment="Center">
+                                            <TextBlock Text="&#x1F4E6;"
+                                                       FontSize="14"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center"/>
+                                        </Border>
+                                        <TextBlock Text="{Binding Nombre}"
+                                                   FontFamily="Segoe UI"
+                                                   FontSize="13"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="#1b1c1b"
+                                                   VerticalAlignment="Center"/>
+                                    </StackPanel>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <!-- Botones de acción (solo Admin) -->
-                        <DataGridTemplateColumn Header="" Width="170">
+                        <!-- Category chip -->
+                        <DataGridTemplateColumn Header="Categoría" Width="130">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Border Background="#efedec"
+                                            CornerRadius="10"
+                                            Padding="10,3"
+                                            HorizontalAlignment="Left">
+                                        <TextBlock Text="{Binding CategoriaNombre}"
+                                                   FontFamily="Segoe UI"
+                                                   FontSize="12"
+                                                   Foreground="#56423c"/>
+                                    </Border>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <!-- Price -->
+                        <DataGridTextColumn Header="Precio"
+                                            Binding="{Binding PrecioBase, StringFormat='{}{0:N0}'}"
+                                            Width="100">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="FontFamily"   Value="Segoe UI"/>
+                                    <Setter Property="FontWeight"   Value="SemiBold"/>
+                                    <Setter Property="Foreground"   Value="#9d3d1c"/>
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+
+                        <!-- Stock indicator with colored dot -->
+                        <DataGridTemplateColumn Header="Stock" Width="90">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <!-- Status dot -->
+                                        <Border Width="8" Height="8" CornerRadius="4" Margin="0,0,7,0" VerticalAlignment="Center">
+                                            <Border.Style>
+                                                <Style TargetType="Border">
+                                                    <Setter Property="Background" Value="#2d7a4f"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding StockBajo}" Value="True">
+                                                            <Setter Property="Background" Value="#ba1a1a"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                        </Border>
+                                        <TextBlock Text="{Binding StockActual}"
+                                                   FontFamily="Segoe UI"
+                                                   FontSize="13"
+                                                   VerticalAlignment="Center">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Foreground" Value="#2d7a4f"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding StockBajo}" Value="True">
+                                                            <Setter Property="Foreground" Value="#ba1a1a"/>
+                                                            <Setter Property="FontWeight" Value="Bold"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <!-- Action buttons (admin only) -->
+                        <DataGridTemplateColumn Header="" Width="180">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal"
-                                                Visibility="{Binding DataContext.PuedeEditar, 
+                                                VerticalAlignment="Center"
+                                                Visibility="{Binding DataContext.PuedeEditar,
                                                     RelativeSource={RelativeSource AncestorType=UserControl},
                                                     Converter={StaticResource BoolToVisibilityConverter}}">
 
-                                        <!-- Editar -->
-                                        <Button Command="{Binding DataContext.EditarCommand, 
+                                        <!-- Edit button -->
+                                        <Button Command="{Binding DataContext.EditarCommand,
                                                     RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                Cursor="Hand" Margin="0,0,4,0">
+                                                Cursor="Hand"
+                                                Margin="0,0,5,0">
                                             <Button.Style>
                                                 <Style TargetType="Button">
                                                     <Setter Property="Template">
                                                         <Setter.Value>
                                                             <ControlTemplate TargetType="Button">
                                                                 <Border x:Name="EditBorder"
-                                                                        Background="#EFF6FF"
-                                                                        CornerRadius="6"
-                                                                        Padding="8,4">
-                                                                    <TextBlock Text="✏️" FontSize="12"/>
+                                                                        Background="#fdf0ec"
+                                                                        BorderBrush="#ddc0b8"
+                                                                        BorderThickness="1"
+                                                                        CornerRadius="7"
+                                                                        Padding="9,5">
+                                                                    <TextBlock Text="&#xE70F;"
+                                                                               FontFamily="Segoe MDL2 Assets"
+                                                                               FontSize="11"
+                                                                               Foreground="#9d3d1c"/>
                                                                 </Border>
                                                                 <ControlTemplate.Triggers>
                                                                     <Trigger Property="IsMouseOver" Value="True">
-                                                                        <Setter TargetName="EditBorder" Property="Background" Value="#DBEAFE"/>
+                                                                        <Setter TargetName="EditBorder" Property="Background" Value="#9d3d1c"/>
                                                                     </Trigger>
                                                                 </ControlTemplate.Triggers>
                                                             </ControlTemplate>
@@ -309,8 +398,41 @@
                                             </Button.Style>
                                         </Button>
 
-                                        <!-- Eliminar -->
-                                        <Button Command="{Binding DataContext.EliminarCommand, 
+                                        <!-- Delete button -->
+                                        <Button Command="{Binding DataContext.EliminarCommand,
+                                                    RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                Cursor="Hand"
+                                                Margin="0,0,5,0">
+                                            <Button.Style>
+                                                <Style TargetType="Button">
+                                                    <Setter Property="Template">
+                                                        <Setter.Value>
+                                                            <ControlTemplate TargetType="Button">
+                                                                <Border x:Name="DelBorder"
+                                                                        Background="#ffdad6"
+                                                                        BorderBrush="#f0b4ae"
+                                                                        BorderThickness="1"
+                                                                        CornerRadius="7"
+                                                                        Padding="9,5">
+                                                                    <TextBlock Text="&#xE74D;"
+                                                                               FontFamily="Segoe MDL2 Assets"
+                                                                               FontSize="11"
+                                                                               Foreground="#ba1a1a"/>
+                                                                </Border>
+                                                                <ControlTemplate.Triggers>
+                                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                                        <Setter TargetName="DelBorder" Property="Background" Value="#ba1a1a"/>
+                                                                    </Trigger>
+                                                                </ControlTemplate.Triggers>
+                                                            </ControlTemplate>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </Style>
+                                            </Button.Style>
+                                        </Button>
+
+                                        <!-- Print label button -->
+                                        <Button Command="{Binding DataContext.ImprimirEtiquetaCommand,
                                                     RelativeSource={RelativeSource AncestorType=UserControl}}"
                                                 Cursor="Hand">
                                             <Button.Style>
@@ -318,43 +440,20 @@
                                                     <Setter Property="Template">
                                                         <Setter.Value>
                                                             <ControlTemplate TargetType="Button">
-                                                                <Border x:Name="DelBorder"
-                                                                        Background="#FEF2F2"
-                                                                        CornerRadius="6"
-                                                                        Padding="8,4">
-                                                                    <TextBlock Text="🗑️" FontSize="12"/>
-                                                                </Border>
-                                                                <ControlTemplate.Triggers>
-                                                                    <Trigger Property="IsMouseOver" Value="True">
-                                                                        <Setter TargetName="DelBorder" Property="Background" Value="#FEE2E2"/>
-                                                                    </Trigger>
-                                                                </ControlTemplate.Triggers>
-                                                            </ControlTemplate>
-                                                        </Setter.Value>
-                                                    </Setter>
-                                                </Style>
-                                            </Button.Style>
-                                        </Button>
-
-                                        <!-- Imprimir etiqueta -->
-                                        <Button Command="{Binding DataContext.ImprimirEtiquetaCommand, 
-                                                RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                            Cursor="Hand" Margin="4,0,0,0">
-                                            <Button.Style>
-                                                <Style TargetType="Button">
-                                                    <Setter Property="Template">
-                                                        <Setter.Value>
-                                                            <ControlTemplate TargetType="Button">
                                                                 <Border x:Name="PrintBorder"
-                                                                    Background="#F0FDF4"
-                                                                    CornerRadius="6"
-                                                                    Padding="8,4">
-                                                                    <TextBlock Text="🖨️" FontSize="12"/>
+                                                                        Background="#e8f5e8"
+                                                                        BorderBrush="#a8d8a8"
+                                                                        BorderThickness="1"
+                                                                        CornerRadius="7"
+                                                                        Padding="9,5">
+                                                                    <TextBlock Text="&#xE749;"
+                                                                               FontFamily="Segoe MDL2 Assets"
+                                                                               FontSize="11"
+                                                                               Foreground="#2d7a4f"/>
                                                                 </Border>
                                                                 <ControlTemplate.Triggers>
                                                                     <Trigger Property="IsMouseOver" Value="True">
-                                                                        <Setter TargetName="PrintBorder" 
-                                        Property="Background" Value="#DCFCE7"/>
+                                                                        <Setter TargetName="PrintBorder" Property="Background" Value="#2d7a4f"/>
                                                                     </Trigger>
                                                                 </ControlTemplate.Triggers>
                                                             </ControlTemplate>
@@ -363,7 +462,6 @@
                                                 </Style>
                                             </Button.Style>
                                         </Button>
-
                                     </StackPanel>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
@@ -372,43 +470,61 @@
                 </DataGrid>
             </Border>
 
-            <!-- Mensaje de error -->
+            <!-- Error message -->
             <Border Grid.Row="3"
-                    Background="#FEE2E2" CornerRadius="8"
-                    Padding="12" Margin="0,10,0,0"
-                    Visibility="{Binding MensajeError, 
+                    Background="#ffdad6"
+                    CornerRadius="8"
+                    Padding="14,10"
+                    Margin="0,10,0,0"
+                    Visibility="{Binding MensajeError,
                         Converter={StaticResource StringToVisibilityConverter}}">
-                <TextBlock Text="{Binding MensajeError}"
-                           FontSize="12" Foreground="#DC2626"
-                           TextWrapping="Wrap"/>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="&#x26A0;"
+                               FontFamily="Segoe UI"
+                               FontSize="13"
+                               Foreground="#ba1a1a"
+                               Margin="0,0,8,0"
+                               VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding MensajeError}"
+                               FontFamily="Segoe UI"
+                               FontSize="12"
+                               Foreground="#ba1a1a"
+                               TextWrapping="Wrap"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
             </Border>
         </Grid>
 
-        <!-- ==================== PANEL DERECHO: FORMULARIO ==================== -->
+        <!-- ==================== RIGHT PANEL: FORM ==================== -->
         <Border Grid.Column="1"
-                Width="360"
+                Width="368"
                 Background="White"
-                BorderBrush="#E5E7EB"
+                BorderBrush="#ddc0b8"
                 BorderThickness="1,0,0,0"
-                Visibility="{Binding PanelVisible, 
+                Visibility="{Binding PanelVisible,
                     Converter={StaticResource BoolToVisibilityConverter}}">
 
-            <Grid DataContext="{Binding FormularioVm}" Margin="22,20">
+            <Grid DataContext="{Binding FormularioVm}" Margin="24,20">
                 <Grid.RowDefinitions>
-                    <!-- Header del panel -->
                     <RowDefinition Height="Auto"/>
-                    <!-- Formulario scrollable -->
                     <RowDefinition Height="*"/>
-                    <!-- Botones -->
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <!-- Header -->
-                <Grid Grid.Row="0" Margin="0,0,0,18">
-                    <TextBlock Text="{Binding TituloFormulario}"
-                               FontSize="18" FontWeight="Bold"
-                               Foreground="#1F2937"/>
+                <!-- Form header -->
+                <Grid Grid.Row="0" Margin="0,0,0,20">
+                    <StackPanel>
+                        <TextBlock Text="{Binding TituloFormulario}"
+                                   FontFamily="Palatino Linotype"
+                                   FontSize="20"
+                                   FontWeight="Bold"
+                                   Foreground="#1b1c1b"/>
+                        <Border Height="2" Background="#9d3d1c" Width="40"
+                                HorizontalAlignment="Left" CornerRadius="1"
+                                Margin="0,6,0,0"/>
+                    </StackPanel>
                     <Button HorizontalAlignment="Right"
+                            VerticalAlignment="Top"
                             Command="{Binding CancelarCommand}"
                             Cursor="Hand">
                         <Button.Style>
@@ -417,15 +533,17 @@
                                     <Setter.Value>
                                         <ControlTemplate TargetType="Button">
                                             <Border x:Name="CloseBorder"
-                                                    Background="#F3F4F6"
-                                                    CornerRadius="6"
-                                                    Padding="8,4">
-                                                <TextBlock Text="✕" FontSize="14"
-                                                           Foreground="#6B7280"/>
+                                                    Background="#efedec"
+                                                    CornerRadius="7"
+                                                    Padding="9,5">
+                                                <TextBlock Text="&#xE711;"
+                                                           FontFamily="Segoe MDL2 Assets"
+                                                           FontSize="11"
+                                                           Foreground="#56423c"/>
                                             </Border>
                                             <ControlTemplate.Triggers>
                                                 <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter TargetName="CloseBorder" Property="Background" Value="#E5E7EB"/>
+                                                    <Setter TargetName="CloseBorder" Property="Background" Value="#ddc0b8"/>
                                                 </Trigger>
                                             </ControlTemplate.Triggers>
                                         </ControlTemplate>
@@ -436,7 +554,7 @@
                     </Button>
                 </Grid>
 
-                <!-- Formulario -->
+                <!-- Scrollable form fields -->
                 <ScrollViewer Grid.Row="1"
                               VerticalScrollBarVisibility="Auto"
                               HorizontalScrollBarVisibility="Disabled">
@@ -444,17 +562,22 @@
 
                         <!-- Categoría -->
                         <TextBlock Text="Categoría *"
-                                   FontSize="12" FontWeight="SemiBold"
-                                   Foreground="#374151" Margin="0,0,0,5"/>
+                                   FontFamily="Segoe UI"
+                                   FontSize="12"
+                                   FontWeight="SemiBold"
+                                   Foreground="#56423c"
+                                   Margin="0,0,0,5"/>
                         <ComboBox ItemsSource="{Binding Categorias}"
                                   SelectedItem="{Binding CategoriaSeleccionada}"
                                   DisplayMemberPath="Nombre"
-                                  Padding="10,8" FontSize="13"
+                                  Padding="12,9"
+                                  FontFamily="Segoe UI"
+                                  FontSize="13"
                                   Margin="0,0,0,14">
                             <ComboBox.Style>
                                 <Style TargetType="ComboBox">
-                                    <Setter Property="Background" Value="#F9FAFB"/>
-                                    <Setter Property="BorderBrush" Value="#D1D5DB"/>
+                                    <Setter Property="Background"      Value="#f5f3f1"/>
+                                    <Setter Property="BorderBrush"     Value="#ddc0b8"/>
                                     <Setter Property="BorderThickness" Value="1.5"/>
                                 </Style>
                             </ComboBox.Style>
@@ -462,27 +585,39 @@
 
                         <!-- Código de barras -->
                         <TextBlock Text="Código de barras *"
-                                   FontSize="12" FontWeight="SemiBold"
-                                   Foreground="#374151" Margin="0,0,0,5"/>
+                                   FontFamily="Segoe UI"
+                                   FontSize="12"
+                                   FontWeight="SemiBold"
+                                   Foreground="#56423c"
+                                   Margin="0,0,0,5"/>
                         <TextBox Text="{Binding CodigoBarras, UpdateSourceTrigger=PropertyChanged}"
-                                 Padding="10,8" FontSize="13"
-                                 MaxLength="30" Margin="0,0,0,14"
-                                 FontFamily="Consolas">
+                                 Padding="12,9"
+                                 FontFamily="Consolas"
+                                 FontSize="13"
+                                 MaxLength="30"
+                                 Margin="0,0,0,14"
+                                 Background="#f5f3f1"
+                                 BorderBrush="#ddc0b8"
+                                 BorderThickness="1.5">
                             <TextBox.Style>
                                 <Style TargetType="TextBox">
-                                    <Setter Property="Background" Value="#F9FAFB"/>
-                                    <Setter Property="BorderBrush" Value="#D1D5DB"/>
-                                    <Setter Property="BorderThickness" Value="1.5"/>
                                     <Setter Property="Template">
                                         <Setter.Value>
                                             <ControlTemplate TargetType="TextBox">
-                                                <Border Background="{TemplateBinding Background}"
+                                                <Border x:Name="CBBorder"
+                                                        Background="{TemplateBinding Background}"
                                                         BorderBrush="{TemplateBinding BorderBrush}"
                                                         BorderThickness="{TemplateBinding BorderThickness}"
                                                         CornerRadius="8">
                                                     <ScrollViewer x:Name="PART_ContentHost"
                                                                   Margin="{TemplateBinding Padding}"/>
                                                 </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsFocused" Value="True">
+                                                        <Setter TargetName="CBBorder" Property="BorderBrush" Value="#9d3d1c"/>
+                                                        <Setter TargetName="CBBorder" Property="Background" Value="White"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
                                             </ControlTemplate>
                                         </Setter.Value>
                                     </Setter>
@@ -492,26 +627,39 @@
 
                         <!-- Nombre -->
                         <TextBlock Text="Nombre *"
-                                   FontSize="12" FontWeight="SemiBold"
-                                   Foreground="#374151" Margin="0,0,0,5"/>
+                                   FontFamily="Segoe UI"
+                                   FontSize="12"
+                                   FontWeight="SemiBold"
+                                   Foreground="#56423c"
+                                   Margin="0,0,0,5"/>
                         <TextBox Text="{Binding Nombre, UpdateSourceTrigger=PropertyChanged}"
-                                 Padding="10,8" FontSize="13"
-                                 MaxLength="100" Margin="0,0,0,14">
+                                 Padding="12,9"
+                                 FontFamily="Segoe UI"
+                                 FontSize="13"
+                                 MaxLength="100"
+                                 Margin="0,0,0,14"
+                                 Background="#f5f3f1"
+                                 BorderBrush="#ddc0b8"
+                                 BorderThickness="1.5">
                             <TextBox.Style>
                                 <Style TargetType="TextBox">
-                                    <Setter Property="Background" Value="#F9FAFB"/>
-                                    <Setter Property="BorderBrush" Value="#D1D5DB"/>
-                                    <Setter Property="BorderThickness" Value="1.5"/>
                                     <Setter Property="Template">
                                         <Setter.Value>
                                             <ControlTemplate TargetType="TextBox">
-                                                <Border Background="{TemplateBinding Background}"
+                                                <Border x:Name="NomBorder"
+                                                        Background="{TemplateBinding Background}"
                                                         BorderBrush="{TemplateBinding BorderBrush}"
                                                         BorderThickness="{TemplateBinding BorderThickness}"
                                                         CornerRadius="8">
                                                     <ScrollViewer x:Name="PART_ContentHost"
                                                                   Margin="{TemplateBinding Padding}"/>
                                                 </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsFocused" Value="True">
+                                                        <Setter TargetName="NomBorder" Property="BorderBrush" Value="#9d3d1c"/>
+                                                        <Setter TargetName="NomBorder" Property="Background" Value="White"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
                                             </ControlTemplate>
                                         </Setter.Value>
                                     </Setter>
@@ -521,30 +669,43 @@
 
                         <!-- Descripción -->
                         <TextBlock Text="Descripción"
-                                   FontSize="12" FontWeight="SemiBold"
-                                   Foreground="#374151" Margin="0,0,0,5"/>
+                                   FontFamily="Segoe UI"
+                                   FontSize="12"
+                                   FontWeight="SemiBold"
+                                   Foreground="#56423c"
+                                   Margin="0,0,0,5"/>
                         <TextBox Text="{Binding Descripcion, UpdateSourceTrigger=PropertyChanged}"
-                                 Padding="10,8" FontSize="13"
-                                 MaxLength="300" Margin="0,0,0,14"
+                                 Padding="12,9"
+                                 FontFamily="Segoe UI"
+                                 FontSize="13"
+                                 MaxLength="300"
+                                 Margin="0,0,0,14"
                                  TextWrapping="Wrap"
                                  AcceptsReturn="True"
-                                 Height="65"
-                                 VerticalScrollBarVisibility="Auto">
+                                 Height="68"
+                                 VerticalScrollBarVisibility="Auto"
+                                 Background="#f5f3f1"
+                                 BorderBrush="#ddc0b8"
+                                 BorderThickness="1.5">
                             <TextBox.Style>
                                 <Style TargetType="TextBox">
-                                    <Setter Property="Background" Value="#F9FAFB"/>
-                                    <Setter Property="BorderBrush" Value="#D1D5DB"/>
-                                    <Setter Property="BorderThickness" Value="1.5"/>
                                     <Setter Property="Template">
                                         <Setter.Value>
                                             <ControlTemplate TargetType="TextBox">
-                                                <Border Background="{TemplateBinding Background}"
+                                                <Border x:Name="DescBorder"
+                                                        Background="{TemplateBinding Background}"
                                                         BorderBrush="{TemplateBinding BorderBrush}"
                                                         BorderThickness="{TemplateBinding BorderThickness}"
                                                         CornerRadius="8">
                                                     <ScrollViewer x:Name="PART_ContentHost"
                                                                   Margin="{TemplateBinding Padding}"/>
                                                 </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsFocused" Value="True">
+                                                        <Setter TargetName="DescBorder" Property="BorderBrush" Value="#9d3d1c"/>
+                                                        <Setter TargetName="DescBorder" Property="Background" Value="White"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
                                             </ControlTemplate>
                                         </Setter.Value>
                                     </Setter>
@@ -554,26 +715,38 @@
 
                         <!-- Precio -->
                         <TextBlock Text="Precio *"
-                                   FontSize="12" FontWeight="SemiBold"
-                                   Foreground="#374151" Margin="0,0,0,5"/>
+                                   FontFamily="Segoe UI"
+                                   FontSize="12"
+                                   FontWeight="SemiBold"
+                                   Foreground="#56423c"
+                                   Margin="0,0,0,5"/>
                         <TextBox Text="{Binding PrecioBase, UpdateSourceTrigger=PropertyChanged}"
-                                 Padding="10,8" FontSize="13"
-                                 Margin="0,0,0,14">
+                                 Padding="12,9"
+                                 FontFamily="Segoe UI"
+                                 FontSize="13"
+                                 Margin="0,0,0,14"
+                                 Background="#f5f3f1"
+                                 BorderBrush="#ddc0b8"
+                                 BorderThickness="1.5">
                             <TextBox.Style>
                                 <Style TargetType="TextBox">
-                                    <Setter Property="Background" Value="#F9FAFB"/>
-                                    <Setter Property="BorderBrush" Value="#D1D5DB"/>
-                                    <Setter Property="BorderThickness" Value="1.5"/>
                                     <Setter Property="Template">
                                         <Setter.Value>
                                             <ControlTemplate TargetType="TextBox">
-                                                <Border Background="{TemplateBinding Background}"
+                                                <Border x:Name="PrecBorder"
+                                                        Background="{TemplateBinding Background}"
                                                         BorderBrush="{TemplateBinding BorderBrush}"
                                                         BorderThickness="{TemplateBinding BorderThickness}"
                                                         CornerRadius="8">
                                                     <ScrollViewer x:Name="PART_ContentHost"
                                                                   Margin="{TemplateBinding Padding}"/>
                                                 </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsFocused" Value="True">
+                                                        <Setter TargetName="PrecBorder" Property="BorderBrush" Value="#9d3d1c"/>
+                                                        <Setter TargetName="PrecBorder" Property="Background" Value="White"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
                                             </ControlTemplate>
                                         </Setter.Value>
                                     </Setter>
@@ -581,7 +754,7 @@
                             </TextBox.Style>
                         </TextBox>
 
-                        <!-- Stock actual y mínimo -->
+                        <!-- Stock actual + mínimo -->
                         <Grid Margin="0,0,0,14">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
@@ -591,25 +764,37 @@
 
                             <StackPanel Grid.Column="0">
                                 <TextBlock Text="Stock actual"
-                                           FontSize="12" FontWeight="SemiBold"
-                                           Foreground="#374151" Margin="0,0,0,5"/>
+                                           FontFamily="Segoe UI"
+                                           FontSize="12"
+                                           FontWeight="SemiBold"
+                                           Foreground="#56423c"
+                                           Margin="0,0,0,5"/>
                                 <TextBox Text="{Binding StockActual, UpdateSourceTrigger=PropertyChanged}"
-                                         Padding="10,8" FontSize="13">
+                                         Padding="12,9"
+                                         FontFamily="Segoe UI"
+                                         FontSize="13"
+                                         Background="#f5f3f1"
+                                         BorderBrush="#ddc0b8"
+                                         BorderThickness="1.5">
                                     <TextBox.Style>
                                         <Style TargetType="TextBox">
-                                            <Setter Property="Background" Value="#F9FAFB"/>
-                                            <Setter Property="BorderBrush" Value="#D1D5DB"/>
-                                            <Setter Property="BorderThickness" Value="1.5"/>
                                             <Setter Property="Template">
                                                 <Setter.Value>
                                                     <ControlTemplate TargetType="TextBox">
-                                                        <Border Background="{TemplateBinding Background}"
+                                                        <Border x:Name="SABorder"
+                                                                Background="{TemplateBinding Background}"
                                                                 BorderBrush="{TemplateBinding BorderBrush}"
                                                                 BorderThickness="{TemplateBinding BorderThickness}"
                                                                 CornerRadius="8">
                                                             <ScrollViewer x:Name="PART_ContentHost"
                                                                           Margin="{TemplateBinding Padding}"/>
                                                         </Border>
+                                                        <ControlTemplate.Triggers>
+                                                            <Trigger Property="IsFocused" Value="True">
+                                                                <Setter TargetName="SABorder" Property="BorderBrush" Value="#9d3d1c"/>
+                                                                <Setter TargetName="SABorder" Property="Background" Value="White"/>
+                                                            </Trigger>
+                                                        </ControlTemplate.Triggers>
                                                     </ControlTemplate>
                                                 </Setter.Value>
                                             </Setter>
@@ -620,25 +805,37 @@
 
                             <StackPanel Grid.Column="2">
                                 <TextBlock Text="Stock mínimo"
-                                           FontSize="12" FontWeight="SemiBold"
-                                           Foreground="#374151" Margin="0,0,0,5"/>
+                                           FontFamily="Segoe UI"
+                                           FontSize="12"
+                                           FontWeight="SemiBold"
+                                           Foreground="#56423c"
+                                           Margin="0,0,0,5"/>
                                 <TextBox Text="{Binding StockMinimo, UpdateSourceTrigger=PropertyChanged}"
-                                         Padding="10,8" FontSize="13">
+                                         Padding="12,9"
+                                         FontFamily="Segoe UI"
+                                         FontSize="13"
+                                         Background="#f5f3f1"
+                                         BorderBrush="#ddc0b8"
+                                         BorderThickness="1.5">
                                     <TextBox.Style>
                                         <Style TargetType="TextBox">
-                                            <Setter Property="Background" Value="#F9FAFB"/>
-                                            <Setter Property="BorderBrush" Value="#D1D5DB"/>
-                                            <Setter Property="BorderThickness" Value="1.5"/>
                                             <Setter Property="Template">
                                                 <Setter.Value>
                                                     <ControlTemplate TargetType="TextBox">
-                                                        <Border Background="{TemplateBinding Background}"
+                                                        <Border x:Name="SMBorder"
+                                                                Background="{TemplateBinding Background}"
                                                                 BorderBrush="{TemplateBinding BorderBrush}"
                                                                 BorderThickness="{TemplateBinding BorderThickness}"
                                                                 CornerRadius="8">
                                                             <ScrollViewer x:Name="PART_ContentHost"
                                                                           Margin="{TemplateBinding Padding}"/>
                                                         </Border>
+                                                        <ControlTemplate.Triggers>
+                                                            <Trigger Property="IsFocused" Value="True">
+                                                                <Setter TargetName="SMBorder" Property="BorderBrush" Value="#9d3d1c"/>
+                                                                <Setter TargetName="SMBorder" Property="Background" Value="White"/>
+                                                            </Trigger>
+                                                        </ControlTemplate.Triggers>
                                                     </ControlTemplate>
                                                 </Setter.Value>
                                             </Setter>
@@ -648,58 +845,47 @@
                             </StackPanel>
                         </Grid>
 
-                        <!-- Mensaje de error del formulario -->
-                        <Border Background="#FEE2E2" CornerRadius="8"
-                                Padding="10" Margin="0,5,0,0"
-                                Visibility="{Binding MensajeError, 
+                        <!-- Form error message -->
+                        <Border Background="#ffdad6"
+                                CornerRadius="8"
+                                Padding="12,9"
+                                Margin="0,4,0,0"
+                                Visibility="{Binding MensajeError,
                                     Converter={StaticResource StringToVisibilityConverter}}">
                             <TextBlock Text="{Binding MensajeError}"
-                                       FontSize="12" Foreground="#DC2626"
+                                       FontFamily="Segoe UI"
+                                       FontSize="12"
+                                       Foreground="#ba1a1a"
                                        TextWrapping="Wrap"/>
                         </Border>
                     </StackPanel>
                 </ScrollViewer>
 
-                <!-- Botones del formulario -->
-                <StackPanel Grid.Row="2" Margin="0,15,0,0">
-                    <!-- Botón Guardar -->
+                <!-- Form buttons -->
+                <StackPanel Grid.Row="2" Margin="0,16,0,0">
+                    <!-- Save button -->
                     <Button Command="{Binding GuardarCommand}"
-                            Cursor="Hand" Margin="0,0,0,8">
-                        <Button.Style>
-                            <Style TargetType="Button">
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate TargetType="Button">
-                                            <Border x:Name="SaveBorder"
-                                                    CornerRadius="8"
-                                                    Padding="14,10">
-                                                <Border.Background>
-                                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                                        <GradientStop Color="#10B981" Offset="0"/>
-                                                        <GradientStop Color="#059669" Offset="1"/>
-                                                    </LinearGradientBrush>
-                                                </Border.Background>
-                                                <TextBlock Text="💾 Guardar"
-                                                           FontSize="14" FontWeight="SemiBold"
-                                                           Foreground="White"
-                                                           HorizontalAlignment="Center"/>
-                                            </Border>
-                                            <ControlTemplate.Triggers>
-                                                <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter TargetName="SaveBorder" Property="Opacity" Value="0.9"/>
-                                                </Trigger>
-                                                <Trigger Property="IsEnabled" Value="False">
-                                                    <Setter TargetName="SaveBorder" Property="Opacity" Value="0.5"/>
-                                                </Trigger>
-                                            </ControlTemplate.Triggers>
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style>
-                        </Button.Style>
+                            Cursor="Hand"
+                            Padding="14,11"
+                            Margin="0,0,0,8"
+                            Style="{StaticResource ButtonPrimary}">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <TextBlock Text="&#xE74E;"
+                                       FontFamily="Segoe MDL2 Assets"
+                                       FontSize="13"
+                                       Foreground="White"
+                                       Margin="0,0,8,0"
+                                       VerticalAlignment="Center"/>
+                            <TextBlock Text="Guardar"
+                                       FontFamily="Segoe UI"
+                                       FontSize="14"
+                                       FontWeight="SemiBold"
+                                       Foreground="White"
+                                       VerticalAlignment="Center"/>
+                        </StackPanel>
                     </Button>
 
-                    <!-- Botón Cancelar -->
+                    <!-- Cancel button -->
                     <Button Command="{Binding CancelarCommand}"
                             Cursor="Hand">
                         <Button.Style>
@@ -709,18 +895,20 @@
                                         <ControlTemplate TargetType="Button">
                                             <Border x:Name="CancelBorder"
                                                     CornerRadius="8"
-                                                    Padding="14,10"
+                                                    Padding="14,11"
                                                     Background="White"
-                                                    BorderBrush="#D1D5DB"
+                                                    BorderBrush="#ddc0b8"
                                                     BorderThickness="1.5">
                                                 <TextBlock Text="Cancelar"
+                                                           FontFamily="Segoe UI"
                                                            FontSize="13"
-                                                           Foreground="#6B7280"
+                                                           Foreground="#56423c"
                                                            HorizontalAlignment="Center"/>
                                             </Border>
                                             <ControlTemplate.Triggers>
                                                 <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter TargetName="CancelBorder" Property="Background" Value="#F3F4F6"/>
+                                                    <Setter TargetName="CancelBorder" Property="Background" Value="#f5f3f1"/>
+                                                    <Setter TargetName="CancelBorder" Property="BorderBrush" Value="#9d3d1c"/>
                                                 </Trigger>
                                             </ControlTemplate.Triggers>
                                         </ControlTemplate>
