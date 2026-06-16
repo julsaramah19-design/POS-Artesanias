@@ -19,8 +19,32 @@ namespace ArtesaniasPOS.Data.Database
 
             connection.Execute("PRAGMA foreign_keys = ON;");
 
+            // WAL persiste en el archivo de la BD: mejora la concurrencia
+            // lectura/escritura y permite respaldos en caliente consistentes.
+            connection.Execute("PRAGMA journal_mode = WAL;");
+
             CrearTablas(connection);
             InsertarDatosIniciales(connection);
+            CorregirCodigosBarras(connection);
+        }
+
+        /// <summary>
+        /// Corrección puntual e idempotente: versiones anteriores guardaron
+        /// códigos de barras con un separador inválido (p. ej. ART'12345678)
+        /// en vez del guion (ART-12345678). Esto normaliza el 4º caracter a '-'.
+        /// Solo afecta filas que empiezan por "ART" cuyo 4º caracter no es ya un
+        /// guion ni un dígito, así que correrlo en cada arranque no hace nada
+        /// una vez corregido.
+        /// </summary>
+        private void CorregirCodigosBarras(SqliteConnection connection)
+        {
+            connection.Execute(@"
+                UPDATE Producto
+                SET CodigoBarras = substr(CodigoBarras,1,3) || '-' || substr(CodigoBarras,5)
+                WHERE length(CodigoBarras) >= 5
+                  AND upper(substr(CodigoBarras,1,3)) = 'ART'
+                  AND substr(CodigoBarras,4,1) <> '-'
+                  AND substr(CodigoBarras,4,1) NOT GLOB '[0-9]';");
         }
 
         private void CrearTablas(SqliteConnection connection)

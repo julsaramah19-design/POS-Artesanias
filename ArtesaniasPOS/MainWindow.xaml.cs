@@ -24,8 +24,7 @@ namespace ArtesaniasPOS.UI
 
             MigrarBaseDatosSiHaceFalta();
 
-            var rutaBd = ArtesaniasPOS.Data.Database.AppSettings.DbPath;
-            var connectionString = $"Data Source={rutaBd}";
+            var connectionString = ArtesaniasPOS.Data.Database.DatabaseConfig.ConnectionString;
 
             _configuracionService = new ConfiguracionService(connectionString);
             _monedaService = new MonedaService(connectionString);
