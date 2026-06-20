@@ -189,7 +189,10 @@ namespace ArtesaniasPOS.Core.ViewModels.Productos
                 {
                     Id = _productoId,
                     CategoriaId = CategoriaSeleccionada.Id,
-                    CodigoBarras = CodigoBarras.Trim(),
+                    // Normaliza igual que la búsqueda por pistola en ventas: la
+                    // lectora bajo teclado español devuelve "art'1234" en vez de
+                    // "ART-1234". Dejamos el código canónico para que coincidan.
+                    CodigoBarras = CodigoBarras.Replace("'", "-").Trim().ToUpper(),
                     Nombre = Nombre.Trim(),
                     Descripcion = string.IsNullOrWhiteSpace(Descripcion) ? null : Descripcion.Trim(),
                     PrecioBase = PrecioBase,

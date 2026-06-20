@@ -196,6 +196,18 @@ namespace ArtesaniasPOS.Core.ViewModels.Productos
 
         private string GetDefaultPrinterName()
         {
+            // Usa la API del spooler (respeta la predeterminada que administra
+            // Windows). Es la misma fuente que usa el recibo vía PrinterSettings.
+            int size = 0;
+            GetDefaultPrinter(null, ref size); // 1ra llamada: obtener tamaño
+            if (size > 0)
+            {
+                var sb = new System.Text.StringBuilder(size);
+                if (GetDefaultPrinter(sb, ref size) && sb.Length > 0)
+                    return sb.ToString();
+            }
+
+            // Respaldo: llave de registro legacy (puede estar vacía/obsoleta).
             using var key = Microsoft.Win32.Registry.CurrentUser
                 .OpenSubKey(@"Software\Microsoft\Windows NT\CurrentVersion\Windows");
             return key?.GetValue("Device")?.ToString()?.Split(',')[0] ?? string.Empty;
@@ -216,51 +228,67 @@ namespace ArtesaniasPOS.Core.ViewModels.Productos
                 System.Text.CodePagesEncodingProvider.Instance);
             var enc = System.Text.Encoding.GetEncoding("ibm850");
 
-            var bytes = new List<byte>();
+            // En modo etiqueta la impresora (JAL-838L / familia Xprinter) habla
+            // TSPL, NO ESC/POS. Por eso antes "aceptaba" los bytes pero no
+            // imprimía nada. Etiqueta de 50 x 30 mm.
+            string nombre = (ProductoSeleccionado.Nombre ?? string.Empty).Replace("\"", "'");
+            if (nombre.Length > 32) nombre = nombre.Substring(0, 32);
+            string precio = "$" + ProductoSeleccionado.PrecioBase.ToString("N0");
+            string codigo = (ProductoSeleccionado.CodigoBarras ?? string.Empty).Replace("\"", "'");
 
-            // Reset + centrar
-            bytes.AddRange(enc.GetBytes("\x1B\x40\x1B\x61\x00"));
+            const string nl = "\r\n";
+            string tspl =
+                "SIZE 50 mm,30 mm" + nl +
+                "GAP 2 mm,0 mm" + nl +
+                "DIRECTION 1" + nl +
+                "CLS" + nl +
+                "TEXT 16,15,\"4\",0,1,1,\"" + precio + "\"" + nl +     // precio grande arriba
+                "BARCODE 16,60,\"39\",70,0,0,2,4,\"" + codigo + "\"" + nl + // CODE39 sin texto (HRI=0)
+                "TEXT 16,150,\"3\",0,1,1,\"" + nombre + "\"" + nl +    // nombre legible debajo
+                "PRINT 1,1" + nl;
 
-            // Precio en doble alto + negrita
-            bytes.AddRange(enc.GetBytes("\x1B\x21\x18"));
-            bytes.AddRange(enc.GetBytes("$" + ProductoSeleccionado.PrecioBase.ToString("N0") + "\n"));
-            bytes.AddRange(enc.GetBytes("\x1B\x21\x00"));
-
-            // Código de barras
-            bytes.AddRange(new byte[] { 0x1D, 0x68, 0x40 }); // altura 64 puntos
-            bytes.AddRange(new byte[] { 0x1D, 0x77, 0x02 }); // ancho normal
-            bytes.AddRange(new byte[] { 0x1D, 0x48, 0x02 }); // HRI abajo
-
-            byte[] codigoBytes = System.Text.Encoding.ASCII
-                .GetBytes(ProductoSeleccionado.CodigoBarras);
-            bytes.AddRange(new byte[] { 0x1D, 0x6B, 0x04 });
-            bytes.AddRange(codigoBytes);
-            bytes.Add(0x00);
-
-            // Corte mínimo
-            bytes.AddRange(new byte[] { 0x1B, 0x64, 0x01 });
-            bytes.AddRange(new byte[] { 0x1D, 0x56, 0x41, 0x00 });
-
-            SendToPrinter(printerName, bytes.ToArray());
+            SendToPrinter(printerName, enc.GetBytes(tspl));
         }
 
         private void SendToPrinter(string printerName, byte[] data)
         {
             var di = new DOCINFOA { pDocName = "Etiqueta", pDataType = "RAW" };
-            if (!OpenPrinter(printerName, out IntPtr hPrinter, IntPtr.Zero)) return;
-            if (!StartDocPrinter(hPrinter, 1, di)) { ClosePrinter(hPrinter); return; }
-            if (!StartPagePrinter(hPrinter)) { EndDocPrinter(hPrinter); ClosePrinter(hPrinter); return; }
+            if (!OpenPrinter(printerName, out IntPtr hPrinter, IntPtr.Zero))
+            {
+                System.Windows.MessageBox.Show(
+                    $"No se pudo abrir la impresora \"{printerName}\".");
+                return;
+            }
+            if (!StartDocPrinter(hPrinter, 1, di))
+            {
+                ClosePrinter(hPrinter);
+                System.Windows.MessageBox.Show("No se pudo iniciar el documento de impresión.");
+                return;
+            }
+            if (!StartPagePrinter(hPrinter))
+            {
+                EndDocPrinter(hPrinter);
+                ClosePrinter(hPrinter);
+                System.Windows.MessageBox.Show("No se pudo iniciar la página de impresión.");
+                return;
+            }
 
             IntPtr pBytes = System.Runtime.InteropServices.Marshal.AllocHGlobal(data.Length);
             System.Runtime.InteropServices.Marshal.Copy(data, 0, pBytes, data.Length);
-            WritePrinter(hPrinter, pBytes, data.Length, out int _);
+            bool escrito = WritePrinter(hPrinter, pBytes, data.Length, out int _);
             System.Runtime.InteropServices.Marshal.FreeHGlobal(pBytes);
 
             EndPagePrinter(hPrinter);
             EndDocPrinter(hPrinter);
             ClosePrinter(hPrinter);
+
+            if (!escrito)
+                System.Windows.MessageBox.Show("La impresora no aceptó los datos de la etiqueta.");
         }
 
+        [System.Runtime.InteropServices.DllImport("winspool.Drv", EntryPoint = "GetDefaultPrinterW",
+            SetLastError = true, CharSet = System.Runtime.InteropServices.CharSet.Unicode)]
+        private static extern bool GetDefaultPrinter(System.Text.StringBuilder? buffer, ref int size);
         [System.Runtime.InteropServices.DllImport("winspool.Drv", EntryPoint = "OpenPrinterA")]
         private static extern bool OpenPrinter(string n, out IntPtr h, IntPtr d);
         [System.Runtime.InteropServices.DllImport("winspool.Drv", EntryPoint = "ClosePrinter")]
